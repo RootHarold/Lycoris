@@ -1,8 +1,15 @@
 package LycorisNet
 
+import "container/list"
+
+type genomes struct {
+	value list.List
+}
+
 type Individual struct {
-	NodeList      []Node
-	GenomeList    []Genome
+	NodeList      list.List
+	GenomeList    list.List
+	NodeGenomeMap map[Node]genomes
 	InputNum      int
 	OutputNum     int
 	InnovationNum int
@@ -18,12 +25,10 @@ func NewIndividual(InputNum int, OutputNum int) *Individual {
 
 func initialize(individual *Individual) {
 	for i := 0; i < individual.InputNum; i++ {
-		individual.NodeList = append(individual.NodeList, *NewNode(individual.NodeNum, 0))
-		individual.NodeNum++
+
 	}
 	for i := 0; i < individual.OutputNum; i++ {
-		individual.NodeList = append(individual.NodeList, *NewNode(individual.NodeNum, 2))
-		individual.NodeNum++
+
 	}
 	createGenes(individual)
 }
@@ -32,11 +37,11 @@ func createGenes(individual *Individual) {
 
 }
 
-func (individual *Individual) SetInput() {
+func (individual *Individual) SetInput(input []float64) {
 
 }
 
-func (individual *Individual) SetOutput() {
+func (individual *Individual) GetOutput() {
 
 }
 
