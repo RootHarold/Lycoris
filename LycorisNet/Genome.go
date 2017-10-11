@@ -1,19 +1,18 @@
 package LycorisNet
 
-type Genome struct {
-	In            int
-	Out           int
+type Gen struct {
+	In  int
+	Out int
+}
+
+type Ome struct {
 	Weight        float64
 	IsEnable      bool
 	InnovationNum int
 }
 
-func NewGenome(In int, Out int, Weight float64, IsEnable bool, InnovationNum int) *Genome {
-	var genome *Genome = &Genome{In, Out, Weight, IsEnable, InnovationNum}
-	return genome
-}
-
-func (genome *Genome) Clone() *Genome {
-	var offspring *Genome = NewGenome(genome.In, genome.Out, genome.Weight, genome.IsEnable, genome.InnovationNum)
-	return offspring
+func NewGenome(In int, Out int, Weight float64, IsEnable bool, InnovationNum int) (*Gen, *Ome) {
+	var gen *Gen = &Gen{In, Out}
+	var ome *Ome = &Ome{Weight, IsEnable, InnovationNum}
+	return gen, ome
 }
