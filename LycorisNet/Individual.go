@@ -34,7 +34,7 @@ func initialize(individual *Individual) {
 }
 
 func createGenes(individual *Individual) {
-	
+
 }
 
 func (individual *Individual) SetInput(input []float64) {
@@ -61,6 +61,7 @@ func (individual *Individual) GetOutput() []float64 {
 				output[pointer] = temp.Value
 				pointer++
 			}
+			node = node.Next()
 		}
 	}
 	return output
