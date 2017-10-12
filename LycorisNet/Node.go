@@ -14,9 +14,9 @@ func NewNode(NodeNum int, NodeType int) *Node {
 }
 
 func (node *Node) Clone() *Node {
-	var offspring = NewNode(node.NodeNum, node.NodeType)
+	var n = NewNode(node.NodeNum, node.NodeType)
 	for k, v := range node.GenomeMap {
-		offspring.GenomeMap[k] = v
+		n.GenomeMap[k] = v
 	}
-	return offspring
+	return n
 }
