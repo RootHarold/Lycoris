@@ -2,6 +2,7 @@ package LycorisNet
 
 import (
 	"container/list"
+	"./Utils"
 )
 
 type Individual struct {
@@ -34,7 +35,21 @@ func initialize(individual *Individual) {
 }
 
 func createGenes(individual *Individual) {
-
+	var len = individual.NodeNum
+	var node = individual.NodeList.Front()
+	for i := 0; i < len; i++ {
+		if i >= individual.InputNum {
+			for j := 0; j < individual.InputNum; j++ {
+				var gen = Gen{j, i}
+				var ome = Ome{Utils.Random(), true, individual.InnovationNum}
+				individual.GenomeMap[gen] = ome
+				var temp = node.Value.(Node)
+				temp.GenomeMap[gen] = ome
+				individual.InnovationNum++
+			}
+		}
+		node = node.Next()
+	}
 }
 
 func (individual *Individual) SetInput(input []float64) {
