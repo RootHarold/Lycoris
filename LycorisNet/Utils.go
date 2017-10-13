@@ -3,6 +3,7 @@ package LycorisNet
 import (
 	"time"
 	"math/rand"
+	"math"
 )
 
 var Leak float64 = 0.01
@@ -22,4 +23,12 @@ func ReLU(f float64) float64 {
 	} else {
 		return f * Leak
 	}
+}
+
+func Sigmoid(f float64) float64 {
+	return 1 / (1 + math.Exp(0-f))
+}
+
+func Tanh(f float64) float64 {
+	return (math.Exp(f) - math.Exp(-f)) / (math.Exp(f) + math.Exp(-f))
 }
