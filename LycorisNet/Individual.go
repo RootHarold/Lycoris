@@ -53,6 +53,7 @@ func (individual *Individual) SetInput(input []float64) {
 	for i := 0; i < individual.InputNum; i++ {
 		var temp = individual.NodeMap[i]
 		temp.Value = input[i]
+		individual.NodeMap[i] = temp
 	}
 }
 
@@ -71,7 +72,8 @@ func (individual *Individual) GetOutput() []float64 {
 
 func (individual *Individual) Forward() {
 	for i := individual.InputNum; i < len(individual.NodeSlice); i++ {
-		var node = individual.NodeMap[individual.NodeSlice[i]]
+		var index = individual.NodeSlice[i]
+		var node = individual.NodeMap[index]
 		var f float64 = 0
 		for gen, ome := range node.GenomeMap {
 			if ome.IsEnable {
@@ -79,5 +81,6 @@ func (individual *Individual) Forward() {
 			}
 		}
 		node.Value = Func(f)
+		individual.NodeMap[index] = node
 	}
 }
