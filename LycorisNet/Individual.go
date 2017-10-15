@@ -1,4 +1,4 @@
-package LycorisNet
+package LN
 
 type Individual struct {
 	NodeMap       map[int]Node

@@ -1,4 +1,4 @@
-package LycorisNet
+package LN
 
 import (
 	"time"
@@ -31,4 +31,12 @@ func Sigmoid(f float64) float64 {
 
 func Tanh(f float64) float64 {
 	return (math.Exp(f) - math.Exp(-f)) / (math.Exp(f) + math.Exp(-f))
+}
+
+func Error(output []float64, desire []float64) float64 {
+	var f float64 = 0
+	for i := 0; i < len(output); i++ {
+		f += math.Pow(desire[i]-output[i], 2)
+	}
+	return f
 }

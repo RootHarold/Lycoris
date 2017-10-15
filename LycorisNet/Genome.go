@@ -1,4 +1,4 @@
-package LycorisNet
+package LN
 
 type Gen struct {
 	In  int

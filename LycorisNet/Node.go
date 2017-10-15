@@ -1,4 +1,4 @@
-package LycorisNet
+package LN
 
 type Node struct {
 	NodeNum   int
