@@ -1,4 +1,4 @@
-package LN
+package LycorisNet
 
 import (
 	"time"

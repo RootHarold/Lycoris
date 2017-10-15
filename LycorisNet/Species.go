@@ -1,4 +1,4 @@
-package LN
+package LycorisNet
 
 type Species struct {
 	IndividualList []Individual
