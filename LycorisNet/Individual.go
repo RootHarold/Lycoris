@@ -12,7 +12,7 @@ type Individual struct {
 }
 
 func NewIndividual(InputNum int, OutputNum int) *Individual {
-	var individual *Individual = &Individual{InputNum: InputNum, OutputNum: OutputNum, NodeSum: 0, InnovationNum: 0}
+	var individual = &Individual{InputNum: InputNum, OutputNum: OutputNum, NodeSum: 0, InnovationNum: 0}
 	initialize(individual)
 	return individual
 }

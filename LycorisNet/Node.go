@@ -8,7 +8,7 @@ type Node struct {
 }
 
 func NewNode(NodeNum int, NodeType int) *Node {
-	var node *Node = &Node{NodeNum: NodeNum, NodeType: NodeType}
+	var node = &Node{NodeNum: NodeNum, NodeType: NodeType}
 	node.GenomeMap = make(map[Gen]Ome)
 	return node
 }

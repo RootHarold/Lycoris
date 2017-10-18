@@ -6,10 +6,10 @@ import (
 	"math"
 )
 
-var Leak float64 = 0.01
+var Leak = 0.01
 var r = rand.New(rand.NewSource(time.Now().UnixNano()))
-var c1 float64 = 1.0
-var c2 float64 = 0.4
+var c1 = 1.0
+var c2 = 0.4
 
 func Random() float64 {
 	return r.Float64()
@@ -45,10 +45,10 @@ func Error(output []float64, desire []float64) float64 {
 
 func Distance(in1 *Individual, in2 *Individual) float64 {
 	var distance float64
-	var DE int = 0
+	var DE = 0
 	var w1, i1 = Sort1(&in1.GenomeMap, in1.InnovationNum)
 	var w2, i2 = Sort1(&in2.GenomeMap, in2.InnovationNum)
-	var N int = 0
+	var N = 0
 	var len1 = len(*w1)
 	var len2 = len(*w2)
 	if len1 > len2 {
@@ -57,9 +57,9 @@ func Distance(in1 *Individual, in2 *Individual) float64 {
 		N = len2
 	}
 	var W float64 = 0
-	var countW int = 0
-	var point1 int = 0
-	var point2 int = 0
+	var countW = 0
+	var point1 = 0
+	var point2 = 0
 	for true {
 		if point1 == len1 || point2 == len2 {
 			break
@@ -89,7 +89,7 @@ func Sort1(m *map[Gen]Ome, InnovationNum int) (*[]float64, *[]int) {
 	var temp1 = make([]bool, InnovationNum)
 	var temp2 = make([]float64, InnovationNum)
 	var temp3 = make([]int, InnovationNum)
-	var count int = 0
+	var count = 0
 	for _, v := range *m {
 		in := v.InnovationNum
 		temp1[in] = true
@@ -104,4 +104,17 @@ func Sort1(m *map[Gen]Ome, InnovationNum int) (*[]float64, *[]int) {
 		}
 	}
 	return &result1, &result2
+}
+
+func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
+	var offspring = Individual{InputNum: in1.InputNum, OutputNum: in1.OutputNum}
+	offspring.NodeMap = make(map[int]Node)
+	offspring.GenomeMap = make(map[Gen]Ome)
+	if in1.Fitness > in2.Fitness {
+		var temp = in1
+		in1 = in2
+		in2 = temp
+	}
+	// TODO
+	return &offspring
 }
