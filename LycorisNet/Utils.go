@@ -8,8 +8,9 @@ import (
 
 var Leak = 0.01
 var r = rand.New(rand.NewSource(time.Now().UnixNano()))
-var c1 = 1.0
-var c2 = 0.4
+var C1 = 1.0
+var C2 = 0.4
+var BreakTime = 12
 
 func Random() float64 {
 	return r.Float64()
@@ -126,7 +127,7 @@ func Distance(in1 *Individual, in2 *Individual) float64 {
 		}
 	}
 	DE += len1 + len2 - point1 - point2
-	distance = (c1*float64(DE))/float64(N) + (c2*float64(W))/float64(countW)
+	distance = (C1*float64(DE))/float64(N) + (C2*float64(W))/float64(countW)
 	return distance
 }
 
@@ -170,6 +171,80 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	for i := point2; i < len2; i++ {
 		offspring.GenomeMap[(*g2)[point2]] = (*o2)[point2]
 	}
-	// TODO
+	var temp1 = (*o1)[point1-1].InnovationNum
+	var temp2 = (*o2)[point2-1].InnovationNum
+	if temp1 > temp2 {
+		offspring.InnovationNum = temp1 + 1
+	} else {
+		offspring.InnovationNum = temp2 + 1
+	}
+	var tempMap = make(map[int]int)
+	for _, v := range in1.NodeMap {
+		tempMap[v.NodeNum] = -1
+	}
+	for _, v := range in2.NodeMap {
+		tempMap[v.NodeNum] = -1
+	}
+	var tempSlice = make([]int, len(tempMap))
+	var tempCount = 0
+	for k := range tempMap {
+		tempSlice[tempCount] = k
+		tempMap[k] = tempCount
+		tempCount++
+	}
+	var bt = 0
+	for true {
+		bt++
+		var flag = true
+		for k := range offspring.GenomeMap {
+			var indexIn = tempMap[k.In]
+			var indexOut = tempMap[k.Out]
+			if indexIn > indexOut {
+				flag = false
+				tempSlice[indexIn] = k.Out
+				tempSlice[indexOut] = k.In
+				tempMap[k.Out] = indexIn
+				tempMap[k.In] = indexOut
+			}
+			if flag || bt == BreakTime {
+				break
+			}
+		}
+	}
+	var lenTempSlice = len(tempSlice)
+	offspring.NodeSlice = make([]int, lenTempSlice)
+	for i := 0; i < in1.InputNum; i++ {
+		offspring.NodeSlice[i] = i
+	}
+	for i := in1.InputNum; i < in1.InputNum+in1.OutputNum; i++ {
+		offspring.NodeSlice[lenTempSlice-in1.InputNum-in1.OutputNum+i] = i
+	}
+	var temp = in1.InputNum + in1.OutputNum
+	var point = temp
+	for _, v := range tempSlice {
+		if v >= temp {
+			offspring.NodeSlice[point] = v
+			point++
+		}
+	}
+	for _, v := range offspring.NodeSlice {
+		var node Node
+		if v < offspring.InputNum {
+			node = *NewNode(v, 0)
+		} else if v >= offspring.InputNum && v < (offspring.InputNum+offspring.OutputNum) {
+			node = *NewNode(v, 2)
+		} else {
+			node = *NewNode(v, 1)
+		}
+		offspring.NodeMap[v] = node
+	}
+	for k, v := range offspring.GenomeMap {
+		offspring.NodeMap[k.Out].GenomeMap[k] = v
+	}
+	if in1.NodeSum > in2.NodeSum {
+		offspring.NodeSum = in1.NodeSum
+	} else {
+		offspring.NodeSum = in2.NodeSum
+	}
 	return &offspring
 }
