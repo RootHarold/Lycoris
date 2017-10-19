@@ -131,7 +131,7 @@ func Distance(in1 *Individual, in2 *Individual) float64 {
 	return distance
 }
 
-func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
+func MateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	var offspring = Individual{InputNum: in1.InputNum, OutputNum: in1.OutputNum}
 	offspring.NodeMap = make(map[int]Node)
 	offspring.GenomeMap = make(map[Gen]Ome)
@@ -206,9 +206,9 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 				tempMap[k.Out] = indexIn
 				tempMap[k.In] = indexOut
 			}
-			if flag || bt == BreakTime {
-				break
-			}
+		}
+		if flag || bt == BreakTime {
+			break
 		}
 	}
 	var lenTempSlice = len(tempSlice)
