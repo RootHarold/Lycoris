@@ -140,6 +140,7 @@ func MateIndividual(in1 *Individual, in2 *Individual) *Individual {
 		in1 = in2
 		in2 = temp
 	}
+
 	var g1, o1 = Sort2(&in1.GenomeMap, in1.InnovationNum)
 	var g2, o2 = Sort2(&in2.GenomeMap, in2.InnovationNum)
 	var point1 = 0
@@ -171,6 +172,7 @@ func MateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	for i := point2; i < len2; i++ {
 		offspring.GenomeMap[(*g2)[point2]] = (*o2)[point2]
 	}
+
 	var temp1 = (*o1)[point1-1].InnovationNum
 	var temp2 = (*o2)[point2-1].InnovationNum
 	if temp1 > temp2 {
@@ -178,6 +180,7 @@ func MateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	} else {
 		offspring.InnovationNum = temp2 + 1
 	}
+
 	var tempMap = make(map[int]int)
 	for _, v := range in1.NodeMap {
 		tempMap[v.NodeNum] = -1
@@ -211,15 +214,16 @@ func MateIndividual(in1 *Individual, in2 *Individual) *Individual {
 			break
 		}
 	}
+
 	var lenTempSlice = len(tempSlice)
 	offspring.NodeSlice = make([]int, lenTempSlice)
 	for i := 0; i < in1.InputNum; i++ {
 		offspring.NodeSlice[i] = i
 	}
-	for i := in1.InputNum; i < in1.InputNum+in1.OutputNum; i++ {
-		offspring.NodeSlice[lenTempSlice-in1.InputNum-in1.OutputNum+i] = i
-	}
 	var temp = in1.InputNum + in1.OutputNum
+	for i := in1.InputNum; i < temp; i++ {
+		offspring.NodeSlice[lenTempSlice-temp+i] = i
+	}
 	var point = temp
 	for _, v := range tempSlice {
 		if v >= temp {
@@ -227,20 +231,23 @@ func MateIndividual(in1 *Individual, in2 *Individual) *Individual {
 			point++
 		}
 	}
+
 	for _, v := range offspring.NodeSlice {
 		var node Node
 		if v < offspring.InputNum {
 			node = *NewNode(v, 0)
-		} else if v >= offspring.InputNum && v < (offspring.InputNum+offspring.OutputNum) {
+		} else if v >= offspring.InputNum && v < temp {
 			node = *NewNode(v, 2)
 		} else {
 			node = *NewNode(v, 1)
 		}
 		offspring.NodeMap[v] = node
 	}
+
 	for k, v := range offspring.GenomeMap {
 		offspring.NodeMap[k.Out].GenomeMap[k] = v
 	}
+
 	if in1.NodeSum > in2.NodeSum {
 		offspring.NodeSum = in1.NodeSum
 	} else {
