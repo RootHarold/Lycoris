@@ -345,9 +345,28 @@ func MutateIndividual(in *Individual) *Individual {
 			delete(offspring.NodeMap, index)
 		}
 	} else if random >= P1+P2 && random < P1+P2+P3 {
-
+		var length = len(offspring.NodeSlice)
+		var index1 = r.Intn(length)
+		var index2 = index1 + r.Intn(length-index1)
+		if index1 != index2 {
+			var inputNum = offspring.NodeSlice[index1]
+			var outputNum = offspring.NodeSlice[index2]
+			var inputNode = offspring.NodeMap[inputNum]
+			var outputNode = offspring.NodeMap[outputNum]
+			if !((inputNode.NodeType == 0 && outputNode.NodeType == 0) || (inputNode.NodeType == 2 && outputNode.NodeType == 2)) {
+				var gen = Gen{inputNum, outputNum}
+				var _, ok = offspring.GenomeMap[gen]
+				if !ok {
+					var ome = Ome{Random(), true, offspring.InnovationNum}
+					offspring.InnovationNum++
+					offspring.GenomeMap[gen] = ome
+					outputNode.GenomeMap[gen] = ome
+					offspring.NodeMap[outputNum] = outputNode
+				}
+			}
+		}
 	} else {
-
+		
 	}
 	return &offspring
 }
