@@ -11,6 +11,9 @@ var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 var C1 = 1.0
 var C2 = 0.4
 var BreakTime = 12
+var P1 = 0.15
+var P2 = 0.35
+var P3 = 0.15
 
 func Random() float64 {
 	return r.Float64()
@@ -252,6 +255,67 @@ func MateIndividual(in1 *Individual, in2 *Individual) *Individual {
 		offspring.NodeSum = in1.NodeSum
 	} else {
 		offspring.NodeSum = in2.NodeSum
+	}
+	return &offspring
+}
+
+func MutateIndividual(in *Individual) *Individual {
+	var offspring = Individual{InputNum: in.InputNum, OutputNum: in.OutputNum, InnovationNum: in.InnovationNum, NodeSum: in.NodeSum}
+	offspring.NodeMap = make(map[int]Node, len(in.NodeMap))
+	for k, v := range in.NodeMap {
+		offspring.NodeMap[k] = *v.Clone()
+	}
+	offspring.NodeSlice = make([]int, len(in.NodeSlice))
+	for k, v := range in.NodeSlice {
+		offspring.NodeSlice[k] = v
+	}
+	offspring.GenomeMap = make(map[Gen]Ome, len(in.GenomeMap))
+	for k, v := range in.GenomeMap {
+		offspring.GenomeMap[k] = v
+	}
+	var random = r.Float64()
+	if random < P1 {
+		var genOld Gen
+		var omeOld Ome
+		for k, v := range offspring.GenomeMap {
+			genOld = k
+			omeOld = v
+			break
+		}
+		omeOld.IsEnable = false
+		offspring.GenomeMap[genOld] = omeOld
+		var n = *NewNode(offspring.NodeSum, 1)
+		offspring.NodeSum++
+		var g1, o1 = NewGenome(genOld.In, n.NodeNum, 1.0, true, offspring.InnovationNum)
+		offspring.InnovationNum++
+		var g2, o2 = NewGenome(n.NodeNum, genOld.Out, omeOld.Weight, true, offspring.InnovationNum)
+		offspring.InnovationNum++
+		n.GenomeMap[*g1] = *o1
+		var nodeOld = offspring.NodeMap[genOld.Out]
+		var temp = nodeOld.GenomeMap[genOld]
+		temp.IsEnable = false
+		nodeOld.GenomeMap[genOld] = temp
+		nodeOld.GenomeMap[*g2] = *o2
+		offspring.NodeMap[genOld.Out] = nodeOld
+		offspring.NodeMap[n.NodeNum] = n
+		var length = len(offspring.NodeSlice)
+		var newSlice = make([]int, length+1)
+		var count = 0
+		for i := 0; i < length; {
+			if offspring.NodeSlice[i] == genOld.Out {
+				newSlice[count] = n.NodeNum
+				count++
+			}
+			newSlice[count] = offspring.NodeSlice[i]
+			count++
+			i++
+		}
+		offspring.GenomeMap[*g1] = *o1
+		offspring.GenomeMap[*g2] = *o2
+	} else if random >= P1 && random < P1+P2 {
+		// TODO
+	} else if random >= P1+P2 && random < P1+P2+P3 {
+
 	}
 	return &offspring
 }
