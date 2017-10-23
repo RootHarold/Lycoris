@@ -259,122 +259,108 @@ func MateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	return &offspring
 }
 
-func MutateIndividual(in *Individual) *Individual {
-	var offspring = Individual{InputNum: in.InputNum, OutputNum: in.OutputNum, InnovationNum: in.InnovationNum, NodeSum: in.NodeSum}
-	offspring.NodeMap = make(map[int]Node, len(in.NodeMap))
-	for k, v := range in.NodeMap {
-		offspring.NodeMap[k] = *v.Clone()
-	}
-	offspring.NodeSlice = make([]int, len(in.NodeSlice))
-	for k, v := range in.NodeSlice {
-		offspring.NodeSlice[k] = v
-	}
-	offspring.GenomeMap = make(map[Gen]Ome, len(in.GenomeMap))
-	for k, v := range in.GenomeMap {
-		offspring.GenomeMap[k] = v
-	}
+func MutateIndividual(in *Individual) {
 	var random = r.Float64()
 	if random < P1 {
 		var genOld Gen
 		var omeOld Ome
-		for k, v := range offspring.GenomeMap {
+		for k, v := range in.GenomeMap {
 			genOld = k
 			omeOld = v
 			break
 		}
 		omeOld.IsEnable = false
-		offspring.GenomeMap[genOld] = omeOld
-		var n = *NewNode(offspring.NodeSum, 1)
-		offspring.NodeSum++
-		var g1, o1 = NewGenome(genOld.In, n.NodeNum, 1.0, true, offspring.InnovationNum)
-		offspring.InnovationNum++
-		var g2, o2 = NewGenome(n.NodeNum, genOld.Out, omeOld.Weight, true, offspring.InnovationNum)
-		offspring.InnovationNum++
+		in.GenomeMap[genOld] = omeOld
+		var n = *NewNode(in.NodeSum, 1)
+		in.NodeSum++
+		var g1, o1 = NewGenome(genOld.In, n.NodeNum, 1.0, true, in.InnovationNum)
+		in.InnovationNum++
+		var g2, o2 = NewGenome(n.NodeNum, genOld.Out, omeOld.Weight, true, in.InnovationNum)
+		in.InnovationNum++
 		n.GenomeMap[*g1] = *o1
-		var nodeOld = offspring.NodeMap[genOld.Out]
+		var nodeOld = in.NodeMap[genOld.Out]
 		var temp = nodeOld.GenomeMap[genOld]
 		temp.IsEnable = false
 		nodeOld.GenomeMap[genOld] = temp
 		nodeOld.GenomeMap[*g2] = *o2
-		offspring.NodeMap[genOld.Out] = nodeOld
-		offspring.NodeMap[n.NodeNum] = n
-		var length = len(offspring.NodeSlice)
+		in.NodeMap[genOld.Out] = nodeOld
+		in.NodeMap[n.NodeNum] = n
+		var length = len(in.NodeSlice)
 		var newSlice = make([]int, length+1)
 		var count = 0
 		for i := 0; i < length; {
-			if offspring.NodeSlice[i] == genOld.Out {
+			if in.NodeSlice[i] == genOld.Out {
 				newSlice[count] = n.NodeNum
 				count++
 			}
-			newSlice[count] = offspring.NodeSlice[i]
+			newSlice[count] = in.NodeSlice[i]
 			count++
 			i++
 		}
-		offspring.GenomeMap[*g1] = *o1
-		offspring.GenomeMap[*g2] = *o2
+		in.GenomeMap[*g1] = *o1
+		in.GenomeMap[*g2] = *o2
 	} else if random >= P1 && random < P1+P2 {
 		var tempSlice []int
-		for _, v := range offspring.NodeSlice {
-			if offspring.NodeMap[v].NodeType == 1 {
+		for _, v := range in.NodeSlice {
+			if in.NodeMap[v].NodeType == 1 {
 				tempSlice = append(tempSlice, v)
 			}
 		}
 		if len(tempSlice) != 0 {
 			var index = tempSlice[r.Intn(len(tempSlice))]
 			var pointer int
-			for k, v := range offspring.NodeSlice {
+			for k, v := range in.NodeSlice {
 				if v == index {
 					pointer = k
 					break
 				}
 			}
 			for i := 0; i < pointer; i++ {
-				delete(offspring.GenomeMap, Gen{offspring.NodeSlice[i], index})
+				delete(in.GenomeMap, Gen{in.NodeSlice[i], index})
 			}
-			for i := pointer + 1; i < len(offspring.NodeSlice); i++ {
-				var outputNum = offspring.NodeSlice[i]
+			for i := pointer + 1; i < len(in.NodeSlice); i++ {
+				var outputNum = in.NodeSlice[i]
 				var tempGen = Gen{index, outputNum}
-				var _, ok = offspring.GenomeMap[tempGen]
+				var _, ok = in.GenomeMap[tempGen]
 				if ok {
-					var node = offspring.NodeMap[outputNum]
+					var node = in.NodeMap[outputNum]
 					delete(node.GenomeMap, tempGen)
-					offspring.NodeMap[outputNum] = node
-					delete(offspring.GenomeMap, tempGen)
+					in.NodeMap[outputNum] = node
+					delete(in.GenomeMap, tempGen)
 				}
 			}
-			delete(offspring.NodeMap, index)
+			delete(in.NodeMap, index)
 		}
 	} else if random >= P1+P2 && random < P1+P2+P3 {
-		var length = len(offspring.NodeSlice)
+		var length = len(in.NodeSlice)
 		var index1 = r.Intn(length)
 		var index2 = index1 + r.Intn(length-index1)
 		if index1 != index2 {
-			var inputNum = offspring.NodeSlice[index1]
-			var outputNum = offspring.NodeSlice[index2]
-			var inputNode = offspring.NodeMap[inputNum]
-			var outputNode = offspring.NodeMap[outputNum]
+			var inputNum = in.NodeSlice[index1]
+			var outputNum = in.NodeSlice[index2]
+			var inputNode = in.NodeMap[inputNum]
+			var outputNode = in.NodeMap[outputNum]
 			if !((inputNode.NodeType == 0 && outputNode.NodeType == 0) || (inputNode.NodeType == 2 && outputNode.NodeType == 2)) {
 				var gen = Gen{inputNum, outputNum}
-				var _, ok = offspring.GenomeMap[gen]
+				var _, ok = in.GenomeMap[gen]
 				if !ok {
-					var ome = Ome{Random(), true, offspring.InnovationNum}
-					offspring.InnovationNum++
-					offspring.GenomeMap[gen] = ome
+					var ome = Ome{Random(), true, in.InnovationNum}
+					in.InnovationNum++
+					in.GenomeMap[gen] = ome
 					outputNode.GenomeMap[gen] = ome
-					offspring.NodeMap[outputNum] = outputNode
+					in.NodeMap[outputNum] = outputNode
 				}
 			}
 		}
 	} else {
 		var gen Gen
-		for k := range offspring.GenomeMap {
+		for k := range in.GenomeMap {
 			gen = k
 			break
 		}
-		var node = offspring.NodeMap[gen.Out]
+		var node = in.NodeMap[gen.Out]
 		delete(node.GenomeMap, gen)
-		offspring.NodeMap[gen.Out] = node
-		delete(offspring.GenomeMap, gen)
+		in.NodeMap[gen.Out] = node
+		delete(in.GenomeMap, gen)
 	}
-	return &offspring
 }
