@@ -366,7 +366,15 @@ func MutateIndividual(in *Individual) *Individual {
 			}
 		}
 	} else {
-		
+		var gen Gen
+		for k := range offspring.GenomeMap {
+			gen = k
+			break
+		}
+		var node = offspring.NodeMap[gen.Out]
+		delete(node.GenomeMap, gen)
+		offspring.NodeMap[gen.Out] = node
+		delete(offspring.GenomeMap, gen)
 	}
 	return &offspring
 }
