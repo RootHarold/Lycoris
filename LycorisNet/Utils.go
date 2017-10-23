@@ -313,8 +313,40 @@ func MutateIndividual(in *Individual) *Individual {
 		offspring.GenomeMap[*g1] = *o1
 		offspring.GenomeMap[*g2] = *o2
 	} else if random >= P1 && random < P1+P2 {
-		// TODO
+		var tempSlice []int
+		for _, v := range offspring.NodeSlice {
+			if offspring.NodeMap[v].NodeType == 1 {
+				tempSlice = append(tempSlice, v)
+			}
+		}
+		if len(tempSlice) != 0 {
+			var index = tempSlice[r.Intn(len(tempSlice))]
+			var pointer int
+			for k, v := range offspring.NodeSlice {
+				if v == index {
+					pointer = k
+					break
+				}
+			}
+			for i := 0; i < pointer; i++ {
+				delete(offspring.GenomeMap, Gen{offspring.NodeSlice[i], index})
+			}
+			for i := pointer + 1; i < len(offspring.NodeSlice); i++ {
+				var outputNum = offspring.NodeSlice[i]
+				var tempGen = Gen{index, outputNum}
+				var _, ok = offspring.GenomeMap[tempGen]
+				if ok {
+					var node = offspring.NodeMap[outputNum]
+					delete(node.GenomeMap, tempGen)
+					offspring.NodeMap[outputNum] = node
+					delete(offspring.GenomeMap, tempGen)
+				}
+			}
+			delete(offspring.NodeMap, index)
+		}
 	} else if random >= P1+P2 && random < P1+P2+P3 {
+
+	} else {
 
 	}
 	return &offspring
