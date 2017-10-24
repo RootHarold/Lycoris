@@ -84,3 +84,18 @@ func (individual *Individual) Forward() {
 		individual.NodeMap[index] = node
 	}
 }
+
+func (individual *Individual) Clone() *Individual {
+	var in = &Individual{InputNum: individual.InputNum, OutputNum: individual.OutputNum, InnovationNum: individual.InnovationNum, NodeSum: individual.NodeSum}
+	in.NodeMap = make(map[int]Node, len(individual.NodeMap))
+	for k, v := range individual.NodeMap {
+		in.NodeMap[k] = v
+	}
+	in.GenomeMap = make(map[Gen]Ome, len(individual.GenomeMap))
+	for k, v := range individual.GenomeMap {
+		in.GenomeMap[k] = v
+	}
+	in.NodeSlice = make([]int, len(individual.NodeSlice))
+	copy(in.NodeSlice, individual.NodeSlice)
+	return in
+}
