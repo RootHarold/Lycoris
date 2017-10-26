@@ -18,3 +18,25 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
 	lycoris.SpeciesList = append(lycoris.SpeciesList, specie)
 	return lycoris
 }
+
+func (lycoris *Lycoris) chooseElite() {
+	// TODO
+}
+
+func (lycoris *Lycoris) mate() {
+	// TODO
+}
+
+func (lycoris *Lycoris) mutate() {
+	// TODO
+}
+
+func (lycoris *Lycoris) classify() {
+	// TODO
+}
+
+func (lycoris *Lycoris) RunLycoris() {
+	lycoris.chooseElite()
+	lycoris.mate()
+	lycoris.mutate()
+}
