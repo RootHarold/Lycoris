@@ -1,21 +1,21 @@
 package LycorisNet
 
 type Lycoris struct {
-	Input       []float64
-	Desire      []float64
-	SpeciesList []Species
+	input       []float64
+	desire      []float64
+	speciesList []species
 }
 
 func NewLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
 	var lycoris = &Lycoris{}
-	lycoris.Input = make([]float64, inputNum)
-	lycoris.Desire = make([]float64, outputNum)
-	var specie = Species{}
-	specie.IndividualList = make([]Individual, capacity)
+	lycoris.input = make([]float64, inputNum)
+	lycoris.desire = make([]float64, outputNum)
+	var specie = species{}
+	specie.individualList = make([]individual, capacity)
 	for i := 0; i < capacity; i++ {
-		specie.IndividualList[i] = *NewIndividual(inputNum, outputNum)
+		specie.individualList[i] = *newIndividual(inputNum, outputNum)
 	}
-	lycoris.SpeciesList = append(lycoris.SpeciesList, specie)
+	lycoris.speciesList = append(lycoris.speciesList, specie)
 	return lycoris
 }
 
@@ -39,4 +39,23 @@ func (lycoris *Lycoris) RunLycoris() {
 	lycoris.chooseElite()
 	lycoris.mate()
 	lycoris.mutate()
+}
+
+// TODO
+/*
+func (lycoris *Lycoris) GetTheBest(num int) ([]Individual) {
+
+}
+*/
+
+func (lycoris *Lycoris) SetInput(input []float64) {
+	for k, v := range input {
+		lycoris.input[k] = v
+	}
+}
+
+func (lycoris *Lycoris) SetDesire(desire []float64) {
+	for k, v := range desire {
+		lycoris.desire[k] = v
+	}
 }

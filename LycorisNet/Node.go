@@ -1,23 +1,23 @@
 package LycorisNet
 
-type Node struct {
-	NodeNum   int
-	NodeType  int //0 means input while 1 means hidden and 2 means output
-	Value     float64
-	GenomeMap map[Gen]Ome
+type node struct {
+	nodeNum   int
+	nodeType  int //0 means input while 1 means hidden and 2 means output
+	value     float64
+	genomeMap map[gen]ome
 }
 
-func NewNode(NodeNum int, NodeType int) *Node {
-	var node = &Node{NodeNum: NodeNum, NodeType: NodeType}
-	node.GenomeMap = make(map[Gen]Ome)
-	return node
-}
-
-func (node *Node) Clone() *Node {
-	var n = NewNode(node.NodeNum, node.NodeType)
-	n.GenomeMap = make(map[Gen]Ome, len(node.GenomeMap))
-	for k, v := range node.GenomeMap {
-		n.GenomeMap[k] = v
-	}
+func newNode(nodeNum int, nodeType int) *node {
+	var n = &node{nodeNum: nodeNum, nodeType: nodeType}
+	n.genomeMap = make(map[gen]ome)
 	return n
+}
+
+func (n *node) clone() *node {
+	var duplicate = newNode(n.nodeNum, n.nodeType)
+	duplicate.genomeMap = make(map[gen]ome, len(n.genomeMap))
+	for k, v := range n.genomeMap {
+		duplicate.genomeMap[k] = v
+	}
+	return duplicate
 }

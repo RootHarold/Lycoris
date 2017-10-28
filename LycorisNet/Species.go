@@ -1,5 +1,5 @@
 package LycorisNet
 
-type Species struct {
-	IndividualList []Individual
+type species struct {
+	individualList []individual
 }
