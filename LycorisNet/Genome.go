@@ -2,7 +2,7 @@ package LycorisNet
 
 // The struct "gen" and the struct "ome" form connections
 // between nodes. The former contains the numbers of input
-// and output. The latter consists of weight, Usability and
+// and output. The latter consists of weight, usability and
 // the cumulative number of connections ("innovationNum").
 
 type gen struct {
