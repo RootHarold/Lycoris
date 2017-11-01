@@ -1,10 +1,9 @@
 package LycorisNet
 
 // Every node contains its number, type and the value calculated
-// during "forward" function. The "genomeMap" provides faster
-// calculation because of the copy of genomes' map. When it comes
-// to the "nodeType", "0" means "input" while "1" means "hidden"
-// and "2" means "output". Each node is the basic unit of the gene.
+// during "forward" function. When it comes to the "nodeType", "0"
+// means "input" while "1" means "hidden" and "2" means "output".
+// Each node is the basic unit of the gene.
 type node struct {
 	nodeNum   int
 	nodeType  int

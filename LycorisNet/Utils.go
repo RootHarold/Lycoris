@@ -40,20 +40,25 @@ func tanh(f float64) float64 {
 	return (math.Exp(f) - math.Exp(-f)) / (math.Exp(f) + math.Exp(-f))
 }
 
-func sort1(m *map[gen]ome, innovationNum int) (*[]float64, *[]int) {
-	var length = len(*m)
+func sort1(in *individual) (*[]float64, *[]int) {
+	var temp1 = make([]bool, in.innovationNum)
+	var temp2 = make([]float64, in.innovationNum)
+	var temp3 = make([]int, in.innovationNum)
+
+	var length = 0
+	for _, v1 := range in.nodeMap {
+		length += len(v1.genomeMap)
+		for _, v2 := range v1.genomeMap {
+			num := v2.innovationNum
+			temp1[num] = true
+			temp2[num] = v2.weight
+			temp3[num] = num
+		}
+	}
+
 	var result1 = make([]float64, length)
 	var result2 = make([]int, length)
-	var temp1 = make([]bool, innovationNum)
-	var temp2 = make([]float64, innovationNum)
-	var temp3 = make([]int, innovationNum)
 	var count = 0
-	for _, v := range *m {
-		in := v.innovationNum
-		temp1[in] = true
-		temp2[in] = v.weight
-		temp3[in] = in
-	}
 	for k, v := range temp1 {
 		if v {
 			result1[count] = temp2[k]
@@ -64,20 +69,25 @@ func sort1(m *map[gen]ome, innovationNum int) (*[]float64, *[]int) {
 	return &result1, &result2
 }
 
-func sort2(m *map[gen]ome, innovationNum int) (*[]gen, *[]ome) {
-	var length = len(*m)
+func sort2(in *individual) (*[]gen, *[]ome) {
+	var temp1 = make([]bool, in.innovationNum)
+	var temp2 = make([]gen, in.innovationNum)
+	var temp3 = make([]ome, in.innovationNum)
+
+	var length = 0
+	for _, v1 := range in.nodeMap {
+		length += len(v1.genomeMap)
+		for k, v2 := range v1.genomeMap {
+			num := v2.innovationNum
+			temp1[num] = true
+			temp2[num] = k
+			temp3[num] = v2
+		}
+	}
+
 	var result1 = make([]gen, length)
 	var result2 = make([]ome, length)
-	var temp1 = make([]bool, innovationNum)
-	var temp2 = make([]gen, innovationNum)
-	var temp3 = make([]ome, innovationNum)
 	var count = 0
-	for k, v := range *m {
-		in := v.innovationNum
-		temp1[in] = true
-		temp2[in] = k
-		temp3[in] = v
-	}
 	for k, v := range temp1 {
 		if v {
 			result1[count] = temp2[k]
@@ -99,8 +109,8 @@ func error(output []float64, desire []float64) float64 {
 func distance(in1 *individual, in2 *individual) float64 {
 	var d float64
 	var DE = 0
-	var w1, i1 = sort1(&in1.genomeMap, in1.innovationNum)
-	var w2, i2 = sort1(&in2.genomeMap, in2.innovationNum)
+	var w1, i1 = sort1(in1)
+	var w2, i2 = sort1(in2)
 	var N = 0
 	var len1 = len(*w1)
 	var len2 = len(*w2)
@@ -138,51 +148,10 @@ func distance(in1 *individual, in2 *individual) float64 {
 func mateIndividual(in1 *individual, in2 *individual) *individual {
 	var offspring = individual{inputNum: in1.inputNum, outputNum: in1.outputNum}
 	offspring.nodeMap = make(map[int]node)
-	offspring.genomeMap = make(map[gen]ome)
 	if in1.fitness > in2.fitness {
 		var temp = in1
 		in1 = in2
 		in2 = temp
-	}
-
-	var g1, o1 = sort2(&in1.genomeMap, in1.innovationNum)
-	var g2, o2 = sort2(&in2.genomeMap, in2.innovationNum)
-	var point1 = 0
-	var point2 = 0
-	var len1 = len(*g1)
-	var len2 = len(*g2)
-	for true {
-		if point1 == len1 || point2 == len2 {
-			break
-		}
-		if (*o1)[point1].innovationNum == (*o2)[point2].innovationNum {
-			if r.Float64() < 0.5 {
-				offspring.genomeMap[(*g1)[point1]] = (*o1)[point1]
-			} else {
-				offspring.genomeMap[(*g2)[point2]] = (*o2)[point2]
-			}
-			point1++
-			point2++
-		} else if (*o1)[point1].innovationNum > (*o2)[point2].innovationNum {
-			point2++
-		} else {
-			offspring.genomeMap[(*g1)[point1]] = (*o1)[point1]
-			point1++
-		}
-	}
-	for i := point1; i < len1; i++ {
-		offspring.genomeMap[(*g1)[point1]] = (*o1)[point1]
-	}
-	for i := point2; i < len2; i++ {
-		offspring.genomeMap[(*g2)[point2]] = (*o2)[point2]
-	}
-
-	var temp1 = (*o1)[point1-1].innovationNum
-	var temp2 = (*o2)[point2-1].innovationNum
-	if temp1 > temp2 {
-		offspring.innovationNum = temp1 + 1
-	} else {
-		offspring.innovationNum = temp2 + 1
 	}
 
 	var tempMap = make(map[int]int)
@@ -203,15 +172,17 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 	for true {
 		bt++
 		var flag = true
-		for k := range offspring.genomeMap {
-			var indexIn = tempMap[k.in]
-			var indexOut = tempMap[k.out]
-			if indexIn > indexOut {
-				flag = false
-				tempSlice[indexIn] = k.out
-				tempSlice[indexOut] = k.in
-				tempMap[k.out] = indexIn
-				tempMap[k.in] = indexOut
+		for _, v := range offspring.nodeMap {
+			for k := range v.genomeMap {
+				var indexIn = tempMap[k.in]
+				var indexOut = tempMap[k.out]
+				if indexIn > indexOut {
+					flag = false
+					tempSlice[indexIn] = k.out
+					tempSlice[indexOut] = k.in
+					tempMap[k.out] = indexIn
+					tempMap[k.in] = indexOut
+				}
 			}
 		}
 		if flag || bt == breakTime {
@@ -248,15 +219,52 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		offspring.nodeMap[v] = n
 	}
 
-	for k, v := range offspring.genomeMap {
-		offspring.nodeMap[k.out].genomeMap[k] = v
-	}
-
 	if in1.nodeSum > in2.nodeSum {
 		offspring.nodeSum = in1.nodeSum
 	} else {
 		offspring.nodeSum = in2.nodeSum
 	}
+
+	var g1, o1 = sort2(in1)
+	var g2, o2 = sort2(in2)
+	var point1 = 0
+	var point2 = 0
+	var len1 = len(*g1)
+	var len2 = len(*g2)
+	for true {
+		if point1 == len1 || point2 == len2 {
+			break
+		}
+		if (*o1)[point1].innovationNum == (*o2)[point2].innovationNum {
+			if r.Float64() < 0.5 {
+				offspring.nodeMap[(*g1)[point1].out].genomeMap[(*g1)[point1]] = (*o1)[point1]
+			} else {
+				offspring.nodeMap[(*g2)[point2].out].genomeMap[(*g2)[point2]] = (*o2)[point2]
+			}
+			point1++
+			point2++
+		} else if (*o1)[point1].innovationNum > (*o2)[point2].innovationNum {
+			point2++
+		} else {
+			offspring.nodeMap[(*g1)[point1].out].genomeMap[(*g1)[point1]] = (*o1)[point1]
+			point1++
+		}
+	}
+	for i := point1; i < len1; i++ {
+		offspring.nodeMap[(*g1)[point1].out].genomeMap[(*g1)[point1]] = (*o1)[point1]
+	}
+	for i := point2; i < len2; i++ {
+		offspring.nodeMap[(*g2)[point2].out].genomeMap[(*g2)[point2]] = (*o2)[point2]
+	}
+
+	var temp1 = (*o1)[point1-1].innovationNum
+	var temp2 = (*o2)[point2-1].innovationNum
+	if temp1 > temp2 {
+		offspring.innovationNum = temp1 + 1
+	} else {
+		offspring.innovationNum = temp2 + 1
+	}
+
 	return &offspring
 }
 
@@ -267,13 +275,17 @@ func mutateIndividual(in *individual) *individual {
 		if ran < p1 {
 			var genOld gen
 			var omeOld ome
-			for k, v := range offspring.genomeMap {
-				genOld = k
-				omeOld = v
+			var nodeOld node
+			for _, v1 := range offspring.nodeMap {
+				nodeOld = v1
+				for k2, v2 := range v1.genomeMap {
+					genOld = k2
+					omeOld = v2
+					break
+				}
 				break
 			}
 			omeOld.isEnable = false
-			offspring.genomeMap[genOld] = omeOld
 			var n = *newNode(offspring.nodeSum, 1)
 			offspring.nodeSum++
 			var g1, o1 = newGenome(genOld.in, n.nodeNum, 1.0, true, offspring.innovationNum)
@@ -281,10 +293,7 @@ func mutateIndividual(in *individual) *individual {
 			var g2, o2 = newGenome(n.nodeNum, genOld.out, omeOld.weight, true, offspring.innovationNum)
 			offspring.innovationNum++
 			n.genomeMap[*g1] = *o1
-			var nodeOld = offspring.nodeMap[genOld.out]
-			var temp = nodeOld.genomeMap[genOld]
-			temp.isEnable = false
-			nodeOld.genomeMap[genOld] = temp
+			nodeOld.genomeMap[genOld] = omeOld
 			nodeOld.genomeMap[*g2] = *o2
 			offspring.nodeMap[genOld.out] = nodeOld
 			offspring.nodeMap[n.nodeNum] = n
@@ -300,8 +309,6 @@ func mutateIndividual(in *individual) *individual {
 				count++
 				i++
 			}
-			offspring.genomeMap[*g1] = *o1
-			offspring.genomeMap[*g2] = *o2
 		} else if ran >= p1 && ran < p1+p2 {
 			var tempSlice []int
 			for _, v := range offspring.nodeSlice {
@@ -318,19 +325,11 @@ func mutateIndividual(in *individual) *individual {
 						break
 					}
 				}
-				for i := 0; i < pointer; i++ {
-					delete(offspring.genomeMap, gen{offspring.nodeSlice[i], index})
-				}
 				for i := pointer + 1; i < len(offspring.nodeSlice); i++ {
 					var outputNum = offspring.nodeSlice[i]
-					var tempGen = gen{index, outputNum}
-					var _, ok = offspring.genomeMap[tempGen]
-					if ok {
-						var n = offspring.nodeMap[outputNum]
-						delete(n.genomeMap, tempGen)
-						offspring.nodeMap[outputNum] = n
-						delete(offspring.genomeMap, tempGen)
-					}
+					var n = offspring.nodeMap[outputNum]
+					delete(n.genomeMap, gen{index, outputNum})
+					offspring.nodeMap[outputNum] = n
 				}
 				delete(offspring.nodeMap, index)
 			}
@@ -345,11 +344,10 @@ func mutateIndividual(in *individual) *individual {
 				var outputNode = offspring.nodeMap[outputNum]
 				if !((inputNode.nodeType == 0 && outputNode.nodeType == 0) || (inputNode.nodeType == 2 && outputNode.nodeType == 2)) {
 					var g = gen{inputNum, outputNum}
-					var _, ok = offspring.genomeMap[g]
+					var _, ok = outputNode.genomeMap[g]
 					if !ok {
 						var o = ome{random(), true, offspring.innovationNum}
 						offspring.innovationNum++
-						offspring.genomeMap[g] = o
 						outputNode.genomeMap[g] = o
 						offspring.nodeMap[outputNum] = outputNode
 					}
@@ -357,14 +355,17 @@ func mutateIndividual(in *individual) *individual {
 			}
 		} else {
 			var g gen
-			for k := range offspring.genomeMap {
-				g = k
+			var n node
+			for _, v1 := range offspring.nodeMap {
+				n = v1
+				for k2 := range v1.genomeMap {
+					g = k2
+					break
+				}
 				break
 			}
-			var n = offspring.nodeMap[g.out]
 			delete(n.genomeMap, g)
 			offspring.nodeMap[g.out] = n
-			delete(offspring.genomeMap, g)
 		}
 	}
 	return offspring

@@ -5,7 +5,6 @@ package LycorisNet
 type individual struct {
 	nodeMap       map[int]node
 	nodeSlice     []int
-	genomeMap     map[gen]ome
 	inputNum      int
 	outputNum     int
 	innovationNum int
@@ -39,12 +38,10 @@ func initialize(in *individual) {
 }
 
 func createGenes(in *individual) {
-	in.genomeMap = make(map[gen]ome, in.inputNum*in.outputNum)
 	for i := in.inputNum; i < in.nodeSum; i++ {
 		for j := 0; j < in.inputNum; j++ {
 			var g = gen{j, i}
 			var o = ome{random(), true, in.innovationNum}
-			in.genomeMap[g] = o
 			in.nodeMap[i].genomeMap[g] = o
 			in.innovationNum++
 		}
@@ -73,17 +70,43 @@ func (in *individual) getOutput() []float64 {
 }
 
 func (in *individual) forward() {
+	var clean []int
 	for i := in.inputNum; i < len(in.nodeSlice); i++ {
 		var index = in.nodeSlice[i]
 		var n = in.nodeMap[index]
 		var f float64 = 0
-		for g, o := range n.genomeMap {
-			if o.isEnable {
-				f += in.nodeMap[g.in].value * o.weight
+		if len(n.genomeMap) == 0 {
+			if n.nodeType == 1 {
+				clean = append(clean, index)
+				delete(in.nodeMap, index)
+			}
+		} else {
+			for g, o := range n.genomeMap {
+				if o.isEnable {
+					f += in.nodeMap[g.in].value * o.weight
+				}
+			}
+			n.value = activateFunc(f)
+			in.nodeMap[index] = n
+		}
+	}
+	if len(clean) != 0 {
+		var tempSlice = make([]int, len(in.nodeSlice)-len(clean))
+		var count = 0
+		for _, v1 := range in.nodeSlice {
+			var flag = true
+			for _, v2 := range clean {
+				if v1 == v2 {
+					flag = false
+					break
+				}
+			}
+			if flag {
+				tempSlice[count] = v1
+				count++
 			}
 		}
-		n.value = activateFunc(f)
-		in.nodeMap[index] = n
+		in.nodeSlice = tempSlice
 	}
 }
 
@@ -92,10 +115,6 @@ func (in *individual) clone() *individual {
 	duplicate.nodeMap = make(map[int]node, len(in.nodeMap))
 	for k, v := range in.nodeMap {
 		duplicate.nodeMap[k] = *v.clone()
-	}
-	duplicate.genomeMap = make(map[gen]ome, len(in.genomeMap))
-	for k, v := range in.genomeMap {
-		duplicate.genomeMap[k] = v
 	}
 	duplicate.nodeSlice = make([]int, len(in.nodeSlice))
 	copy(duplicate.nodeSlice, in.nodeSlice)
