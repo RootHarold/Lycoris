@@ -1,5 +1,7 @@
 package LycorisNet
 
+// The "innovationNum" is the cumulative number of connections
+// and the "nodeSum" is that of nodes.
 type individual struct {
 	nodeMap       map[int]node
 	nodeSlice     []int
@@ -89,7 +91,7 @@ func (in *individual) clone() *individual {
 	var duplicate = &individual{inputNum: in.inputNum, outputNum: in.outputNum, innovationNum: in.innovationNum, nodeSum: in.nodeSum}
 	duplicate.nodeMap = make(map[int]node, len(in.nodeMap))
 	for k, v := range in.nodeMap {
-		duplicate.nodeMap[k] = v
+		duplicate.nodeMap[k] = *v.clone()
 	}
 	duplicate.genomeMap = make(map[gen]ome, len(in.genomeMap))
 	for k, v := range in.genomeMap {
