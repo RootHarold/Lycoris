@@ -6,24 +6,33 @@ import (
 	"math"
 )
 
+// It's for the function "reLU(...)".
 var leak = 0.01
+// Random number seed.
 var r = rand.New(rand.NewSource(time.Now().UnixNano()))
+// Arguments for the algorithm.
 var c1 = 1.0
 var c2 = 0.4
+// Used in "mateIndividual(...)"
 var breakTime = 12
+// These change the mutation probability.
 var p1 = 0.15
 var p2 = 0.35
 var p3 = 0.15
+// The number of mutations.
 var mutateTime = 1
 
+// This is for whole algorithm.
 func random() float64 {
 	return r.Float64()
 }
 
+// The activation function.
 func activateFunc(f float64) float64 {
 	return reLU(f)
 }
 
+// ReLU.
 func reLU(f float64) float64 {
 	if f > 0 {
 		return f
@@ -32,14 +41,17 @@ func reLU(f float64) float64 {
 	}
 }
 
+// Sigmoid.
 func sigmoid(f float64) float64 {
 	return 1 / (1 + math.Exp(0-f))
 }
 
+// Tanh.
 func tanh(f float64) float64 {
 	return (math.Exp(f) - math.Exp(-f)) / (math.Exp(f) + math.Exp(-f))
 }
 
+// Used in "distance(...)".
 func sort1(in *individual) (*[]float64, *[]int) {
 	var temp1 = make([]bool, in.innovationNum)
 	var temp2 = make([]float64, in.innovationNum)
@@ -69,6 +81,7 @@ func sort1(in *individual) (*[]float64, *[]int) {
 	return &result1, &result2
 }
 
+// Used in "mateIndividual(...)".
 func sort2(in *individual) (*[]gen, *[]ome) {
 	var temp1 = make([]bool, in.innovationNum)
 	var temp2 = make([]gen, in.innovationNum)
@@ -98,6 +111,7 @@ func sort2(in *individual) (*[]gen, *[]ome) {
 	return &result1, &result2
 }
 
+// Euclidean distance of two slices.
 func error(output []float64, desire []float64) float64 {
 	var f float64 = 0
 	for i := 0; i < len(output); i++ {
@@ -106,6 +120,7 @@ func error(output []float64, desire []float64) float64 {
 	return f
 }
 
+// The distance between two different individuals.
 func distance(in1 *individual, in2 *individual) float64 {
 	var d float64
 	var DE = 0
@@ -145,6 +160,7 @@ func distance(in1 *individual, in2 *individual) float64 {
 	return d
 }
 
+// Mating two different individuals.
 func mateIndividual(in1 *individual, in2 *individual) *individual {
 	var offspring = individual{inputNum: in1.inputNum, outputNum: in1.outputNum}
 	offspring.nodeMap = make(map[int]node)
@@ -268,6 +284,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 	return &offspring
 }
 
+// Mutating the individual.
 func mutateIndividual(in *individual) *individual {
 	var offspring = in.clone()
 	for z := 0; z < mutateTime; z++ {
@@ -276,6 +293,7 @@ func mutateIndividual(in *individual) *individual {
 			var genOld gen
 			var omeOld ome
 			var nodeOld node
+			// This is very dependent on the random mechanism in golang map.
 			for _, v1 := range offspring.nodeMap {
 				nodeOld = v1
 				for k2, v2 := range v1.genomeMap {
@@ -356,6 +374,7 @@ func mutateIndividual(in *individual) *individual {
 		} else {
 			var g gen
 			var n node
+			// This is very dependent on the random mechanism in golang map.
 			for _, v1 := range offspring.nodeMap {
 				n = v1
 				for k2 := range v1.genomeMap {

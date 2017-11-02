@@ -1,7 +1,9 @@
 package LycorisNet
 
 // The "innovationNum" is the cumulative number of connections
-// and the "nodeSum" is that of nodes.
+// and the "nodeSum" is that of nodes. High fitness means the
+// individual is well adapted to the environment. The "nodeMap"
+// and the "nodeSlice" store nodes.
 type individual struct {
 	nodeMap       map[int]node
 	nodeSlice     []int
@@ -12,12 +14,14 @@ type individual struct {
 	fitness       float64
 }
 
+// Create a new individual.
 func newIndividual(inputNum int, outputNum int) *individual {
 	var in = &individual{inputNum: inputNum, outputNum: outputNum, nodeSum: 0, innovationNum: 0}
 	initialize(in)
 	return in
 }
 
+// Initialize a individual.
 func initialize(in *individual) {
 	var sumNode = in.inputNum + in.outputNum
 	in.nodeMap = make(map[int]node, sumNode)
@@ -37,6 +41,7 @@ func initialize(in *individual) {
 	createGenes(in)
 }
 
+// Create genes of a new individual.
 func createGenes(in *individual) {
 	for i := in.inputNum; i < in.nodeSum; i++ {
 		for j := 0; j < in.inputNum; j++ {
@@ -48,6 +53,8 @@ func createGenes(in *individual) {
 	}
 }
 
+
+// Set input array.
 func (in *individual) setInput(input []float64) {
 	for i := 0; i < in.inputNum; i++ {
 		var temp = in.nodeMap[i]
@@ -56,6 +63,7 @@ func (in *individual) setInput(input []float64) {
 	}
 }
 
+// Get output array.
 func (in *individual) getOutput() []float64 {
 	var output = make([]float64, in.outputNum)
 	var pointer = 0
@@ -69,6 +77,7 @@ func (in *individual) getOutput() []float64 {
 	return output
 }
 
+// Forward calculation of the individual.
 func (in *individual) forward() {
 	var clean []int
 	for i := in.inputNum; i < len(in.nodeSlice); i++ {
@@ -110,6 +119,7 @@ func (in *individual) forward() {
 	}
 }
 
+// Deep clone of individual.
 func (in *individual) clone() *individual {
 	var duplicate = &individual{inputNum: in.inputNum, outputNum: in.outputNum, innovationNum: in.innovationNum, nodeSum: in.nodeSum}
 	duplicate.nodeMap = make(map[int]node, len(in.nodeMap))
