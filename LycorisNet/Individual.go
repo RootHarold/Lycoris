@@ -38,21 +38,7 @@ func initialize(in *individual) {
 		in.nodeSlice[temp] = temp
 		in.nodeSum++
 	}
-	createGenes(in)
 }
-
-// Create genes of a new individual.
-func createGenes(in *individual) {
-	for i := in.inputNum; i < in.nodeSum; i++ {
-		for j := 0; j < in.inputNum; j++ {
-			var g = gen{j, i}
-			var o = ome{random(), true, in.innovationNum}
-			in.nodeMap[i].genomeMap[g] = o
-			in.innovationNum++
-		}
-	}
-}
-
 
 // Set input array.
 func (in *individual) setInput(input []float64) {
