@@ -81,7 +81,7 @@ func (in *individual) forward() {
 					f += in.nodeMap[g.in].value * o.weight
 				}
 			}
-			n.value = activateFunc(f)
+			n.value = activateFunc(f + n.bias)
 			in.nodeMap[index] = n
 		}
 	}

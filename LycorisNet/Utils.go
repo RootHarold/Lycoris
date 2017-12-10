@@ -22,8 +22,13 @@ var p3 = 0.15
 // The number of mutations.
 var mutateTime = 1
 
-// This is for whole algorithm.
-func random() float64 {
+// This is for initializing weight.
+func weightRandom() float64 {
+	return r.Float64()
+}
+
+// This is for initializing bias.
+func biasRandom() float64 {
 	return r.Float64()
 }
 
@@ -170,6 +175,6 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 // Mutating the individual.
 func mutateIndividual(in *individual) *individual {
 	var offspring = in.clone()
-	
+
 	return offspring
 }

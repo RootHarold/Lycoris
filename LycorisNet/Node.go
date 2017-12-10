@@ -9,11 +9,13 @@ type node struct {
 	nodeType  int
 	value     float64
 	genomeMap map[gen]ome
+	bias      float64
 }
 
 // Create new node with its number and type.
 func newNode(nodeNum int, nodeType int) *node {
 	var n = &node{nodeNum: nodeNum, nodeType: nodeType}
+	n.bias = biasRandom()
 	n.genomeMap = make(map[gen]ome)
 	return n
 }
@@ -21,6 +23,7 @@ func newNode(nodeNum int, nodeType int) *node {
 // Deep clone of node.
 func (n *node) clone() *node {
 	var duplicate = newNode(n.nodeNum, n.nodeType)
+	duplicate.bias = n.bias
 	duplicate.genomeMap = make(map[gen]ome, len(n.genomeMap))
 	for k, v := range n.genomeMap {
 		duplicate.genomeMap[k] = v
