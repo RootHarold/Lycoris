@@ -177,20 +177,21 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 	}
 
 	var tempMap = make(map[int]int)
+	var duplicateNodes = make(map[int]bool)
 	for _, v := range in1.nodeMap {
 		tempMap[v.nodeNum] = -1
+		duplicateNodes[v.nodeNum] = false
 	}
-	var duplicateNodes []bool
 	for _, v := range in2.nodeMap {
 		_, ok := tempMap[v.nodeNum]
 		if ok {
-			duplicateNodes = append(duplicateNodes, true)
+			duplicateNodes[v.nodeNum] = true
 		} else {
 			tempMap[v.nodeNum] = -1
-			duplicateNodes = append(duplicateNodes, false)
+			duplicateNodes[v.nodeNum] = false
 		}
 	}
-	var tempSlice = make([]int, len(duplicateNodes))
+	var tempSlice = make([]int, len(tempMap))
 	var tempCount = 0
 	for k := range tempMap {
 		tempSlice[tempCount] = k
@@ -199,13 +200,13 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 	}
 
 	var basicNodeSum = in1.inputNum + in1.outputNum
-	for k, v := range tempSlice {
+	for _, v := range tempSlice {
 		var n node
 		if v < offspring.inputNum {
 			n = *newNode(v, 0)
 		} else if v >= offspring.inputNum && v < basicNodeSum {
 			n = *newNode(v, 2)
-			if duplicateNodes[k] {
+			if duplicateNodes[v] {
 				if r.Float64() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
@@ -214,7 +215,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 			}
 		} else {
 			n = *newNode(v, 1)
-			if duplicateNodes[k] {
+			if duplicateNodes[v] {
 				if r.Float64() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
