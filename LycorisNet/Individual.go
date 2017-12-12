@@ -73,7 +73,6 @@ func (in *individual) forward() {
 		if len(n.genomeMap) == 0 {
 			if n.nodeType == 1 {
 				clean = append(clean, index)
-				delete(in.nodeMap, index)
 			}
 		} else {
 			for g, o := range n.genomeMap {
@@ -85,7 +84,12 @@ func (in *individual) forward() {
 			in.nodeMap[index] = n
 		}
 	}
-	if len(clean) != 0 {
+
+	if r.Float64() < cleanOdds && len(clean) != 0 {
+		for _, v := range clean {
+			delete(in.nodeMap, v)
+		}
+
 		var tempSlice = make([]int, len(in.nodeSlice)-len(clean))
 		var count = 0
 		for _, v1 := range in.nodeSlice {

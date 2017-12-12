@@ -16,11 +16,16 @@ var c2 = 0.4
 // Used in "mateIndividual(...)"
 var breakTime = 12
 // These change the mutation probability.
-var p1 = 0.15
-var p2 = 0.35
-var p3 = 0.15
+var p1 = 0.1
+var p2 = 0.2
+var p3 = 0.2
+var p4 = 0.2
+var p5 = 0.1
+var p6 = 0.2
 // The number of mutations.
 var mutateTime = 1
+// The odds of cleaning in "Forward()".
+var cleanOdds = 0.008
 
 // This is for initializing weight.
 func weightRandom() float64 {
@@ -311,6 +316,118 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 // Mutating the individual.
 func mutateIndividual(in *individual) *individual {
 	var offspring = in.clone()
+
+	for z := 0; z < mutateTime; z++ {
+		var ran = r.Float64()
+
+		if ran < p1 { // p1
+			var genOld gen
+			var omeOld ome
+			var nodeOld node
+			var notNull = false
+			// This is very dependent on the random mechanism in golang map.
+			for _, v1 := range offspring.nodeMap {
+				nodeOld = v1
+				for k2, v2 := range v1.genomeMap {
+					genOld = k2
+					omeOld = v2
+					notNull = true
+					break
+				}
+				break
+			}
+			if notNull {
+				omeOld.isEnable = false
+				var n = *newNode(offspring.nodeSum, 1)
+				offspring.nodeSum++
+				var g1, o1 = newGenome(genOld.in, n.nodeNum, 1.0, true, offspring.innovationNum)
+				offspring.innovationNum++
+				var g2, o2 = newGenome(n.nodeNum, genOld.out, omeOld.weight, true, offspring.innovationNum)
+				offspring.innovationNum++
+				n.genomeMap[*g1] = *o1
+				nodeOld.genomeMap[genOld] = omeOld
+				nodeOld.genomeMap[*g2] = *o2
+				offspring.nodeMap[genOld.out] = nodeOld
+				offspring.nodeMap[n.nodeNum] = n
+
+				var length = len(offspring.nodeSlice)
+				var newSlice = make([]int, length+1)
+				var count = 0
+				for i := 0; i < length; i++ {
+					if offspring.nodeSlice[i] == genOld.out {
+						newSlice[count] = n.nodeNum
+						count++
+					}
+					newSlice[count] = offspring.nodeSlice[i]
+					count++
+				}
+				offspring.nodeSlice = newSlice
+			}
+		} else if ran >= p1 && ran < p1+p2 { // p2
+			var length = len(offspring.nodeSlice)
+			var index = r.Intn(length)
+			var sliceIndex = offspring.nodeSlice[index]
+			if offspring.nodeMap[sliceIndex].nodeType == 1 {
+				for i := index + 1; i < length; i++ {
+					var outputNum = offspring.nodeSlice[i]
+					var n = offspring.nodeMap[outputNum]
+					delete(n.genomeMap, gen{sliceIndex, outputNum})
+					offspring.nodeMap[outputNum] = n
+				}
+				delete(offspring.nodeMap, sliceIndex)
+				offspring.nodeSlice = append(offspring.nodeSlice[:index], offspring.nodeSlice[index+1:]...)
+			}
+		} else if ran >= p1+p2 && ran < p1+p2+p3 { // p3
+			var length = len(offspring.nodeSlice)
+			var index1 = r.Intn(length)
+			var index2 = index1 + r.Intn(length-index1)
+			if index1 != index2 {
+				var inputNum = offspring.nodeSlice[index1]
+				var outputNum = offspring.nodeSlice[index2]
+				var inputNode = offspring.nodeMap[inputNum]
+				var outputNode = offspring.nodeMap[outputNum]
+				if !((inputNode.nodeType == 0 && outputNode.nodeType == 0) || (inputNode.nodeType == 2 && outputNode.nodeType == 2)) {
+					var g = gen{inputNum, outputNum}
+					var _, ok = outputNode.genomeMap[g]
+					if !ok {
+						var o = ome{weightRandom(), true, offspring.innovationNum}
+						offspring.innovationNum++
+						outputNode.genomeMap[g] = o
+						offspring.nodeMap[outputNum] = outputNode
+					}
+				}
+			}
+		} else if ran >= p1+p2+p3 && ran < p1+p2+p3+p4 { // p4
+			var g gen
+			var n node
+			var notNull = false
+			// This is very dependent on the random mechanism in golang map.
+			for _, v := range offspring.nodeMap {
+				n = v
+				for k := range v.genomeMap {
+					g = k
+					notNull = true
+					break
+				}
+				break
+			}
+			if notNull {
+				delete(n.genomeMap, g)
+				offspring.nodeMap[g.out] = n
+			}
+		} else if ran >= p1+p2+p3+p4 && ran < p1+p2+p3+p4+p5 { // p5
+			var n = *newNode(offspring.nodeSum, 1)
+			offspring.nodeSum++
+			offspring.nodeMap[n.nodeNum] = n
+			offspring.nodeSlice = append(offspring.nodeSlice, n.nodeNum)
+		} else { // p6
+			var index = r.Intn(len(offspring.nodeSlice) - offspring.inputNum)
+			index += offspring.inputNum
+			var n = offspring.nodeMap[offspring.nodeSlice[index]]
+			n.bias = biasRandom()
+			offspring.nodeMap[n.nodeNum] = n
+		}
+	}
 
 	return offspring
 }
