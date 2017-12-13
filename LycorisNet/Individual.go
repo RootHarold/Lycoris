@@ -65,14 +65,14 @@ func (in *individual) getOutput() []float64 {
 
 // Forward calculation of the individual.
 func (in *individual) forward() {
-	var clean []int
+	var clean = make(map[int]bool)
 	for i := in.inputNum; i < len(in.nodeSlice); i++ {
 		var index = in.nodeSlice[i]
 		var n = in.nodeMap[index]
 		var f float64 = 0
 		if len(n.genomeMap) == 0 {
 			if n.nodeType == 1 {
-				clean = append(clean, index)
+				clean[index] = true
 			}
 		} else {
 			for g, o := range n.genomeMap {
@@ -86,22 +86,16 @@ func (in *individual) forward() {
 	}
 
 	if r.Float64() < cleanOdds && len(clean) != 0 {
-		for _, v := range clean {
-			delete(in.nodeMap, v)
+		for k := range clean {
+			delete(in.nodeMap, k)
 		}
 
 		var tempSlice = make([]int, len(in.nodeSlice)-len(clean))
 		var count = 0
-		for _, v1 := range in.nodeSlice {
-			var flag = true
-			for _, v2 := range clean {
-				if v1 == v2 {
-					flag = false
-					break
-				}
-			}
-			if flag {
-				tempSlice[count] = v1
+		for _, v := range in.nodeSlice {
+			var _, ok = clean[v]
+			if !ok {
+				tempSlice[count] = v
 				count++
 			}
 		}
