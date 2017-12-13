@@ -26,6 +26,8 @@ var p6 = 0.2
 var mutateTime = 1
 // The odds of cleaning in "Forward()".
 var cleanOdds = 0.008
+// If full connection when initializing individual.
+var fullConnection = false
 
 // This is for initializing weight.
 func weightRandom() float64 {
