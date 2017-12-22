@@ -174,9 +174,11 @@ func distance(in1 *individual, in2 *individual) float64 {
 
 // Mating two different individuals.
 func mateIndividual(in1 *individual, in2 *individual) *individual {
+	// Emerge a newborn one.
 	var offspring = individual{inputNum: in1.inputNum, outputNum: in1.outputNum}
 	offspring.nodeMap = make(map[int]node)
 
+	// Let the better individual be "in2".
 	if in1.fitness > in2.fitness {
 		var temp = in1
 		in1 = in2

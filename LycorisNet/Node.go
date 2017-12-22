@@ -9,7 +9,7 @@ type node struct {
 	nodeType  int
 	value     float64
 	genomeMap map[gen]ome
-	bias      float64
+	bias      float64 // To enhance the fitting ability of LycorisNet.
 }
 
 // Create new node with its number and type.
