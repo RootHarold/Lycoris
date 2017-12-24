@@ -16,12 +16,12 @@ var c2 = 0.4
 // Used in "mateIndividual(...)"
 var breakTime = 12
 // These change the mutation probability.
-var p1 = 0.1
-var p2 = 0.2
-var p3 = 0.2
-var p4 = 0.2
-var p5 = 0.1
-var p6 = 0.2
+var p1 = 0.1 // Add the new node between a connection.
+var p2 = 0.2 // Delete a node.
+var p3 = 0.2 // Add a new connection between two nodes.
+var p4 = 0.2 // Delete a connection.
+var p5 = 0.1 // Just create a new empty node (without any genomes).
+var p6 = 0.2 // Mutate the bias.
 // The number of mutations.
 var mutateTime = 1
 // The odds of cleaning in "Forward()".
@@ -185,6 +185,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		in2 = temp
 	}
 
+	// Mate nodes.
 	var tempMap = make(map[int]int)
 	var duplicateNodes = make(map[int]bool)
 	for _, v := range in1.nodeMap {
@@ -208,6 +209,8 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		tempCount++
 	}
 
+	// Mate the bias of nodes. And the strategy is choosing bias
+	// between parents randomly.
 	var basicNodeSum = in1.inputNum + in1.outputNum
 	for _, v := range tempSlice {
 		var n node
@@ -235,6 +238,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		offspring.nodeMap[v] = n
 	}
 
+	// Mating genomes.
 	var g1, o1 = sort2(in1)
 	var g2, o2 = sort2(in2)
 	var point1 = 0
@@ -268,6 +272,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		offspring.nodeMap[(*g2)[point2].out].genomeMap[(*g2)[point2]] = (*o2)[point2]
 	}
 
+	// Make the nodes in a reasonable order of calculation.
 	var bt = 0
 	for true {
 		bt++
@@ -290,6 +295,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		}
 	}
 
+	// Save nodes in a slice.
 	offspring.nodeSlice = make([]int, len(tempSlice))
 	for i := 0; i < in1.inputNum; i++ {
 		offspring.nodeSlice[i] = i
@@ -302,12 +308,14 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		}
 	}
 
+	// Choose the nodeSum of offspring.
 	if in1.nodeSum > in2.nodeSum {
 		offspring.nodeSum = in1.nodeSum
 	} else {
 		offspring.nodeSum = in2.nodeSum
 	}
 
+	// Choose the innovationNum of offspring.
 	if in1.innovationNum > in2.innovationNum {
 		offspring.innovationNum = in1.innovationNum
 	} else {
@@ -319,12 +327,15 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 
 // Mutating the individual.
 func mutateIndividual(in *individual) *individual {
+	// Clone the individual.
 	var offspring = in.clone()
 
+	// This process can be repeated many times.
 	for z := 0; z < mutateTime; z++ {
 		var ran = r.Float64()
 
 		if ran < p1 { // p1
+			// Add the new node between a connection.
 			var genOld gen
 			var omeOld ome
 			var nodeOld node
@@ -340,6 +351,7 @@ func mutateIndividual(in *individual) *individual {
 				}
 				break
 			}
+			// If there is a suitable connection.
 			if notNull {
 				omeOld.isEnable = false
 				var n = *newNode(offspring.nodeSum, 1)
@@ -368,6 +380,7 @@ func mutateIndividual(in *individual) *individual {
 				offspring.nodeSlice = newSlice
 			}
 		} else if ran >= p1 && ran < p1+p2 { // p2
+			// Delete a node.
 			var length = len(offspring.nodeSlice)
 			var index = r.Intn(length)
 			var sliceIndex = offspring.nodeSlice[index]
@@ -382,6 +395,7 @@ func mutateIndividual(in *individual) *individual {
 				offspring.nodeSlice = append(offspring.nodeSlice[:index], offspring.nodeSlice[index+1:]...)
 			}
 		} else if ran >= p1+p2 && ran < p1+p2+p3 { // p3
+			// Add a new connection between two nodes.
 			var length = len(offspring.nodeSlice)
 			var index1 = r.Intn(length)
 			var index2 = index1 + r.Intn(length-index1)
@@ -402,6 +416,7 @@ func mutateIndividual(in *individual) *individual {
 				}
 			}
 		} else if ran >= p1+p2+p3 && ran < p1+p2+p3+p4 { // p4
+			// Delete a connection.
 			var g gen
 			var n node
 			var notNull = false
@@ -420,11 +435,13 @@ func mutateIndividual(in *individual) *individual {
 				offspring.nodeMap[g.out] = n
 			}
 		} else if ran >= p1+p2+p3+p4 && ran < p1+p2+p3+p4+p5 { // p5
+			// Just create a new empty node (without any genomes).
 			var n = *newNode(offspring.nodeSum, 1)
 			offspring.nodeSum++
 			offspring.nodeMap[n.nodeNum] = n
 			offspring.nodeSlice = append(offspring.nodeSlice, n.nodeNum)
 		} else { // p6
+			// Mutate the bias.
 			var index = r.Intn(len(offspring.nodeSlice) - offspring.inputNum)
 			index += offspring.inputNum
 			var n = offspring.nodeMap[offspring.nodeSlice[index]]
