@@ -7,45 +7,45 @@ import (
 )
 
 // It's for the function "reLU(...)".
-var leak = 0.01
+var leak float32 = 0.01
 // Random number seed.
 var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 // Arguments for the algorithm.
-var c1 = 1.0
-var c2 = 0.4
+var c1 float32 = 1.0
+var c2 float32 = 0.4
 // Used in "mateIndividual(...)"
 var breakTime = 12
 // These change the mutation probability.
-var p1 = 0.1 // Add the new node between a connection.
-var p2 = 0.2 // Delete a node.
-var p3 = 0.2 // Add a new connection between two nodes.
-var p4 = 0.2 // Delete a connection.
-var p5 = 0.1 // Just create a new empty node (without any genomes).
-var p6 = 0.2 // Mutate the bias.
+var p1 float32 = 0.1 // Add the new node between a connection.
+var p2 float32 = 0.2 // Delete a node.
+var p3 float32 = 0.2 // Add a new connection between two nodes.
+var p4 float32 = 0.2 // Delete a connection.
+var p5 float32 = 0.1 // Just create a new empty node (without any genomes).
+var p6 float32 = 0.2 // Mutate the bias.
 // The number of mutations.
 var mutateTime = 1
 // The odds of cleaning in "Forward()".
-var cleanOdds = 0.008
+var cleanOdds float32 = 0.008
 // If full connection when initializing individual.
 var fullConnection = false
 
 // This is for initializing weight.
-func weightRandom() float64 {
-	return r.Float64()
+func weightRandom() float32 {
+	return r.Float32()
 }
 
 // This is for initializing bias.
-func biasRandom() float64 {
-	return r.Float64()
+func biasRandom() float32 {
+	return r.Float32()
 }
 
 // The activation function.
-func activateFunc(f float64) float64 {
+func activateFunc(f float32) float32 {
 	return reLU(f)
 }
 
 // ReLU.
-func reLU(f float64) float64 {
+func reLU(f float32) float32 {
 	if f > 0 {
 		return f
 	} else {
@@ -54,19 +54,20 @@ func reLU(f float64) float64 {
 }
 
 // Sigmoid.
-func sigmoid(f float64) float64 {
-	return 1 / (1 + math.Exp(0-f))
+func sigmoid(f float32) float32 {
+	return 1 / float32(1+math.Exp(0-float64(f)))
 }
 
 // Tanh.
-func tanh(f float64) float64 {
-	return (math.Exp(f) - math.Exp(-f)) / (math.Exp(f) + math.Exp(-f))
+func tanh(f float32) float32 {
+	var ff = float64(f)
+	return float32((math.Exp(ff) - math.Exp(-ff)) / (math.Exp(ff) + math.Exp(-ff)))
 }
 
 // Used in "distance(...)".
-func sort1(in *individual) (*[]float64, *[]int) {
+func sort1(in *individual) (*[]float32, *[]int) {
 	var temp1 = make([]bool, in.innovationNum)
-	var temp2 = make([]float64, in.innovationNum)
+	var temp2 = make([]float32, in.innovationNum)
 	var temp3 = make([]int, in.innovationNum)
 
 	var length = 0
@@ -80,7 +81,7 @@ func sort1(in *individual) (*[]float64, *[]int) {
 		}
 	}
 
-	var result1 = make([]float64, length)
+	var result1 = make([]float32, length)
 	var result2 = make([]int, length)
 	var count = 0
 	for k, v := range temp1 {
@@ -124,17 +125,17 @@ func sort2(in *individual) (*[]gen, *[]ome) {
 }
 
 // Euclidean distance of two slices.
-func error(output []float64, desire []float64) float64 {
-	var f float64 = 0
+func error(output []float32, desire []float32) float32 {
+	var f float32 = 0
 	for i := 0; i < len(output); i++ {
-		f += math.Pow(desire[i]-output[i], 2)
+		f += float32(math.Pow(float64(desire[i]-output[i]), 2))
 	}
 	return f
 }
 
 // The distance between two different individuals.
-func distance(in1 *individual, in2 *individual) float64 {
-	var d float64
+func distance(in1 *individual, in2 *individual) float32 {
+	var d float32
 	var DE = 0
 	var w1, i1 = sort1(in1)
 	var w2, i2 = sort1(in2)
@@ -146,7 +147,7 @@ func distance(in1 *individual, in2 *individual) float64 {
 	} else {
 		N = len2
 	}
-	var W float64 = 0
+	var W float32 = 0
 	var countW = 0
 	var point1 = 0
 	var point2 = 0
@@ -155,7 +156,7 @@ func distance(in1 *individual, in2 *individual) float64 {
 			break
 		}
 		if (*i1)[point1] == (*i2)[point2] {
-			W += math.Abs((*w1)[point1] - (*w2)[point1])
+			W += float32(math.Abs(float64((*w1)[point1] - (*w2)[point1])))
 			countW++
 			point1++
 			point2++
@@ -168,7 +169,7 @@ func distance(in1 *individual, in2 *individual) float64 {
 		}
 	}
 	DE += len1 + len2 - point1 - point2
-	d = (c1*float64(DE))/float64(N) + (c2*float64(W))/float64(countW)
+	d = (c1*float32(DE))/float32(N) + (c2*float32(W))/float32(countW)
 	return d
 }
 
@@ -219,7 +220,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		} else if v >= offspring.inputNum && v < basicNodeSum {
 			n = *newNode(v, 2)
 			if duplicateNodes[v] {
-				if r.Float64() < 0.5 {
+				if r.Float32() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
 					n.bias = in2.nodeMap[v].bias
@@ -228,7 +229,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		} else {
 			n = *newNode(v, 1)
 			if duplicateNodes[v] {
-				if r.Float64() < 0.5 {
+				if r.Float32() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
 					n.bias = in2.nodeMap[v].bias
@@ -250,7 +251,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 			break
 		}
 		if (*o1)[point1].innovationNum == (*o2)[point2].innovationNum {
-			if r.Float64() < 0.5 {
+			if r.Float32() < 0.5 {
 				offspring.nodeMap[(*g1)[point1].out].genomeMap[(*g1)[point1]] = (*o1)[point1]
 			} else {
 				offspring.nodeMap[(*g2)[point2].out].genomeMap[(*g2)[point2]] = (*o2)[point2]
@@ -332,7 +333,7 @@ func mutateIndividual(in *individual) *individual {
 
 	// This process can be repeated many times.
 	for z := 0; z < mutateTime; z++ {
-		var ran = r.Float64()
+		var ran = r.Float32()
 
 		if ran < p1 { // p1
 			// Add the new node between a connection.

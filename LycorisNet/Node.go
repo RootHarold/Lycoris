@@ -7,9 +7,9 @@ package LycorisNet
 type node struct {
 	nodeNum   int
 	nodeType  int
-	value     float64
+	value     float32
 	genomeMap map[gen]ome
-	bias      float64 // To enhance the fitting ability of LycorisNet.
+	bias      float32 // To enhance the fitting ability of LycorisNet.
 }
 
 // Create new node with its number and type.

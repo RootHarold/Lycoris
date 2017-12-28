@@ -11,7 +11,7 @@ type individual struct {
 	outputNum     int
 	innovationNum int
 	nodeSum       int
-	fitness       float64
+	fitness       float32
 }
 
 // Create a new individual.
@@ -52,7 +52,7 @@ func initialize(in *individual) {
 }
 
 // Set input array.
-func (in *individual) setInput(input []float64) {
+func (in *individual) setInput(input []float32) {
 	for i := 0; i < in.inputNum; i++ {
 		var temp = in.nodeMap[i]
 		temp.value = input[i]
@@ -61,8 +61,8 @@ func (in *individual) setInput(input []float64) {
 }
 
 // Get output array.
-func (in *individual) getOutput() []float64 {
-	var output = make([]float64, in.outputNum)
+func (in *individual) getOutput() []float32 {
+	var output = make([]float32, in.outputNum)
 	var pointer = 0
 	for i := in.inputNum; i < len(in.nodeSlice); i++ {
 		var temp = in.nodeMap[in.nodeSlice[i]]
@@ -80,7 +80,7 @@ func (in *individual) forward() {
 	for i := in.inputNum; i < len(in.nodeSlice); i++ {
 		var index = in.nodeSlice[i]
 		var n = in.nodeMap[index]
-		var f float64 = 0
+		var f float32 = 0
 		if len(n.genomeMap) == 0 {
 			if n.nodeType == 1 {
 				clean[index] = true
@@ -97,7 +97,7 @@ func (in *individual) forward() {
 	}
 
 	// Clean empty nodes according to a certain chance (cleanOdds).
-	if r.Float64() < cleanOdds && len(clean) != 0 {
+	if r.Float32() < cleanOdds && len(clean) != 0 {
 		for k := range clean {
 			delete(in.nodeMap, k)
 		}

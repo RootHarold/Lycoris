@@ -1,15 +1,15 @@
 package LycorisNet
 
 type Lycoris struct {
-	input       []float64
-	desire      []float64
+	input       []float32
+	desire      []float32
 	speciesList []species
 }
 
 func NewLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
 	var lycoris = &Lycoris{}
-	lycoris.input = make([]float64, inputNum)
-	lycoris.desire = make([]float64, outputNum)
+	lycoris.input = make([]float32, inputNum)
+	lycoris.desire = make([]float32, outputNum)
 	var specie = species{}
 	specie.individualList = make([]individual, capacity)
 	for i := 0; i < capacity; i++ {
@@ -48,13 +48,13 @@ func (lycoris *Lycoris) GetTheBest(num int) ([]Individual) {
 }
 */
 
-func (lycoris *Lycoris) SetInput(input []float64) {
+func (lycoris *Lycoris) SetInput(input []float32) {
 	for k, v := range input {
 		lycoris.input[k] = v
 	}
 }
 
-func (lycoris *Lycoris) SetDesire(desire []float64) {
+func (lycoris *Lycoris) SetDesire(desire []float32) {
 	for k, v := range desire {
 		lycoris.desire[k] = v
 	}
