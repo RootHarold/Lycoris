@@ -3,7 +3,6 @@ package LycorisNet
 import (
 	"time"
 	"math/rand"
-	"math"
 )
 
 // It's for the function "reLU(...)".
@@ -55,13 +54,12 @@ func reLU(f float32) float32 {
 
 // Sigmoid.
 func sigmoid(f float32) float32 {
-	return 1 / float32(1+math.Exp(0-float64(f)))
+	return 1 / (1 + lycorisExp(0-f))
 }
 
 // Tanh.
 func tanh(f float32) float32 {
-	var ff = float64(f)
-	return float32((math.Exp(ff) - math.Exp(-ff)) / (math.Exp(ff) + math.Exp(-ff)))
+	return (lycorisExp(f) - lycorisExp(-f)) / (lycorisExp(f) + lycorisExp(-f))
 }
 
 // Used in "distance(...)".
@@ -128,7 +126,7 @@ func sort2(in *individual) (*[]gen, *[]ome) {
 func error(output []float32, desire []float32) float32 {
 	var f float32 = 0
 	for i := 0; i < len(output); i++ {
-		f += float32(math.Pow(float64(desire[i]-output[i]), 2))
+		f += lycorisPow(desire[i]-output[i], 2)
 	}
 	return f
 }
@@ -156,7 +154,7 @@ func distance(in1 *individual, in2 *individual) float32 {
 			break
 		}
 		if (*i1)[point1] == (*i2)[point2] {
-			W += float32(math.Abs(float64((*w1)[point1] - (*w2)[point1])))
+			W += lycorisAbs((*w1)[point1] - (*w2)[point1])
 			countW++
 			point1++
 			point2++
