@@ -43,25 +43,6 @@ func activateFunc(f float32) float32 {
 	return reLU(f)
 }
 
-// ReLU.
-func reLU(f float32) float32 {
-	if f > 0 {
-		return f
-	} else {
-		return f * leak
-	}
-}
-
-// Sigmoid.
-func sigmoid(f float32) float32 {
-	return 1 / (1 + lycorisExp(0-f))
-}
-
-// Tanh.
-func tanh(f float32) float32 {
-	return (lycorisExp(f) - lycorisExp(-f)) / (lycorisExp(f) + lycorisExp(-f))
-}
-
 // Used in "distance(...)".
 func sort1(in *individual) (*[]float32, *[]int) {
 	var temp1 = make([]bool, in.innovationNum)
