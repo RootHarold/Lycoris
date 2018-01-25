@@ -218,7 +218,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		offspring.nodeMap[v] = n
 	}
 
-	// Mating genomes.
+	// Mate genomes.
 	var g1, o1 = sort2(in1)
 	var g2, o2 = sort2(in2)
 	var point1 = 0
