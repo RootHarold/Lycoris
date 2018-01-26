@@ -24,8 +24,6 @@ var p6 float32 = 0.2 // Mutate the bias.
 var mutateTime = 1
 // The odds of cleaning in "Forward()".
 var cleanOdds float32 = 0.008
-// If full connection when initializing individual.
-var fullConnection = false
 
 // This is for initializing weight.
 func weightRandom() float32 {
@@ -253,8 +251,8 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 
 	// Make the nodes in a reasonable order of calculation.
 	var inDegree = make(map[int]int, len(tempSlice))
-	for _, v := range offspring.nodeMap {
-		inDegree[v.nodeNum] = len(v.genomeMap)
+	for k, v := range offspring.nodeMap {
+		inDegree[k] = len(v.genomeMap)
 	}
 	var next = list.New()
 	for k, v := range inDegree {
@@ -263,15 +261,14 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 			delete(inDegree, k)
 		}
 	}
-	var slicePointer = 0
+	var tempSlice2 []int
 	for true {
 		if next.Len() == 0 {
 			break
 		}
 		head := next.Front()
 		headValue := head.Value.(int)
-		tempSlice[slicePointer] = headValue
-		slicePointer++
+		tempSlice2 = append(tempSlice2, headValue)
 		next.Remove(head)
 		for _, v := range offspring.nodeMap {
 			for k := range v.genomeMap {
@@ -290,12 +287,12 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 	}
 
 	// Save nodes in a slice.
-	offspring.nodeSlice = make([]int, len(tempSlice))
+	offspring.nodeSlice = make([]int, len(tempSlice2))
 	for i := 0; i < in1.inputNum; i++ {
 		offspring.nodeSlice[i] = i
 	}
 	var point = in1.inputNum
-	for _, v := range tempSlice {
+	for _, v := range tempSlice2 {
 		if v >= in1.inputNum {
 			offspring.nodeSlice[point] = v
 			point++

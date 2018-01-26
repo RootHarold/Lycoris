@@ -38,17 +38,6 @@ func initialize(in *individual) {
 		in.nodeSlice[temp] = temp
 		in.nodeSum++
 	}
-
-	if fullConnection {
-		for i := in.inputNum; i < sumNode; i++ {
-			var n = in.nodeMap[i]
-			for j := 0; j < in.inputNum; j++ {
-				n.genomeMap[gen{j, i}] = ome{weightRandom(), true, in.innovationNum}
-				in.innovationNum++
-			}
-			in.nodeMap[i] = n
-		}
-	}
 }
 
 // Set input array.
