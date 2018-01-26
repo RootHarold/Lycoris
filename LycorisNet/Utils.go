@@ -3,7 +3,6 @@ package LycorisNet
 import (
 	"time"
 	"math/rand"
-	"fmt"
 )
 
 // It's for the function "reLU(...)".
