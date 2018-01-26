@@ -3,6 +3,7 @@ package LycorisNet
 import (
 	"time"
 	"math/rand"
+	"fmt"
 )
 
 // It's for the function "reLU(...)".
@@ -13,7 +14,7 @@ var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 var c1 float32 = 1.0
 var c2 float32 = 0.4
 // Used in "mateIndividual(...)"
-var breakTime = 12
+var breakTime = 1
 // These change the mutation probability.
 var p1 float32 = 0.1 // Add the new node between a connection.
 var p2 float32 = 0.2 // Delete a node.
@@ -419,7 +420,9 @@ func mutateIndividual(in *individual) *individual {
 			var n = *newNode(offspring.nodeSum, 1)
 			offspring.nodeSum++
 			offspring.nodeMap[n.nodeNum] = n
-			offspring.nodeSlice = append(offspring.nodeSlice, n.nodeNum)
+			var index = r.Intn(len(offspring.nodeSlice)-offspring.inputNum) + offspring.inputNum
+			rear := append([]int{n.nodeNum}, offspring.nodeSlice[index:]...)
+			offspring.nodeSlice = append(offspring.nodeSlice[:index], rear...)
 		} else { // p6
 			// Mutate the bias.
 			var index = r.Intn(len(offspring.nodeSlice) - offspring.inputNum)
