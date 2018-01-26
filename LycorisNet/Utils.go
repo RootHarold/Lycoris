@@ -3,6 +3,7 @@ package LycorisNet
 import (
 	"time"
 	"math/rand"
+	"container/list"
 )
 
 // It's for the function "reLU(...)".
@@ -12,8 +13,6 @@ var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 // Arguments for the algorithm.
 var c1 float32 = 1.0
 var c2 float32 = 0.4
-// Used in "mateIndividual(...)"
-var breakTime = 1
 // These change the mutation probability.
 var p1 float32 = 0.1 // Add the new node between a connection.
 var p2 float32 = 0.2 // Delete a node.
@@ -253,25 +252,40 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 	}
 
 	// Make the nodes in a reasonable order of calculation.
-	var bt = 0
+	var inDegree = make(map[int]int, len(tempSlice))
+	for _, v := range offspring.nodeMap {
+		inDegree[v.nodeNum] = len(v.genomeMap)
+	}
+	var next = list.New()
+	for k, v := range inDegree {
+		if v == 0 {
+			next.PushBack(k)
+			delete(inDegree, k)
+		}
+	}
+	var slicePointer = 0
 	for true {
-		bt++
-		var flag = true
+		if next.Len() == 0 {
+			break
+		}
+		head := next.Front()
+		headValue := head.Value.(int)
+		tempSlice[slicePointer] = headValue
+		slicePointer++
+		next.Remove(head)
 		for _, v := range offspring.nodeMap {
 			for k := range v.genomeMap {
-				var indexIn = tempMap[k.in]
-				var indexOut = tempMap[k.out]
-				if indexIn > indexOut {
-					flag = false
-					tempSlice[indexIn] = k.out
-					tempSlice[indexOut] = k.in
-					tempMap[k.out] = indexIn
-					tempMap[k.in] = indexOut
+				if k.in == headValue {
+					outNum := v.nodeNum
+					if inDegree[outNum] == 1 {
+						delete(inDegree, outNum)
+						next.PushBack(outNum)
+					} else {
+						inDegree[outNum] = inDegree[outNum] - 1
+					}
+					break
 				}
 			}
-		}
-		if flag || bt == breakTime {
-			break
 		}
 	}
 
