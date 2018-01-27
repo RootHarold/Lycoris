@@ -37,7 +37,7 @@ func biasRandom() float32 {
 
 // The activation function.
 func activateFunc(f float32) float32 {
-	return reLU(f)
+	return sigmoid(f)
 }
 
 // Used in "distance(...)".
@@ -163,26 +163,25 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 	}
 
 	// Mate nodes.
-	var tempMap = make(map[int]int)
+	var tempMap = make(map[int]bool)
 	var duplicateNodes = make(map[int]bool)
-	for _, v := range in1.nodeMap {
-		tempMap[v.nodeNum] = -1
-		duplicateNodes[v.nodeNum] = false
+	for k := range in1.nodeMap {
+		tempMap[k] = true
+		duplicateNodes[k] = false
 	}
-	for _, v := range in2.nodeMap {
-		_, ok := tempMap[v.nodeNum]
+	for k := range in2.nodeMap {
+		_, ok := tempMap[k]
 		if ok {
-			duplicateNodes[v.nodeNum] = true
+			duplicateNodes[k] = true
 		} else {
-			tempMap[v.nodeNum] = -1
-			duplicateNodes[v.nodeNum] = false
+			tempMap[k] = true
+			duplicateNodes[k] = false
 		}
 	}
 	var tempSlice = make([]int, len(tempMap))
 	var tempCount = 0
 	for k := range tempMap {
 		tempSlice[tempCount] = k
-		tempMap[k] = tempCount
 		tempCount++
 	}
 
@@ -261,14 +260,15 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 			delete(inDegree, k)
 		}
 	}
-	var tempSlice2 []int
-	for true {
+	var slicePointer = 0
+	for true { // Topological Order
 		if next.Len() == 0 {
 			break
 		}
 		head := next.Front()
 		headValue := head.Value.(int)
-		tempSlice2 = append(tempSlice2, headValue)
+		tempSlice[slicePointer] = headValue
+		slicePointer++
 		next.Remove(head)
 		for _, v := range offspring.nodeMap {
 			for k := range v.genomeMap {
@@ -285,14 +285,18 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 			}
 		}
 	}
+	for k := range inDegree {
+		tempSlice[slicePointer] = k
+		slicePointer++
+	}
 
 	// Save nodes in a slice.
-	offspring.nodeSlice = make([]int, len(tempSlice2))
+	offspring.nodeSlice = make([]int, len(tempSlice))
 	for i := 0; i < in1.inputNum; i++ {
 		offspring.nodeSlice[i] = i
 	}
 	var point = in1.inputNum
-	for _, v := range tempSlice2 {
+	for _, v := range tempSlice {
 		if v >= in1.inputNum {
 			offspring.nodeSlice[point] = v
 			point++
