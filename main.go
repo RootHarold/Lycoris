@@ -7,5 +7,5 @@ import (
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	fmt.Println("Lycoris core 0.9.8-32")
+	fmt.Println("Lycoris core 0.9.9-0")
 }

@@ -86,7 +86,7 @@ func (in *individual) forward() {
 	}
 
 	// Clean empty nodes according to a certain chance (cleanOdds).
-	if r.Float32() < cleanOdds && len(clean) != 0 {
+	if getFloat32() < cleanOdds && len(clean) != 0 {
 		for k := range clean {
 			delete(in.nodeMap, k)
 		}

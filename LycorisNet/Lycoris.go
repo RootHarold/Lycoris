@@ -1,5 +1,7 @@
 package LycorisNet
 
+import "runtime"
+
 type Lycoris struct {
 	input       []float32
 	desire      []float32
@@ -7,6 +9,10 @@ type Lycoris struct {
 }
 
 func NewLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
+	runtime.GOMAXPROCS(cpuNum)
+	go randFloat32() // Init the random number generator.
+
+	// TODO -- Recode --
 	var lycoris = &Lycoris{}
 	lycoris.input = make([]float32, inputNum)
 	lycoris.desire = make([]float32, outputNum)

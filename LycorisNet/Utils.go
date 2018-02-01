@@ -1,15 +1,12 @@
 package LycorisNet
 
 import (
-	"time"
-	"math/rand"
 	"container/list"
+	"runtime"
 )
 
 // It's for the function "reLU(...)".
 var leak float32 = 0.01
-// Random number seed.
-var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 // Arguments for the algorithm.
 var c1 float32 = 1.0
 var c2 float32 = 0.4
@@ -24,15 +21,17 @@ var p6 float32 = 0.2 // Mutate the bias.
 var mutateTime = 1
 // The odds of cleaning in "Forward()".
 var cleanOdds float32 = 0.008
+// The number of logical cpu.
+var cpuNum = runtime.NumCPU()
 
 // This is for initializing weight.
 func weightRandom() float32 {
-	return r.Float32()
+	return getFloat32()
 }
 
 // This is for initializing bias.
 func biasRandom() float32 {
-	return r.Float32()
+	return getFloat32()
 }
 
 // The activation function.
@@ -195,7 +194,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		} else if v >= offspring.inputNum && v < basicNodeSum {
 			n = *newNode(v, 2)
 			if duplicateNodes[v] {
-				if r.Float32() < 0.5 {
+				if getFloat32() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
 					n.bias = in2.nodeMap[v].bias
@@ -204,7 +203,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		} else {
 			n = *newNode(v, 1)
 			if duplicateNodes[v] {
-				if r.Float32() < 0.5 {
+				if getFloat32() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
 					n.bias = in2.nodeMap[v].bias
@@ -226,7 +225,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 			break
 		}
 		if (*o1)[point1].innovationNum == (*o2)[point2].innovationNum {
-			if r.Float32() < 0.5 {
+			if getFloat32() < 0.5 {
 				offspring.nodeMap[(*g1)[point1].out].genomeMap[(*g1)[point1]] = (*o1)[point1]
 			} else {
 				offspring.nodeMap[(*g2)[point2].out].genomeMap[(*g2)[point2]] = (*o2)[point2]
@@ -327,7 +326,7 @@ func mutateIndividual(in *individual) *individual {
 
 	// This process can be repeated many times.
 	for z := 0; z < mutateTime; z++ {
-		var ran = r.Float32()
+		var ran = getFloat32()
 
 		if ran < p1 { // p1
 			// Add the new node between a connection.
@@ -377,7 +376,7 @@ func mutateIndividual(in *individual) *individual {
 		} else if ran >= p1 && ran < p1+p2 { // p2
 			// Delete a node.
 			var length = len(offspring.nodeSlice)
-			var index = r.Intn(length)
+			var index = getInt(length)
 			var sliceIndex = offspring.nodeSlice[index]
 			if offspring.nodeMap[sliceIndex].nodeType == 1 {
 				for i := index + 1; i < length; i++ {
@@ -392,8 +391,8 @@ func mutateIndividual(in *individual) *individual {
 		} else if ran >= p1+p2 && ran < p1+p2+p3 { // p3
 			// Add a new connection between two nodes.
 			var length = len(offspring.nodeSlice)
-			var index1 = r.Intn(length)
-			var index2 = index1 + r.Intn(length-index1)
+			var index1 = getInt(length)
+			var index2 = index1 + getInt(length-index1)
 			if index1 != index2 {
 				var inputNum = offspring.nodeSlice[index1]
 				var outputNum = offspring.nodeSlice[index2]
@@ -434,12 +433,12 @@ func mutateIndividual(in *individual) *individual {
 			var n = *newNode(offspring.nodeSum, 1)
 			offspring.nodeSum++
 			offspring.nodeMap[n.nodeNum] = n
-			var index = r.Intn(len(offspring.nodeSlice)-offspring.inputNum) + offspring.inputNum
+			var index = getInt(len(offspring.nodeSlice)-offspring.inputNum) + offspring.inputNum
 			rear := append([]int{n.nodeNum}, offspring.nodeSlice[index:]...)
 			offspring.nodeSlice = append(offspring.nodeSlice[:index], rear...)
 		} else { // p6
 			// Mutate the bias.
-			var index = r.Intn(len(offspring.nodeSlice) - offspring.inputNum)
+			var index = getInt(len(offspring.nodeSlice) - offspring.inputNum)
 			index += offspring.inputNum
 			var n = offspring.nodeMap[offspring.nodeSlice[index]]
 			n.bias = biasRandom()
