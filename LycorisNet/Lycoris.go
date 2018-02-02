@@ -9,6 +9,7 @@ type Lycoris struct {
 }
 
 func NewLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	go randFloat32() // Init the random number generator.
 
 	// TODO -- Recode --
