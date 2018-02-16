@@ -99,15 +99,6 @@ func sort2(in *individual) (*[]gen, *[]ome) {
 	return &result1, &result2
 }
 
-// Euclidean distance of two slices.
-func error(output []float32, desire []float32) float32 {
-	var f float32 = 0
-	for i := 0; i < len(output); i++ {
-		f += lycorisPow(desire[i]-output[i], 2)
-	}
-	return f
-}
-
 // The distance between two different individuals.
 func distance(in1 *individual, in2 *individual) float32 {
 	var d float32
