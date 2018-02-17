@@ -23,6 +23,12 @@ var mutateTime = 1
 var cleanOdds float32 = 0.008
 // The number of logical cpu.
 var cpuNum = runtime.NumCPU()
+// The initial odds of mating.
+var mateOdds float32 = 1
+// The initial odds of mutating.
+var mutateOdds float32 = 1
+// The threshold of the distance between two individuals.
+var distanceThreshold float32 = 20 // Need to be checked.
 
 // This is for initializing weight.
 func weightRandom() float32 {
