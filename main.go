@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	fmt.Println("Lycoris core 0.9.9-6")
+	fmt.Println("Lycoris core 0.9.9-7")
 }

@@ -119,6 +119,9 @@ func distance(in1 *individual, in2 *individual) float32 {
 	} else {
 		N = len2
 	}
+	if N == 0 {
+		return 0
+	}
 	var W float32 = 0
 	var countW = 0
 	var point1 = 0
@@ -128,7 +131,7 @@ func distance(in1 *individual, in2 *individual) float32 {
 			break
 		}
 		if (*i1)[point1] == (*i2)[point2] {
-			W += lycorisAbs((*w1)[point1] - (*w2)[point1])
+			W += lycorisAbs((*w1)[point1] - (*w2)[point2])
 			countW++
 			point1++
 			point2++

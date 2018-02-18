@@ -18,6 +18,9 @@ type Lycoris struct {
 	hit            int
 	miss           int
 	differenceList *list.List
+	capacity       int
+	inputNum       int
+	outputNum      int
 }
 
 func (lycoris *Lycoris) setForwardFunc(f func(in *individual)) {
@@ -28,6 +31,9 @@ func newLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	go randFloat32() // Init the random number generator.
 	var lycoris = &Lycoris{}
+	lycoris.capacity = capacity
+	lycoris.inputNum = inputNum
+	lycoris.outputNum = outputNum
 	lycoris.tock = 1
 	lycoris.differenceList = list.New()
 	var specie = species{}
@@ -154,7 +160,7 @@ func (lycoris *Lycoris) forward() {
 			go lycoris.forward_core(i, j*part, (j+1)*part)
 		}
 		go lycoris.forward_core(i, (cpuNum-1)*part, individualLength)
-		wait.Done()
+		wait.Wait()
 	}
 }
 
@@ -280,11 +286,10 @@ func (lycoris *Lycoris) chooseElite() {
 
 	var specieLength = len(lycoris.speciesList)
 	var newSpecieList = make([]species, specieLength)
-	var newLength = int(float32(totalLength) / ((1 + mateOdds) * (1 + mutateOdds)))
-	for i := specieLength; i > specieLength-newLength; i-- {
+	var newLength = int(float32(lycoris.capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
+	for i := totalLength - 1; i > totalLength-newLength-1; i-- {
 		var temp = sortList[i]
-		var tempList = newSpecieList[temp.specieNum].individualList
-		tempList = append(tempList, lycoris.speciesList[temp.specieNum].individualList[temp.individualNum])
+		newSpecieList[temp.specieNum].individualList = append(newSpecieList[temp.specieNum].individualList, lycoris.speciesList[temp.specieNum].individualList[temp.individualNum])
 	}
 
 	var tempSpeciesList []species
@@ -293,9 +298,10 @@ func (lycoris *Lycoris) chooseElite() {
 			tempSpeciesList = append(tempSpeciesList, v)
 		}
 	}
-	lycoris.speciesList = tempSpeciesList
 
+	lycoris.speciesList = tempSpeciesList
 	var difference = tempBest.fitness - lycoris.best.fitness
+	lycoris.best = tempBest
 	// len < 8
 	if differenceListFlag {
 		var length = lycoris.differenceList.Len()
