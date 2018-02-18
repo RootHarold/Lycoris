@@ -4,7 +4,7 @@ package LycorisNet
 // and the "nodeSum" is that of nodes. High fitness means the
 // individual is well adapted to the environment. The "nodeMap"
 // and the "nodeSlice" store nodes.
-type individual struct {
+type Individual struct {
 	nodeMap       map[int]node
 	nodeSlice     []int
 	inputNum      int
@@ -15,14 +15,14 @@ type individual struct {
 }
 
 // Create a new individual.
-func newIndividual(inputNum int, outputNum int) *individual {
-	var in = &individual{inputNum: inputNum, outputNum: outputNum, nodeSum: 0, innovationNum: 0}
+func newIndividual(inputNum int, outputNum int) *Individual {
+	var in = &Individual{inputNum: inputNum, outputNum: outputNum, nodeSum: 0, innovationNum: 0}
 	initialize(in)
 	return in
 }
 
 // Initialize a individual.
-func initialize(in *individual) {
+func initialize(in *Individual) {
 	var sumNode = in.inputNum + in.outputNum
 	in.nodeMap = make(map[int]node, sumNode)
 	in.nodeSlice = make([]int, sumNode)
@@ -41,7 +41,7 @@ func initialize(in *individual) {
 }
 
 // Set input array.
-func (in *individual) setInput(input []float32) {
+func (in *Individual) SetInput(input []float32) {
 	for i := 0; i < in.inputNum; i++ {
 		var temp = in.nodeMap[i]
 		temp.value = input[i]
@@ -50,7 +50,7 @@ func (in *individual) setInput(input []float32) {
 }
 
 // Get output array.
-func (in *individual) getOutput() []float32 {
+func (in *Individual) GetOutput() []float32 {
 	var output = make([]float32, in.outputNum)
 	var pointer = 0
 	for i := in.inputNum; i < len(in.nodeSlice); i++ {
@@ -64,7 +64,7 @@ func (in *individual) getOutput() []float32 {
 }
 
 // Forward calculation of the individual.
-func (in *individual) forward() {
+func (in *Individual) Forward() {
 	var clean = make(map[int]bool)
 	for i := in.inputNum; i < len(in.nodeSlice); i++ {
 		var index = in.nodeSlice[i]
@@ -86,7 +86,7 @@ func (in *individual) forward() {
 	}
 
 	// Clean empty nodes according to a certain chance (cleanOdds).
-	if getFloat32() < cleanOdds && len(clean) != 0 {
+	if GetRandomFloat32() < cleanOdds && len(clean) != 0 {
 		for k := range clean {
 			delete(in.nodeMap, k)
 		}
@@ -105,8 +105,8 @@ func (in *individual) forward() {
 }
 
 // Deep clone of individual.
-func (in *individual) clone() *individual {
-	var duplicate = &individual{inputNum: in.inputNum, outputNum: in.outputNum, innovationNum: in.innovationNum, nodeSum: in.nodeSum}
+func (in *Individual) clone() *Individual {
+	var duplicate = &Individual{inputNum: in.inputNum, outputNum: in.outputNum, innovationNum: in.innovationNum, nodeSum: in.nodeSum}
 	duplicate.nodeMap = make(map[int]node, len(in.nodeMap))
 	for k, v := range in.nodeMap {
 		duplicate.nodeMap[k] = *v.clone()

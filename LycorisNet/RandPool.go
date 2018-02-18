@@ -21,11 +21,11 @@ func randFloat32() {
 }
 
 // Generate a random number of 0-1 (float32).
-func getFloat32() float32 {
+func GetRandomFloat32() float32 {
 	return <-chForFloat32
 }
 
 // Generate a random number of 0-N (int).
-func getInt(N int) int {
-	return int(getFloat32() * float32(N))
+func GetRandomInt(N int) int {
+	return int(GetRandomFloat32() * float32(N))
 }

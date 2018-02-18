@@ -5,22 +5,22 @@ import (
 )
 
 // Just like "math.Exp(...)".
-func lycorisExp(x float32) float32 {
+func LycorisExp(x float32) float32 {
 	return float32(math.Exp(float64(x)))
 }
 
 // Just like "math.Pow(...)".
-func lycorisPow(x float32, y float32) float32 {
+func LycorisPow(x float32, y float32) float32 {
 	return float32(math.Pow(float64(x), float64(y)))
 }
 
 // Just like "math.Abs(...)".
-func lycorisAbs(x float32) float32 {
+func LycorisAbs(x float32) float32 {
 	return float32(math.Abs(float64(x)))
 }
 
 // ReLU.
-func reLU(f float32) float32 {
+func ReLU(f float32) float32 {
 	if f > 0 {
 		return f
 	} else {
@@ -29,23 +29,23 @@ func reLU(f float32) float32 {
 }
 
 // Sigmoid.
-func sigmoid(f float32) float32 {
-	return 1 / (1 + lycorisExp(0-f))
+func Sigmoid(f float32) float32 {
+	return 1 / (1 + LycorisExp(0-f))
 }
 
 // Tanh.
-func tanh(f float32) float32 {
-	return (lycorisExp(f) - lycorisExp(-f)) / (lycorisExp(f) + lycorisExp(-f))
+func Tanh(f float32) float32 {
+	return (LycorisExp(f) - LycorisExp(-f)) / (LycorisExp(f) + LycorisExp(-f))
 }
 
 // Softmax.
-func softmax(input []float32) []float32 {
+func Softmax(input []float32) []float32 {
 	var length = len(input)
 	var ret = make([]float32, length)
 	var tempSlice = make([]float32, length)
 	var sum float32 = 0
 	for k, v := range input {
-		var temp = lycorisPow(v, 2)
+		var temp = LycorisPow(v, 2)
 		tempSlice[k] = temp
 		sum += temp
 	}

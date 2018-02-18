@@ -8,10 +8,10 @@ import (
 )
 
 type Lycoris struct {
-	speciesList    []species
-	forwardFunc    func(in *individual)
-	best           individual
-	bufferList     [][]individual
+	speciesList    []species            // The slice of species.
+	forwardFunc    func(in *Individual) // This function needs to be completed.
+	best           Individual           // The best individual.
+	bufferList     [][]Individual
 	tempDistance   [][]int
 	tick           int
 	tock           int
@@ -23,11 +23,11 @@ type Lycoris struct {
 	outputNum      int
 }
 
-func (lycoris *Lycoris) setForwardFunc(f func(in *individual)) {
+func (lycoris *Lycoris) SetForwardFunc(f func(in *Individual)) {
 	lycoris.forwardFunc = f
 }
 
-func newLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
+func NewLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	go randFloat32() // Init the random number generator.
 	var lycoris = &Lycoris{}
@@ -38,7 +38,7 @@ func newLycoris(capacity int, inputNum int, outputNum int) *Lycoris {
 	lycoris.differenceList = list.New()
 	var specie = species{}
 	var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
-	specie.individualList = make([]individual, initialCapacity)
+	specie.individualList = make([]Individual, initialCapacity)
 	for i := 0; i < initialCapacity; i++ {
 		specie.individualList[i] = *newIndividual(inputNum, outputNum)
 	}
@@ -50,12 +50,12 @@ var wait sync.WaitGroup
 
 func (lycoris *Lycoris) mate() {
 	var specieLength = len(lycoris.speciesList)
-	lycoris.bufferList = make([][]individual, specieLength)
+	lycoris.bufferList = make([][]Individual, specieLength)
 	for i := 0; i < specieLength; i++ {
 		wait.Add(cpuNum)
 		var individualLength = len(lycoris.speciesList[i].individualList)
 		var mateLength = int(float32(individualLength) * mateOdds)
-		lycoris.bufferList[i] = make([]individual, mateLength)
+		lycoris.bufferList[i] = make([]Individual, mateLength)
 		var part = mateLength / cpuNum
 		for j := 0; j < cpuNum-1; j++ {
 			go lycoris.mate_core(i, j*part, (j+1)*part)
@@ -69,19 +69,19 @@ func (lycoris *Lycoris) mate_core(specieNum int, start int, end int) {
 	var l = lycoris.speciesList[specieNum].individualList
 	var length = len(l)
 	for i := start; i < end; i++ {
-		lycoris.bufferList[specieNum][i] = *mateIndividual(&(l[getInt(length)]), &(l[getInt(length)]))
+		lycoris.bufferList[specieNum][i] = *mateIndividual(&(l[GetRandomInt(length)]), &(l[GetRandomInt(length)]))
 	}
 	wait.Done()
 }
 
 func (lycoris *Lycoris) mutate() {
 	var specieLength = len(lycoris.speciesList)
-	lycoris.bufferList = make([][]individual, specieLength)
+	lycoris.bufferList = make([][]Individual, specieLength)
 	for i := 0; i < specieLength; i++ {
 		wait.Add(cpuNum)
 		var individualLength = len(lycoris.speciesList[i].individualList)
 		var mutateLength = int(float32(individualLength) * mutateOdds)
-		lycoris.bufferList[i] = make([]individual, mutateLength)
+		lycoris.bufferList[i] = make([]Individual, mutateLength)
 		var part = mutateLength / cpuNum
 		for j := 0; j < cpuNum-1; j++ {
 			go lycoris.mutate_core(i, j*part, (j+1)*part)
@@ -95,7 +95,7 @@ func (lycoris *Lycoris) mutate_core(specieNum int, start int, end int) {
 	var l = lycoris.speciesList[specieNum].individualList
 	var length = len(l)
 	for i := start; i < end; i++ {
-		lycoris.bufferList[specieNum][i] = *mutateIndividual(&(l[getInt(length)]))
+		lycoris.bufferList[specieNum][i] = *mutateIndividual(&(l[GetRandomInt(length)]))
 	}
 	wait.Done()
 }
@@ -138,7 +138,7 @@ func (lycoris *Lycoris) classify_core(specieNum int, start int, end int) {
 	for i := start; i < end; i++ {
 		for j := 0; j < specieLength; j++ {
 			var list = lycoris.speciesList[j].individualList
-			var dis = distance(&(lycoris.bufferList[specieNum][i]), &(list[getInt(len(list))]))
+			var dis = distance(&(lycoris.bufferList[specieNum][i]), &(list[GetRandomInt(len(list))]))
 			if dis <= distanceThreshold {
 				lycoris.tempDistance[specieNum][i] = j
 				break
@@ -182,19 +182,19 @@ var mutateOdds_b float32
 var mutateTime_b int
 
 func emergeArgs() {
-	var mutateTime_e = getInt(10) + 1
-	var mateOdds_e = getFloat32()
-	var mutateOdds_e = getFloat32()
+	var mutateTime_e = GetRandomInt(10) + 1
+	var mateOdds_e = GetRandomFloat32()
+	var mutateOdds_e = GetRandomFloat32()
 	var remain float32 = 1
-	var p1_e = getFloat32()
+	var p1_e = GetRandomFloat32()
 	remain -= p1_e
-	var p2_e = getFloat32() * remain
+	var p2_e = GetRandomFloat32() * remain
 	remain -= p2_e
-	var p3_e = getFloat32() * remain
+	var p3_e = GetRandomFloat32() * remain
 	remain -= p3_e
-	var p4_e = getFloat32() * remain
+	var p4_e = GetRandomFloat32() * remain
 	remain -= p4_e
-	var p5_e = getFloat32() * remain
+	var p5_e = GetRandomFloat32() * remain
 	remain -= p5_e
 	var p6_e = remain
 	p1_b, p2_b, p3_b, p4_b, p5_b, p6_b, mateOdds_b, mutateOdds_b, mutateTime_b = p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime
@@ -315,12 +315,13 @@ func (lycoris *Lycoris) chooseElite() {
 	}
 }
 
-func (lycoris *Lycoris) runLycoris() {
-	lycoris.mate()
-	lycoris.classify()
-	lycoris.mutate()
-	lycoris.classify()
-	lycoris.forward()
-	lycoris.autoParameter()
-	lycoris.chooseElite()
+// Each time this function is called, the network runs forward one time.
+func (lycoris *Lycoris) RunLycoris() {
+	lycoris.mate()          // Mating.
+	lycoris.classify()      // Computing distances of new individuals.
+	lycoris.mutate()        // Mutating.
+	lycoris.classify()      // Computing distances of new individuals.
+	lycoris.forward()       // Forward calculation.
+	lycoris.autoParameter() // Changing some parameters automatically.
+	lycoris.chooseElite()   // Sorting and choosing some individuals with higher fitness.
 }

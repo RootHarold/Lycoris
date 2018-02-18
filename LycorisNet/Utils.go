@@ -32,21 +32,21 @@ var distanceThreshold float32 = 20 // Need to be checked.
 
 // This is for initializing weight.
 func weightRandom() float32 {
-	return getFloat32()
+	return GetRandomFloat32()
 }
 
 // This is for initializing bias.
 func biasRandom() float32 {
-	return getFloat32()
+	return GetRandomFloat32()
 }
 
 // The activation function.
 func activateFunc(f float32) float32 {
-	return sigmoid(f)
+	return Sigmoid(f)
 }
 
 // Used in "distance(...)".
-func sort1(in *individual) (*[]float32, *[]int) {
+func sort1(in *Individual) (*[]float32, *[]int) {
 	var temp1 = make([]bool, in.innovationNum)
 	var temp2 = make([]float32, in.innovationNum)
 	var temp3 = make([]int, in.innovationNum)
@@ -76,7 +76,7 @@ func sort1(in *individual) (*[]float32, *[]int) {
 }
 
 // Used in "mateIndividual(...)".
-func sort2(in *individual) (*[]gen, *[]ome) {
+func sort2(in *Individual) (*[]gen, *[]ome) {
 	var temp1 = make([]bool, in.innovationNum)
 	var temp2 = make([]gen, in.innovationNum)
 	var temp3 = make([]ome, in.innovationNum)
@@ -106,7 +106,7 @@ func sort2(in *individual) (*[]gen, *[]ome) {
 }
 
 // The distance between two different individuals.
-func distance(in1 *individual, in2 *individual) float32 {
+func distance(in1 *Individual, in2 *Individual) float32 {
 	var d float32
 	var DE = 0
 	var w1, i1 = sort1(in1)
@@ -131,7 +131,7 @@ func distance(in1 *individual, in2 *individual) float32 {
 			break
 		}
 		if (*i1)[point1] == (*i2)[point2] {
-			W += lycorisAbs((*w1)[point1] - (*w2)[point2])
+			W += LycorisAbs((*w1)[point1] - (*w2)[point2])
 			countW++
 			point1++
 			point2++
@@ -149,9 +149,9 @@ func distance(in1 *individual, in2 *individual) float32 {
 }
 
 // Mating two different individuals.
-func mateIndividual(in1 *individual, in2 *individual) *individual {
+func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	// Emerge a newborn one.
-	var offspring = individual{inputNum: in1.inputNum, outputNum: in1.outputNum}
+	var offspring = Individual{inputNum: in1.inputNum, outputNum: in1.outputNum}
 	offspring.nodeMap = make(map[int]node)
 
 	// Let the better individual be "in2".
@@ -194,7 +194,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		} else if v >= offspring.inputNum && v < basicNodeSum {
 			n = *newNode(v, 2)
 			if duplicateNodes[v] {
-				if getFloat32() < 0.5 {
+				if GetRandomFloat32() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
 					n.bias = in2.nodeMap[v].bias
@@ -203,7 +203,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 		} else {
 			n = *newNode(v, 1)
 			if duplicateNodes[v] {
-				if getFloat32() < 0.5 {
+				if GetRandomFloat32() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
 					n.bias = in2.nodeMap[v].bias
@@ -225,7 +225,7 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 			break
 		}
 		if (*o1)[point1].innovationNum == (*o2)[point2].innovationNum {
-			if getFloat32() < 0.5 {
+			if GetRandomFloat32() < 0.5 {
 				offspring.nodeMap[(*g1)[point1].out].genomeMap[(*g1)[point1]] = (*o1)[point1]
 			} else {
 				offspring.nodeMap[(*g2)[point2].out].genomeMap[(*g2)[point2]] = (*o2)[point2]
@@ -320,13 +320,13 @@ func mateIndividual(in1 *individual, in2 *individual) *individual {
 }
 
 // Mutating the individual.
-func mutateIndividual(in *individual) *individual {
+func mutateIndividual(in *Individual) *Individual {
 	// Clone the individual.
 	var offspring = in.clone()
 
 	// This process can be repeated many times.
 	for z := 0; z < mutateTime; z++ {
-		var ran = getFloat32()
+		var ran = GetRandomFloat32()
 
 		if ran < p1 { // p1
 			// Add the new node between a connection.
@@ -376,7 +376,7 @@ func mutateIndividual(in *individual) *individual {
 		} else if ran >= p1 && ran < p1+p2 { // p2
 			// Delete a node.
 			var length = len(offspring.nodeSlice)
-			var index = getInt(length)
+			var index = GetRandomInt(length)
 			var sliceIndex = offspring.nodeSlice[index]
 			if offspring.nodeMap[sliceIndex].nodeType == 1 {
 				for i := index + 1; i < length; i++ {
@@ -391,8 +391,8 @@ func mutateIndividual(in *individual) *individual {
 		} else if ran >= p1+p2 && ran < p1+p2+p3 { // p3
 			// Add a new connection between two nodes.
 			var length = len(offspring.nodeSlice)
-			var index1 = getInt(length)
-			var index2 = index1 + getInt(length-index1)
+			var index1 = GetRandomInt(length)
+			var index2 = index1 + GetRandomInt(length-index1)
 			if index1 != index2 {
 				var inputNum = offspring.nodeSlice[index1]
 				var outputNum = offspring.nodeSlice[index2]
@@ -433,12 +433,12 @@ func mutateIndividual(in *individual) *individual {
 			var n = *newNode(offspring.nodeSum, 1)
 			offspring.nodeSum++
 			offspring.nodeMap[n.nodeNum] = n
-			var index = getInt(len(offspring.nodeSlice)-offspring.inputNum) + offspring.inputNum
+			var index = GetRandomInt(len(offspring.nodeSlice)-offspring.inputNum) + offspring.inputNum
 			rear := append([]int{n.nodeNum}, offspring.nodeSlice[index:]...)
 			offspring.nodeSlice = append(offspring.nodeSlice[:index], rear...)
 		} else { // p6
 			// Mutate the bias.
-			var index = getInt(len(offspring.nodeSlice) - offspring.inputNum)
+			var index = GetRandomInt(len(offspring.nodeSlice) - offspring.inputNum)
 			index += offspring.inputNum
 			var n = offspring.nodeMap[offspring.nodeSlice[index]]
 			n.bias = biasRandom()
