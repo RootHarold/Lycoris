@@ -16,6 +16,7 @@ type Lycoris struct {
 	tick           int
 	tock           int
 	hit            int
+	miss           int
 	differenceList *list.List
 }
 
@@ -206,8 +207,25 @@ func (lycoris *Lycoris) autoParameter() {
 				count++
 			}
 		}
-		if count < (length/2 + 1) {
+		if count < (length/2 + 1) { // Miss.
+			lycoris.miss++
+			lycoris.hit = 0
+			if lycoris.miss == 2 {
+				if lycoris.tock < 512 {
+					lycoris.tock *= 2
+				}
+				lycoris.miss = 1
+			}
 			p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1_b, p2_b, p3_b, p4_b, p5_b, p6_b, mateOdds_b, mutateOdds_b, mutateTime_b
+		} else { // Hit.
+			lycoris.hit++
+			lycoris.miss = 0
+			if lycoris.hit == 2 {
+				if lycoris.tock > 1 {
+					lycoris.tock /= 2
+				}
+				lycoris.hit = 1
+			}
 		}
 		checkFlag = false
 	}
