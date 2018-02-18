@@ -155,7 +155,7 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	offspring.nodeMap = make(map[int]node)
 
 	// Let the better individual be "in2".
-	if in1.fitness > in2.fitness {
+	if in1.Fitness > in2.Fitness {
 		var temp = in1
 		in1 = in2
 		in2 = temp

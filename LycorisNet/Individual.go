@@ -11,7 +11,7 @@ type Individual struct {
 	outputNum     int
 	innovationNum int
 	nodeSum       int
-	fitness       float32
+	Fitness       float32
 }
 
 // Create a new individual.
