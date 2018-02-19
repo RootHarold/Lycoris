@@ -63,6 +63,9 @@ func (in *Individual) GetOutput() []float32 {
 	return output
 }
 
+// The odds of cleaning in "Forward()".
+var cleanOdds float32 = 0.008
+
 // Forward calculation of the individual.
 func (in *Individual) Forward() {
 	var clean = make(map[int]bool)

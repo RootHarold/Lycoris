@@ -8,19 +8,19 @@ import (
 )
 
 type lycoris struct {
-	speciesList    []species            // The slice of species.
-	forwardFunc    func(in *Individual) // This function needs to be completed.
-	Best           Individual           // The best individual.
-	bufferList     [][]Individual
-	tempDistance   [][]int
-	tick           int
-	tock           int
-	hit            int
-	miss           int
-	differenceList *list.List
-	Capacity       int
-	InputNum       int
-	OutputNum      int
+	speciesList []species            // The slice of species.
+	forwardFunc func(in *Individual) // This core function needs to be completed.
+	Best        Individual           // The best individual.
+	tempList1   [][]Individual       // A temporary two-dimensional slice to store individuals.
+	tempList2   [][]int              // A temporary slice used in classify().
+	tick        int                  // Used in autoParameter().
+	tock        int                  // Used in autoParameter().
+	hit         int                  // Used in autoParameter().
+	miss        int                  // Used in autoParameter().
+	gapList     *list.List           // The role is to automatically change some of the parameters.
+	Capacity    int                  // The capacity of lycoris.
+	InputNum    int                  // The dimension of input.
+	OutputNum   int                  // The dimension of output.
 }
 
 func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
@@ -28,14 +28,15 @@ func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
 }
 
 func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
-	runtime.GOMAXPROCS(runtime.NumCPU())
+	runtime.GOMAXPROCS(cpuNum)
 	go randFloat32() // Init the random number generator.
+
 	var radiata = &lycoris{}
 	radiata.Capacity = capacity
 	radiata.InputNum = inputNum
 	radiata.OutputNum = outputNum
 	radiata.tock = 1
-	radiata.differenceList = list.New()
+	radiata.gapList = list.New()
 	var specie = species{}
 	var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
 	specie.individualList = make([]Individual, initialCapacity)
@@ -50,12 +51,12 @@ var wait sync.WaitGroup
 
 func (radiata *lycoris) mate() {
 	var specieLength = len(radiata.speciesList)
-	radiata.bufferList = make([][]Individual, specieLength)
+	radiata.tempList1 = make([][]Individual, specieLength)
 	for i := 0; i < specieLength; i++ {
 		wait.Add(cpuNum)
 		var individualLength = len(radiata.speciesList[i].individualList)
 		var mateLength = int(float32(individualLength) * mateOdds)
-		radiata.bufferList[i] = make([]Individual, mateLength)
+		radiata.tempList1[i] = make([]Individual, mateLength)
 		var part = mateLength / cpuNum
 		for j := 0; j < cpuNum-1; j++ {
 			go radiata.mate_core(i, j*part, (j+1)*part)
@@ -69,19 +70,19 @@ func (radiata *lycoris) mate_core(specieNum int, start int, end int) {
 	var l = radiata.speciesList[specieNum].individualList
 	var length = len(l)
 	for i := start; i < end; i++ {
-		radiata.bufferList[specieNum][i] = *mateIndividual(&(l[GetRandomInt(length)]), &(l[GetRandomInt(length)]))
+		radiata.tempList1[specieNum][i] = *mateIndividual(&(l[GetRandomInt(length)]), &(l[GetRandomInt(length)]))
 	}
 	wait.Done()
 }
 
 func (radiata *lycoris) mutate() {
 	var specieLength = len(radiata.speciesList)
-	radiata.bufferList = make([][]Individual, specieLength)
+	radiata.tempList1 = make([][]Individual, specieLength)
 	for i := 0; i < specieLength; i++ {
 		wait.Add(cpuNum)
 		var individualLength = len(radiata.speciesList[i].individualList)
 		var mutateLength = int(float32(individualLength) * mutateOdds)
-		radiata.bufferList[i] = make([]Individual, mutateLength)
+		radiata.tempList1[i] = make([]Individual, mutateLength)
 		var part = mutateLength / cpuNum
 		for j := 0; j < cpuNum-1; j++ {
 			go radiata.mutate_core(i, j*part, (j+1)*part)
@@ -95,18 +96,18 @@ func (radiata *lycoris) mutate_core(specieNum int, start int, end int) {
 	var l = radiata.speciesList[specieNum].individualList
 	var length = len(l)
 	for i := start; i < end; i++ {
-		radiata.bufferList[specieNum][i] = *mutateIndividual(&(l[GetRandomInt(length)]))
+		radiata.tempList1[specieNum][i] = *mutateIndividual(&(l[GetRandomInt(length)]))
 	}
 	wait.Done()
 }
 
 func (radiata *lycoris) classify() {
 	var specieLength = len(radiata.speciesList)
-	radiata.tempDistance = make([][]int, specieLength)
+	radiata.tempList2 = make([][]int, specieLength)
 	for i := 0; i < specieLength; i++ {
 		wait.Add(cpuNum)
-		var bufferLength = len(radiata.bufferList[i])
-		radiata.tempDistance[i] = make([]int, bufferLength)
+		var bufferLength = len(radiata.tempList1[i])
+		radiata.tempList2[i] = make([]int, bufferLength)
 		var part = bufferLength / cpuNum
 		for j := 0; j < cpuNum-1; j++ {
 			go radiata.classify_core(i, j*part, (j+1)*part)
@@ -115,12 +116,12 @@ func (radiata *lycoris) classify() {
 		wait.Wait()
 	}
 	radiata.speciesList = append(radiata.speciesList, species{})
-	for k1, v1 := range radiata.tempDistance {
+	for k1, v1 := range radiata.tempList2 {
 		for k2, v2 := range v1 {
 			if v2 != -1 {
-				radiata.speciesList[v2].individualList = append(radiata.speciesList[v2].individualList, radiata.bufferList[k1][k2])
+				radiata.speciesList[v2].individualList = append(radiata.speciesList[v2].individualList, radiata.tempList1[k1][k2])
 			} else {
-				radiata.speciesList[specieLength].individualList = append(radiata.speciesList[specieLength].individualList, radiata.bufferList[k1][k2])
+				radiata.speciesList[specieLength].individualList = append(radiata.speciesList[specieLength].individualList, radiata.tempList1[k1][k2])
 			}
 		}
 	}
@@ -138,12 +139,12 @@ func (radiata *lycoris) classify_core(specieNum int, start int, end int) {
 	for i := start; i < end; i++ {
 		for j := 0; j < specieLength; j++ {
 			var list = radiata.speciesList[j].individualList
-			var dis = distance(&(radiata.bufferList[specieNum][i]), &(list[GetRandomInt(len(list))]))
+			var dis = distance(&(radiata.tempList1[specieNum][i]), &(list[GetRandomInt(len(list))]))
 			if dis <= distanceThreshold {
-				radiata.tempDistance[specieNum][i] = j
+				radiata.tempList2[specieNum][i] = j
 				break
 			} else {
-				radiata.tempDistance[specieNum][i] = -1
+				radiata.tempList2[specieNum][i] = -1
 			}
 		}
 	}
@@ -205,10 +206,10 @@ var checkFlag = false
 
 func (radiata *lycoris) autoParameter() {
 	if checkFlag {
-		var length = radiata.differenceList.Len()
-		var lastValue = radiata.differenceList.Back().Value.(float32)
+		var length = radiata.gapList.Len()
+		var lastValue = radiata.gapList.Back().Value.(float32)
 		var count = 0
-		for e := radiata.differenceList.Front(); e != nil; e = e.Next() {
+		for e := radiata.gapList.Front(); e != nil; e = e.Next() {
 			if lastValue >= e.Value.(float32) {
 				count++
 			}
@@ -307,14 +308,14 @@ func (radiata *lycoris) chooseElite() {
 	radiata.Best = tempBest
 	// len < 8
 	if differenceListFlag {
-		var length = radiata.differenceList.Len()
+		var length = radiata.gapList.Len()
 		if length == 7 {
 			differenceListFlag = false
 		}
-		radiata.differenceList.PushBack(difference)
+		radiata.gapList.PushBack(difference)
 	} else { // len == 8
-		radiata.differenceList.Remove(radiata.differenceList.Front())
-		radiata.differenceList.PushBack(difference)
+		radiata.gapList.Remove(radiata.gapList.Front())
+		radiata.gapList.PushBack(difference)
 	}
 }
 

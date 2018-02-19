@@ -5,7 +5,7 @@ import (
 	"runtime"
 )
 
-// Arguments for the algorithm.
+// Arguments in distance(...).
 var c1 float32 = 1.0
 var c2 float32 = 0.4
 // These change the mutation probability.
@@ -17,8 +17,6 @@ var p5 float32 = 0.1 // Just create a new empty node (without any genomes).
 var p6 float32 = 0.2 // Mutate the bias.
 // The number of mutations.
 var mutateTime = 1
-// The odds of cleaning in "Forward()".
-var cleanOdds float32 = 0.008
 // The number of logical cpu.
 var cpuNum = runtime.NumCPU()
 // The initial odds of mating.
