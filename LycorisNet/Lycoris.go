@@ -27,23 +27,28 @@ func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
 	radiata.forwardFunc = f
 }
 
-func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
-	runtime.GOMAXPROCS(cpuNum)
-	go randFloat32() // Init the random number generator.
+var radiata *lycoris // It's for singleton pattern.
 
-	var radiata = &lycoris{}
-	radiata.Capacity = capacity
-	radiata.InputNum = inputNum
-	radiata.OutputNum = outputNum
-	radiata.tock = 1
-	radiata.gapList = list.New()
-	var specie = species{}
-	var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
-	specie.individualList = make([]Individual, initialCapacity)
-	for i := 0; i < initialCapacity; i++ {
-		specie.individualList[i] = *newIndividual(inputNum, outputNum)
+func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
+	if radiata == nil {
+		runtime.GOMAXPROCS(cpuNum)
+		go randFloat32() // Init the random number generator.
+
+		// Emerge a new lycoris and set some parameters.
+		radiata = &lycoris{}
+		radiata.Capacity = capacity
+		radiata.InputNum = inputNum
+		radiata.OutputNum = outputNum
+		radiata.tock = 1
+		radiata.gapList = list.New()
+		var specie = species{}
+		var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
+		specie.individualList = make([]Individual, initialCapacity)
+		for i := 0; i < initialCapacity; i++ {
+			specie.individualList[i] = *newIndividual(inputNum, outputNum)
+		}
+		radiata.speciesList = append(radiata.speciesList, specie)
 	}
-	radiata.speciesList = append(radiata.speciesList, specie)
 	return radiata
 }
 
