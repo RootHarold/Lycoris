@@ -7,8 +7,8 @@ package LycorisNet
 type Individual struct {
 	nodeMap       map[int]node
 	nodeSlice     []int
-	inputNum      int
-	outputNum     int
+	InputNum      int
+	OutputNum     int
 	innovationNum int
 	nodeSum       int
 	Fitness       float32
@@ -16,23 +16,23 @@ type Individual struct {
 
 // Create a new individual.
 func newIndividual(inputNum int, outputNum int) *Individual {
-	var in = &Individual{inputNum: inputNum, outputNum: outputNum, nodeSum: 0, innovationNum: 0}
+	var in = &Individual{InputNum: inputNum, OutputNum: outputNum, nodeSum: 0, innovationNum: 0}
 	initialize(in)
 	return in
 }
 
 // Initialize a individual.
 func initialize(in *Individual) {
-	var sumNode = in.inputNum + in.outputNum
+	var sumNode = in.InputNum + in.OutputNum
 	in.nodeMap = make(map[int]node, sumNode)
 	in.nodeSlice = make([]int, sumNode)
-	for i := 0; i < in.inputNum; i++ {
+	for i := 0; i < in.InputNum; i++ {
 		var temp = in.nodeSum
 		in.nodeMap[temp] = *newNode(temp, 0)
 		in.nodeSlice[temp] = temp
 		in.nodeSum++
 	}
-	for i := 0; i < in.outputNum; i++ {
+	for i := 0; i < in.OutputNum; i++ {
 		var temp = in.nodeSum
 		in.nodeMap[temp] = *newNode(temp, 2)
 		in.nodeSlice[temp] = temp
@@ -42,7 +42,7 @@ func initialize(in *Individual) {
 
 // Set input array.
 func (in *Individual) SetInput(input []float32) {
-	for i := 0; i < in.inputNum; i++ {
+	for i := 0; i < in.InputNum; i++ {
 		var temp = in.nodeMap[i]
 		temp.value = input[i]
 		in.nodeMap[i] = temp
@@ -51,9 +51,9 @@ func (in *Individual) SetInput(input []float32) {
 
 // Get output array.
 func (in *Individual) GetOutput() []float32 {
-	var output = make([]float32, in.outputNum)
+	var output = make([]float32, in.OutputNum)
 	var pointer = 0
-	for i := in.inputNum; i < len(in.nodeSlice); i++ {
+	for i := in.InputNum; i < len(in.nodeSlice); i++ {
 		var temp = in.nodeMap[in.nodeSlice[i]]
 		if temp.nodeType == 2 {
 			output[pointer] = temp.value
@@ -66,7 +66,7 @@ func (in *Individual) GetOutput() []float32 {
 // Forward calculation of the individual.
 func (in *Individual) Forward() {
 	var clean = make(map[int]bool)
-	for i := in.inputNum; i < len(in.nodeSlice); i++ {
+	for i := in.InputNum; i < len(in.nodeSlice); i++ {
 		var index = in.nodeSlice[i]
 		var n = in.nodeMap[index]
 		var f float32 = 0
@@ -106,7 +106,7 @@ func (in *Individual) Forward() {
 
 // Deep clone of individual.
 func (in *Individual) clone() *Individual {
-	var duplicate = &Individual{inputNum: in.inputNum, outputNum: in.outputNum, innovationNum: in.innovationNum, nodeSum: in.nodeSum}
+	var duplicate = &Individual{InputNum: in.InputNum, OutputNum: in.OutputNum, innovationNum: in.innovationNum, nodeSum: in.nodeSum}
 	duplicate.nodeMap = make(map[int]node, len(in.nodeMap))
 	for k, v := range in.nodeMap {
 		duplicate.nodeMap[k] = *v.clone()

@@ -151,7 +151,7 @@ func distance(in1 *Individual, in2 *Individual) float32 {
 // Mating two different individuals.
 func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	// Emerge a newborn one.
-	var offspring = Individual{inputNum: in1.inputNum, outputNum: in1.outputNum}
+	var offspring = Individual{InputNum: in1.InputNum, OutputNum: in1.OutputNum}
 	offspring.nodeMap = make(map[int]node)
 
 	// Let the better individual be "in2".
@@ -186,12 +186,12 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 
 	// Mate the bias of nodes. And the strategy is choosing bias
 	// between parents randomly.
-	var basicNodeSum = in1.inputNum + in1.outputNum
+	var basicNodeSum = in1.InputNum + in1.OutputNum
 	for _, v := range tempSlice {
 		var n node
-		if v < offspring.inputNum {
+		if v < offspring.InputNum {
 			n = *newNode(v, 0)
-		} else if v >= offspring.inputNum && v < basicNodeSum {
+		} else if v >= offspring.InputNum && v < basicNodeSum {
 			n = *newNode(v, 2)
 			if duplicateNodes[v] {
 				if GetRandomFloat32() < 0.5 {
@@ -291,12 +291,12 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 
 	// Save nodes in a slice.
 	offspring.nodeSlice = make([]int, len(tempSlice))
-	for i := 0; i < in1.inputNum; i++ {
+	for i := 0; i < in1.InputNum; i++ {
 		offspring.nodeSlice[i] = i
 	}
-	var point = in1.inputNum
+	var point = in1.InputNum
 	for _, v := range tempSlice {
-		if v >= in1.inputNum {
+		if v >= in1.InputNum {
 			offspring.nodeSlice[point] = v
 			point++
 		}
@@ -433,13 +433,13 @@ func mutateIndividual(in *Individual) *Individual {
 			var n = *newNode(offspring.nodeSum, 1)
 			offspring.nodeSum++
 			offspring.nodeMap[n.nodeNum] = n
-			var index = GetRandomInt(len(offspring.nodeSlice)-offspring.inputNum) + offspring.inputNum
+			var index = GetRandomInt(len(offspring.nodeSlice)-offspring.InputNum) + offspring.InputNum
 			rear := append([]int{n.nodeNum}, offspring.nodeSlice[index:]...)
 			offspring.nodeSlice = append(offspring.nodeSlice[:index], rear...)
 		} else { // p6
 			// Mutate the bias.
-			var index = GetRandomInt(len(offspring.nodeSlice) - offspring.inputNum)
-			index += offspring.inputNum
+			var index = GetRandomInt(len(offspring.nodeSlice) - offspring.InputNum)
+			index += offspring.InputNum
 			var n = offspring.nodeMap[offspring.nodeSlice[index]]
 			n.bias = biasRandom()
 			offspring.nodeMap[n.nodeNum] = n
