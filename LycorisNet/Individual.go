@@ -89,7 +89,7 @@ func (in *Individual) Forward() {
 	}
 
 	// Clean empty nodes according to a certain chance (cleanOdds).
-	if GetRandomFloat32() < cleanOdds && len(clean) != 0 {
+	if LycorisRandomFloat32() < cleanOdds && len(clean) != 0 {
 		for k := range clean {
 			delete(in.nodeMap, k)
 		}

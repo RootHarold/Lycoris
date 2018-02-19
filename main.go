@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"./LycorisNet"
+	"time"
 )
 
 func fun(in *LycorisNet.Individual) {
@@ -16,15 +17,16 @@ func fun(in *LycorisNet.Individual) {
 }
 
 func main() {
-	fmt.Println("Lycoris core 0.9.9-14")
+	fmt.Println("Lycoris core 0.9.9-15")
 	var radiata = LycorisNet.NewLycoris(1000, 2, 2)
 	radiata.SetForwardFunc(fun)
 	epoch := 10
+	t1 := time.Now()
 	for i := 0; i < epoch; i++ {
 		radiata.RunLycoris()
 		fmt.Println(radiata.Best.Fitness)
 	}
-	radiata.Best.SetInput([]float32{0, 1})
-	radiata.Best.Forward()
+	elapsed := time.Since(t1)
 	fmt.Println(radiata.Best.GetOutput())
+	fmt.Println("App elapsed: ", elapsed)
 }

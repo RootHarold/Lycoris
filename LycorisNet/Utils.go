@@ -28,12 +28,12 @@ var distanceThreshold float32 = 20 // Need to be checked.
 
 // This is for initializing weight.
 func weightRandom() float32 {
-	return GetRandomFloat32()*2 - 1
+	return LycorisRandomFloat32()*2 - 1
 }
 
 // This is for initializing bias.
 func biasRandom() float32 {
-	return GetRandomFloat32()*2 - 1
+	return LycorisRandomFloat32()*2 - 1
 }
 
 // The activation function.
@@ -190,7 +190,7 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 		} else if v >= offspring.InputNum && v < basicNodeSum {
 			n = *newNode(v, 2)
 			if duplicateNodes[v] {
-				if GetRandomFloat32() < 0.5 {
+				if LycorisRandomFloat32() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
 					n.bias = in2.nodeMap[v].bias
@@ -199,7 +199,7 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 		} else {
 			n = *newNode(v, 1)
 			if duplicateNodes[v] {
-				if GetRandomFloat32() < 0.5 {
+				if LycorisRandomFloat32() < 0.5 {
 					n.bias = in1.nodeMap[v].bias
 				} else {
 					n.bias = in2.nodeMap[v].bias
@@ -221,7 +221,7 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 			break
 		}
 		if (*o1)[point1].innovationNum == (*o2)[point2].innovationNum {
-			if GetRandomFloat32() < 0.5 {
+			if LycorisRandomFloat32() < 0.5 {
 				offspring.nodeMap[(*g1)[point1].out].genomeMap[(*g1)[point1]] = (*o1)[point1]
 			} else {
 				offspring.nodeMap[(*g2)[point2].out].genomeMap[(*g2)[point2]] = (*o2)[point2]
@@ -322,7 +322,7 @@ func mutateIndividual(in *Individual) *Individual {
 
 	// This process can be repeated many times.
 	for z := 0; z < mutateTime; z++ {
-		var ran = GetRandomFloat32()
+		var ran = LycorisRandomFloat32()
 
 		if ran < p1 { // p1
 			// Add the new node between a connection.
@@ -372,7 +372,7 @@ func mutateIndividual(in *Individual) *Individual {
 		} else if ran >= p1 && ran < p1+p2 { // p2
 			// Delete a node.
 			var length = len(offspring.nodeSlice)
-			var index = GetRandomInt(length)
+			var index = LycorisRandomInt(length)
 			var sliceIndex = offspring.nodeSlice[index]
 			if offspring.nodeMap[sliceIndex].nodeType == 1 {
 				for i := index + 1; i < length; i++ {
@@ -387,8 +387,8 @@ func mutateIndividual(in *Individual) *Individual {
 		} else if ran >= p1+p2 && ran < p1+p2+p3 { // p3
 			// Add a new connection between two nodes.
 			var length = len(offspring.nodeSlice)
-			var index1 = GetRandomInt(length)
-			var index2 = index1 + GetRandomInt(length-index1)
+			var index1 = LycorisRandomInt(length)
+			var index2 = index1 + LycorisRandomInt(length-index1)
 			if index1 != index2 {
 				var inputNum = offspring.nodeSlice[index1]
 				var outputNum = offspring.nodeSlice[index2]
@@ -429,12 +429,12 @@ func mutateIndividual(in *Individual) *Individual {
 			var n = *newNode(offspring.nodeSum, 1)
 			offspring.nodeSum++
 			offspring.nodeMap[n.nodeNum] = n
-			var index = GetRandomInt(len(offspring.nodeSlice)-offspring.InputNum) + offspring.InputNum
+			var index = LycorisRandomInt(len(offspring.nodeSlice)-offspring.InputNum) + offspring.InputNum
 			rear := append([]int{n.nodeNum}, offspring.nodeSlice[index:]...)
 			offspring.nodeSlice = append(offspring.nodeSlice[:index], rear...)
 		} else { // p6
 			// Mutate the bias.
-			var index = GetRandomInt(len(offspring.nodeSlice) - offspring.InputNum)
+			var index = LycorisRandomInt(len(offspring.nodeSlice) - offspring.InputNum)
 			index += offspring.InputNum
 			var n = offspring.nodeMap[offspring.nodeSlice[index]]
 			n.bias = biasRandom()

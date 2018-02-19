@@ -7,6 +7,8 @@ import (
 	"sort"
 )
 
+// The structure lycoris is the highest level module of LycorisNet,
+// and it's in singleton pattern.
 type lycoris struct {
 	speciesList []species            // The slice of species.
 	forwardFunc func(in *Individual) // This core function needs to be completed.
@@ -23,12 +25,16 @@ type lycoris struct {
 	OutputNum   int                  // The dimension of output.
 }
 
+// Apply the core function to lycoris. It is driven by events and
+// promotes the fitting of the whole network.
 func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
 	radiata.forwardFunc = f
 }
 
-var radiata *lycoris // It's for singleton pattern.
+// It's for singleton pattern.
+var radiata *lycoris
 
+// Emerge new object.
 func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 	if radiata == nil {
 		runtime.GOMAXPROCS(cpuNum)
@@ -39,7 +45,7 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 		radiata.Capacity = capacity
 		radiata.InputNum = inputNum
 		radiata.OutputNum = outputNum
-		radiata.tock = 1
+		radiata.tock = 1 // Minimum step.
 		radiata.gapList = list.New()
 		var specie = species{}
 		var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
@@ -52,8 +58,10 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 	return radiata
 }
 
+// Assist in parallel computing.
 var wait sync.WaitGroup
 
+// Mating.
 func (radiata *lycoris) mate() {
 	var specieLength = len(radiata.speciesList)
 	radiata.tempList1 = make([][]Individual, specieLength)
@@ -71,15 +79,17 @@ func (radiata *lycoris) mate() {
 	}
 }
 
+// The parallel kernel of mate().
 func (radiata *lycoris) mate_core(specieNum int, start int, end int) {
 	var l = radiata.speciesList[specieNum].individualList
 	var length = len(l)
 	for i := start; i < end; i++ {
-		radiata.tempList1[specieNum][i] = *mateIndividual(&(l[GetRandomInt(length)]), &(l[GetRandomInt(length)]))
+		radiata.tempList1[specieNum][i] = *mateIndividual(&(l[LycorisRandomInt(length)]), &(l[LycorisRandomInt(length)]))
 	}
 	wait.Done()
 }
 
+// Mutating.
 func (radiata *lycoris) mutate() {
 	var specieLength = len(radiata.speciesList)
 	radiata.tempList1 = make([][]Individual, specieLength)
@@ -97,15 +107,17 @@ func (radiata *lycoris) mutate() {
 	}
 }
 
+// The parallel kernel of mutate().
 func (radiata *lycoris) mutate_core(specieNum int, start int, end int) {
 	var l = radiata.speciesList[specieNum].individualList
 	var length = len(l)
 	for i := start; i < end; i++ {
-		radiata.tempList1[specieNum][i] = *mutateIndividual(&(l[GetRandomInt(length)]))
+		radiata.tempList1[specieNum][i] = *mutateIndividual(&(l[LycorisRandomInt(length)]))
 	}
 	wait.Done()
 }
 
+// Computing distances between individuals. And then classify them.
 func (radiata *lycoris) classify() {
 	var specieLength = len(radiata.speciesList)
 	radiata.tempList2 = make([][]int, specieLength)
@@ -139,12 +151,13 @@ func (radiata *lycoris) classify() {
 	radiata.speciesList = tempSpeciesList
 }
 
+// The parallel kernel of classify().
 func (radiata *lycoris) classify_core(specieNum int, start int, end int) {
 	var specieLength = len(radiata.speciesList)
 	for i := start; i < end; i++ {
 		for j := 0; j < specieLength; j++ {
 			var list = radiata.speciesList[j].individualList
-			var dis = distance(&(radiata.tempList1[specieNum][i]), &(list[GetRandomInt(len(list))]))
+			var dis = distance(&(radiata.tempList1[specieNum][i]), &(list[LycorisRandomInt(len(list))]))
 			if dis <= distanceThreshold {
 				radiata.tempList2[specieNum][i] = j
 				break
@@ -156,6 +169,7 @@ func (radiata *lycoris) classify_core(specieNum int, start int, end int) {
 	wait.Done()
 }
 
+// All individuals are calculated forward.
 func (radiata *lycoris) forward() {
 	var specieLength = len(radiata.speciesList)
 	for i := 0; i < specieLength; i++ {
@@ -170,6 +184,7 @@ func (radiata *lycoris) forward() {
 	}
 }
 
+// The parallel kernel of forward().
 func (radiata *lycoris) forward_core(specieNum int, start int, end int) {
 	for i := start; i < end; i++ {
 		radiata.forwardFunc(&(radiata.speciesList[specieNum].individualList[i]))
@@ -177,38 +192,41 @@ func (radiata *lycoris) forward_core(specieNum int, start int, end int) {
 	wait.Done()
 }
 
-var p1_b float32
-var p2_b float32
-var p3_b float32
-var p4_b float32
-var p5_b float32
-var p6_b float32
-var mateOdds_b float32
-var mutateOdds_b float32
-var mutateTime_b int
+var p1_b float32         // The backup of p1.
+var p2_b float32         // The backup of p2.
+var p3_b float32         // The backup of p3.
+var p4_b float32         // The backup of p4.
+var p5_b float32         // The backup of p5.
+var p6_b float32         // The backup of p6.
+var mateOdds_b float32   // The backup of mateOdds.
+var mutateOdds_b float32 // The backup of mutateOdds.
+var mutateTime_b int     // The backup of mutateTime.
 
 func emergeArgs() {
-	var mutateTime_e = GetRandomInt(10) + 1
-	var mateOdds_e = GetRandomFloat32()
-	var mutateOdds_e = GetRandomFloat32()
+	var mutateTime_e = LycorisRandomInt(10) + 1 // [1, 10]
+	var mateOdds_e = LycorisRandomFloat32()     // [0.0, 1.0)
+	var mutateOdds_e = LycorisRandomFloat32()   // [0.0, 1.0)
 	var remain float32 = 1
-	var p1_e = GetRandomFloat32()
+	var p1_e = LycorisRandomFloat32()
 	remain -= p1_e
-	var p2_e = GetRandomFloat32() * remain
+	var p2_e = LycorisRandomFloat32() * remain
 	remain -= p2_e
-	var p3_e = GetRandomFloat32() * remain
+	var p3_e = LycorisRandomFloat32() * remain
 	remain -= p3_e
-	var p4_e = GetRandomFloat32() * remain
+	var p4_e = LycorisRandomFloat32() * remain
 	remain -= p4_e
-	var p5_e = GetRandomFloat32() * remain
+	var p5_e = LycorisRandomFloat32() * remain
 	remain -= p5_e
 	var p6_e = remain
+
 	p1_b, p2_b, p3_b, p4_b, p5_b, p6_b, mateOdds_b, mutateOdds_b, mutateTime_b = p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime
 	p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1_e, p2_e, p3_e, p4_e, p5_e, p6_e, mateOdds_e, mutateOdds_e, mutateTime_e
 }
 
+// Assist in autoParameter().
 var checkFlag = false
 
+// Update some parameters automatically.
 func (radiata *lycoris) autoParameter() {
 	if checkFlag {
 		var length = radiata.gapList.Len()
@@ -219,11 +237,12 @@ func (radiata *lycoris) autoParameter() {
 				count++
 			}
 		}
+
 		if count < (length/2 + 1) { // Miss.
 			radiata.miss++
 			radiata.hit = 0
 			if radiata.miss == 2 {
-				if radiata.tock < 256 {
+				if radiata.tock < 16 { // Maximum step.
 					radiata.tock *= 2
 				}
 				radiata.miss = 1
@@ -233,7 +252,7 @@ func (radiata *lycoris) autoParameter() {
 			radiata.hit++
 			radiata.miss = 0
 			if radiata.hit == 2 {
-				if radiata.tock > 1 {
+				if radiata.tock > 1 { // Minimum step.
 					radiata.tock /= 2
 				}
 				radiata.hit = 1
@@ -251,28 +270,10 @@ func (radiata *lycoris) autoParameter() {
 	}
 }
 
-type sort_fitness struct {
-	fitness       float32
-	specieNum     int
-	individualNum int
-}
+// Assist in chooseElite().
+var gapListFlag = true
 
-type sort_fitness_array []sort_fitness
-
-func (f sort_fitness_array) Len() int {
-	return len(f)
-}
-
-func (f sort_fitness_array) Less(i, j int) bool {
-	return f[i].fitness < f[j].fitness
-}
-
-func (f sort_fitness_array) Swap(i, j int) {
-	f[i], f[j] = f[j], f[i]
-}
-
-var differenceListFlag = true
-
+// Choose elites and manipulate gapList.
 func (radiata *lycoris) chooseElite() {
 	var totalLength = 0
 	for _, v := range radiata.speciesList {
@@ -312,10 +313,10 @@ func (radiata *lycoris) chooseElite() {
 	var difference = tempBest.Fitness - radiata.Best.Fitness
 	radiata.Best = tempBest
 	// len < 8
-	if differenceListFlag {
+	if gapListFlag {
 		var length = radiata.gapList.Len()
 		if length == 7 {
-			differenceListFlag = false
+			gapListFlag = false
 		}
 		radiata.gapList.PushBack(difference)
 	} else { // len == 8
