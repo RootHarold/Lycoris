@@ -5,8 +5,6 @@ import (
 	"runtime"
 )
 
-// It's for the function "reLU(...)".
-var leak float32 = 0.01
 // Arguments for the algorithm.
 var c1 float32 = 1.0
 var c2 float32 = 0.4
@@ -32,12 +30,12 @@ var distanceThreshold float32 = 20 // Need to be checked.
 
 // This is for initializing weight.
 func weightRandom() float32 {
-	return GetRandomFloat32()
+	return GetRandomFloat32()*2 - 1
 }
 
 // This is for initializing bias.
 func biasRandom() float32 {
-	return GetRandomFloat32()
+	return GetRandomFloat32()*2 - 1
 }
 
 // The activation function.

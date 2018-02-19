@@ -19,6 +19,9 @@ func LycorisAbs(x float32) float32 {
 	return float32(math.Abs(float64(x)))
 }
 
+// It's for the function "ReLU(...)".
+var leak float32 = 0.01
+
 // ReLU.
 func ReLU(f float32) float32 {
 	if f > 0 {

@@ -18,9 +18,9 @@ type lycoris struct {
 	hit            int
 	miss           int
 	differenceList *list.List
-	capacity       int
-	inputNum       int
-	outputNum      int
+	Capacity       int
+	InputNum       int
+	OutputNum      int
 }
 
 func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
@@ -31,9 +31,9 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	go randFloat32() // Init the random number generator.
 	var radiata = &lycoris{}
-	radiata.capacity = capacity
-	radiata.inputNum = inputNum
-	radiata.outputNum = outputNum
+	radiata.Capacity = capacity
+	radiata.InputNum = inputNum
+	radiata.OutputNum = outputNum
 	radiata.tock = 1
 	radiata.differenceList = list.New()
 	var specie = species{}
@@ -217,7 +217,7 @@ func (radiata *lycoris) autoParameter() {
 			radiata.miss++
 			radiata.hit = 0
 			if radiata.miss == 2 {
-				if radiata.tock < 512 {
+				if radiata.tock < 256 {
 					radiata.tock *= 2
 				}
 				radiata.miss = 1
@@ -286,8 +286,11 @@ func (radiata *lycoris) chooseElite() {
 
 	var specieLength = len(radiata.speciesList)
 	var newSpecieList = make([]species, specieLength)
-	var newLength = int(float32(radiata.capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
+	var newLength = int(float32(radiata.Capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
 	for i := totalLength - 1; i > totalLength-newLength-1; i-- {
+		if i == -1 {
+			break
+		}
 		var temp = sortList[i]
 		newSpecieList[temp.specieNum].individualList = append(newSpecieList[temp.specieNum].individualList, radiata.speciesList[temp.specieNum].individualList[temp.individualNum])
 	}
