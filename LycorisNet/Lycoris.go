@@ -209,22 +209,38 @@ func (radiata *lycoris) classify_core(specieNum int, start int, end int) {
 // All individuals are calculated forward.
 func (radiata *lycoris) forward() {
 	specieLength = len(radiata.speciesList)
+	var start = make([][]int, cpuNum)
+	var end = make([][]int, cpuNum)
+	for i := 0; i < cpuNum; i++ {
+		start[i] = make([]int, specieLength)
+		end[i] = make([]int, specieLength)
+	}
+
 	for i := 0; i < specieLength; i++ {
-		wait.Add(cpuNum)
 		var individualLength = len(radiata.speciesList[i].individualList)
 		var part = individualLength / cpuNum
-		for j := 0; j < cpuNum-1; j++ {
-			go radiata.forward_core(i, j*part, (j+1)*part)
+		var temp = cpuNum - 1
+		for j := 0; j < temp; j++ {
+			start[j][i] = j * part
+			end[j][i] = (j + 1) * part
 		}
-		go radiata.forward_core(i, (cpuNum-1)*part, individualLength)
-		wait.Wait()
+		start[temp][i] = temp * part
+		end[temp][i] = individualLength
 	}
+
+	wait.Add(cpuNum)
+	for i := 0; i < cpuNum; i++ {
+		go radiata.forward_core(start[i], end[i])
+	}
+	wait.Wait()
 }
 
 // The parallel kernel of forward().
-func (radiata *lycoris) forward_core(specieNum int, start int, end int) {
-	for i := start; i < end; i++ {
-		radiata.forwardFunc(&(radiata.speciesList[specieNum].individualList[i]))
+func (radiata *lycoris) forward_core(start []int, end []int) {
+	for i := 0; i < specieLength; i++ {
+		for j := start[i]; j < end[i]; j++ {
+			radiata.forwardFunc(&(radiata.speciesList[i].individualList[j]))
+		}
 	}
 	wait.Done()
 }
