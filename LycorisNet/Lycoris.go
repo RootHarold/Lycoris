@@ -61,37 +61,57 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 // Assist in parallel computing.
 var wait sync.WaitGroup
 
+// The length of speciesList.
+var specieLength int
+
 // Mating.
 func (radiata *lycoris) mate() {
-	var specieLength = len(radiata.speciesList)
+	specieLength = len(radiata.speciesList)
 	radiata.tempList1 = make([][]Individual, specieLength)
+	var oldLength = make([]int, specieLength)
+	var start = make([][]int, cpuNum)
+	var end = make([][]int, cpuNum)
+	for i := 0; i < cpuNum; i++ {
+		start[i] = make([]int, specieLength)
+		end[i] = make([]int, specieLength)
+	}
+
 	for i := 0; i < specieLength; i++ {
-		wait.Add(cpuNum)
 		var individualLength = len(radiata.speciesList[i].individualList)
+		oldLength[i] = individualLength
 		var mateLength = int(float32(individualLength) * mateOdds)
 		radiata.tempList1[i] = make([]Individual, mateLength)
 		var part = mateLength / cpuNum
-		for j := 0; j < cpuNum-1; j++ {
-			go radiata.mate_core(i, j*part, (j+1)*part)
+		var temp = cpuNum - 1
+		for j := 0; j < temp; j++ {
+			start[j][i] = j * part
+			end[j][i] = (j + 1) * part
 		}
-		go radiata.mate_core(i, (cpuNum-1)*part, mateLength)
-		wait.Wait()
+		start[temp][i] = temp * part
+		end[temp][i] = mateLength
 	}
+	
+	wait.Add(cpuNum)
+	for i := 0; i < cpuNum; i++ {
+		go radiata.mate_core(oldLength, start[i], end[i])
+	}
+	wait.Wait()
 }
 
 // The parallel kernel of mate().
-func (radiata *lycoris) mate_core(specieNum int, start int, end int) {
-	var l = radiata.speciesList[specieNum].individualList
-	var length = len(l)
-	for i := start; i < end; i++ {
-		radiata.tempList1[specieNum][i] = *mateIndividual(&(l[LycorisRandomInt(length)]), &(l[LycorisRandomInt(length)]))
+func (radiata *lycoris) mate_core(oldLength []int, start []int, end []int) {
+	for i := 0; i < specieLength; i++ {
+		var l = radiata.speciesList[i].individualList
+		for j := start[i]; j < end[i]; j++ {
+			radiata.tempList1[i][j] = *mateIndividual(&(l[LycorisRandomInt(oldLength[i])]), &(l[LycorisRandomInt(oldLength[i])]))
+		}
 	}
 	wait.Done()
 }
 
 // Mutating.
 func (radiata *lycoris) mutate() {
-	var specieLength = len(radiata.speciesList)
+	specieLength = len(radiata.speciesList)
 	radiata.tempList1 = make([][]Individual, specieLength)
 	for i := 0; i < specieLength; i++ {
 		wait.Add(cpuNum)
@@ -119,7 +139,7 @@ func (radiata *lycoris) mutate_core(specieNum int, start int, end int) {
 
 // Computing distances between individuals. And then classify them.
 func (radiata *lycoris) classify() {
-	var specieLength = len(radiata.speciesList)
+	specieLength = len(radiata.speciesList)
 	radiata.tempList2 = make([][]int, specieLength)
 	for i := 0; i < specieLength; i++ {
 		wait.Add(cpuNum)
@@ -153,7 +173,7 @@ func (radiata *lycoris) classify() {
 
 // The parallel kernel of classify().
 func (radiata *lycoris) classify_core(specieNum int, start int, end int) {
-	var specieLength = len(radiata.speciesList)
+	specieLength = len(radiata.speciesList)
 	for i := start; i < end; i++ {
 		for j := 0; j < specieLength; j++ {
 			var list = radiata.speciesList[j].individualList
@@ -171,7 +191,7 @@ func (radiata *lycoris) classify_core(specieNum int, start int, end int) {
 
 // All individuals are calculated forward.
 func (radiata *lycoris) forward() {
-	var specieLength = len(radiata.speciesList)
+	specieLength = len(radiata.speciesList)
 	for i := 0; i < specieLength; i++ {
 		wait.Add(cpuNum)
 		var individualLength = len(radiata.speciesList[i].individualList)
@@ -291,7 +311,7 @@ func (radiata *lycoris) chooseElite() {
 	var last = sortList[totalLength-1]
 	var tempBest = radiata.speciesList[last.specieNum].individualList[last.individualNum]
 
-	var specieLength = len(radiata.speciesList)
+	specieLength = len(radiata.speciesList)
 	var newSpecieList = make([]species, specieLength)
 	var newLength = int(float32(radiata.Capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
 	for i := totalLength - 1; i > totalLength-newLength-1; i-- {

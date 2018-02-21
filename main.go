@@ -13,11 +13,11 @@ func fun(in *LycorisNet.Individual) {
 	for i := 0; i < in.OutputNum; i++ {
 		ret -= (in.GetOutput()[i] - 0.5) * (in.GetOutput()[i] - 0.5)
 	}
-	in.Fitness = ret * 10000
+	in.Fitness = ret
 }
 
 func main() {
-	fmt.Println("Lycoris core 0.9.9-15")
+	fmt.Println("Lycoris core 0.9.9-16")
 	var radiata = LycorisNet.NewLycoris(1000, 2, 2)
 	radiata.SetForwardFunc(fun)
 	epoch := 10
