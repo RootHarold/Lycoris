@@ -90,7 +90,7 @@ func (radiata *lycoris) mate() {
 		start[temp][i] = temp * part
 		end[temp][i] = mateLength
 	}
-	
+
 	wait.Add(cpuNum)
 	for i := 0; i < cpuNum; i++ {
 		go radiata.mate_core(oldLength, start[i], end[i])
@@ -113,26 +113,43 @@ func (radiata *lycoris) mate_core(oldLength []int, start []int, end []int) {
 func (radiata *lycoris) mutate() {
 	specieLength = len(radiata.speciesList)
 	radiata.tempList1 = make([][]Individual, specieLength)
+	var oldLength = make([]int, specieLength)
+	var start = make([][]int, cpuNum)
+	var end = make([][]int, cpuNum)
+	for i := 0; i < cpuNum; i++ {
+		start[i] = make([]int, specieLength)
+		end[i] = make([]int, specieLength)
+	}
+
 	for i := 0; i < specieLength; i++ {
-		wait.Add(cpuNum)
 		var individualLength = len(radiata.speciesList[i].individualList)
+		oldLength[i] = individualLength
 		var mutateLength = int(float32(individualLength) * mutateOdds)
 		radiata.tempList1[i] = make([]Individual, mutateLength)
 		var part = mutateLength / cpuNum
-		for j := 0; j < cpuNum-1; j++ {
-			go radiata.mutate_core(i, j*part, (j+1)*part)
+		var temp = cpuNum - 1
+		for j := 0; j < temp; j++ {
+			start[j][i] = j * part
+			end[j][i] = (j + 1) * part
 		}
-		go radiata.mutate_core(i, (cpuNum-1)*part, mutateLength)
-		wait.Wait()
+		start[temp][i] = temp * part
+		end[temp][i] = mutateLength
 	}
+
+	wait.Add(cpuNum)
+	for i := 0; i < cpuNum; i++ {
+		go radiata.mutate_core(oldLength, start[i], end[i])
+	}
+	wait.Wait()
 }
 
 // The parallel kernel of mutate().
-func (radiata *lycoris) mutate_core(specieNum int, start int, end int) {
-	var l = radiata.speciesList[specieNum].individualList
-	var length = len(l)
-	for i := start; i < end; i++ {
-		radiata.tempList1[specieNum][i] = *mutateIndividual(&(l[LycorisRandomInt(length)]))
+func (radiata *lycoris) mutate_core(oldLength []int, start []int, end []int) {
+	for i := 0; i < specieLength; i++ {
+		var l = radiata.speciesList[i].individualList
+		for j := start[i]; j < end[i]; j++ {
+			radiata.tempList1[i][j] = *mutateIndividual(&(l[LycorisRandomInt(oldLength[i])]))
+		}
 	}
 	wait.Done()
 }
