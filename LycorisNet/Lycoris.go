@@ -57,7 +57,7 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 		}
 		radiata.speciesList = append(radiata.speciesList, specie)
 	})
-	
+
 	return radiata
 }
 
@@ -302,13 +302,13 @@ func emergeArgs() {
 var checkFlag = false
 
 // Update some parameters automatically.
-func (radiata *lycoris) autoParameter() {
+func autoParameter() {
 	if checkFlag {
 		var length = gapList.Len()
 		var lastValue = gapList.Back().Value.(float32)
 		var count = 0
 		for e := gapList.Front(); e != nil; e = e.Next() {
-			if lastValue >= e.Value.(float32) {
+			if lastValue > e.Value.(float32) {
 				count++
 			}
 		}
@@ -354,11 +354,11 @@ func (radiata *lycoris) chooseElite() {
 	for _, v := range radiata.speciesList {
 		totalLength += len(v.individualList)
 	}
-	var sortList = (sort_fitness_array)(make([]sort_fitness, totalLength))
+	var sortList = (sortFitnessArray)(make([]sortFitness, totalLength))
 	var pointer = 0
 	for k1, v1 := range radiata.speciesList {
 		for k2, v2 := range v1.individualList {
-			sortList[pointer] = sort_fitness{v2.Fitness, k1, k2}
+			sortList[pointer] = sortFitness{v2.Fitness, k1, k2}
 			pointer++
 		}
 	}
@@ -366,11 +366,10 @@ func (radiata *lycoris) chooseElite() {
 	var last = sortList[totalLength-1]
 	var tempBest = radiata.speciesList[last.specieNum].individualList[last.individualNum]
 
-	specieLength = len(radiata.speciesList)
 	var newSpecieList = make([]species, specieLength)
 	var newLength = int(float32(radiata.Capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
 	for i := totalLength - 1; i > totalLength-newLength-1; i-- {
-		if i == -1 {
+		if i == -1 { // TODO: Elegant repair.
 			break
 		}
 		var temp = sortList[i]
@@ -383,8 +382,8 @@ func (radiata *lycoris) chooseElite() {
 			tempSpeciesList = append(tempSpeciesList, v)
 		}
 	}
-
 	radiata.speciesList = tempSpeciesList
+
 	var difference = tempBest.Fitness - radiata.Best.Fitness
 	radiata.Best = tempBest
 	// len < 8
@@ -402,11 +401,11 @@ func (radiata *lycoris) chooseElite() {
 
 // Each time this function is called, the network runs forward one time.
 func (radiata *lycoris) RunLycoris() {
-	radiata.mate()          // Mating.
-	radiata.classify()      // Computing distances of new individuals.
-	radiata.mutate()        // Mutating.
-	radiata.classify()      // Computing distances of new individuals.
-	radiata.forward()       // Forward calculation.
-	radiata.autoParameter() // Changing some parameters automatically.
-	radiata.chooseElite()   // Sorting and choosing some individuals with higher fitness.
+	radiata.mate()        // Mating.
+	radiata.classify()    // Computing distances of new individuals.
+	radiata.mutate()      // Mutating.
+	radiata.classify()    // Computing distances of new individuals.
+	radiata.forward()     // Forward calculation.
+	autoParameter()       // Changing some parameters automatically.
+	radiata.chooseElite() // Sorting and choosing some individuals with higher fitness.
 }
