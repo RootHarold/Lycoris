@@ -18,13 +18,13 @@ type lycoris struct {
 	OutputNum   int                  // The dimension of output.
 }
 
-var tempList1   [][]Individual       // A temporary two-dimensional slice to store individuals.
-var tempList2   [][]int              // A temporary slice used in classify().
-var tick        int                  // Used in autoParameter().
-var tock        int                  // Used in autoParameter().
-var hit         int                  // Used in autoParameter().
-var miss        int                  // Used in autoParameter().
-var gapList     *list.List           // The role is to automatically change some of the parameters.
+var tempList1 [][]Individual // A temporary two-dimensional slice to store individuals.
+var tempList2 [][]int        // A temporary slice used in classify().
+var tick int                 // Used in autoParameter().
+var tock int                 // Used in autoParameter().
+var hit int                  // Used in autoParameter().
+var miss int                 // Used in autoParameter().
+var gapList *list.List       // The role is to automatically change some of the parameters.
 
 // Apply the core function to lycoris. It is driven by events and
 // promotes the fitting of the whole network.
@@ -196,7 +196,7 @@ func (radiata *lycoris) classify() {
 			}
 		}
 	}
-	
+
 	var tempSpeciesList []species
 	for _, v := range radiata.speciesList {
 		if len(v.individualList) != 0 {
