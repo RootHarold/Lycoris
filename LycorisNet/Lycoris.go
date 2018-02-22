@@ -34,10 +34,11 @@ func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
 
 // It's for singleton pattern.
 var radiata *lycoris
+var once sync.Once
 
 // Emerge new object.
 func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
-	if radiata == nil {
+	once.Do(func() {
 		runtime.GOMAXPROCS(cpuNum)
 		go randFloat32() // Init the random number generator.
 
@@ -55,7 +56,8 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 			specie.individualList[i] = *newIndividual(inputNum, outputNum)
 		}
 		radiata.speciesList = append(radiata.speciesList, specie)
-	}
+	})
+	
 	return radiata
 }
 
@@ -265,35 +267,35 @@ func (radiata *lycoris) forwardCore(start []int, end []int) {
 	wait.Done()
 }
 
-var p1_b float32         // The backup of p1.
-var p2_b float32         // The backup of p2.
-var p3_b float32         // The backup of p3.
-var p4_b float32         // The backup of p4.
-var p5_b float32         // The backup of p5.
-var p6_b float32         // The backup of p6.
-var mateOdds_b float32   // The backup of mateOdds.
-var mutateOdds_b float32 // The backup of mutateOdds.
-var mutateTime_b int     // The backup of mutateTime.
+var p1B float32         // The backup of p1.
+var p2B float32         // The backup of p2.
+var p3B float32         // The backup of p3.
+var p4B float32         // The backup of p4.
+var p5B float32         // The backup of p5.
+var p6B float32         // The backup of p6.
+var mateOddsB float32   // The backup of mateOdds.
+var mutateOddsB float32 // The backup of mutateOdds.
+var mutateTimeB int     // The backup of mutateTime.
 
 func emergeArgs() {
-	var mutateTime_e = LycorisRandomInt(10) + 1 // [1, 10]
-	var mateOdds_e = LycorisRandomFloat32()     // [0.0, 1.0)
-	var mutateOdds_e = LycorisRandomFloat32()   // [0.0, 1.0)
+	var mutateTimeE = LycorisRandomInt(10) + 1 // [1, 10]
+	var mateOddsE = LycorisRandomFloat32()     // [0.0, 1.0)
+	var mutateOddsE = LycorisRandomFloat32()   // [0.0, 1.0)
 	var remain float32 = 1
-	var p1_e = LycorisRandomFloat32()
-	remain -= p1_e
-	var p2_e = LycorisRandomFloat32() * remain
-	remain -= p2_e
-	var p3_e = LycorisRandomFloat32() * remain
-	remain -= p3_e
-	var p4_e = LycorisRandomFloat32() * remain
-	remain -= p4_e
-	var p5_e = LycorisRandomFloat32() * remain
-	remain -= p5_e
-	var p6_e = remain
+	var p1E = LycorisRandomFloat32()
+	remain -= p1E
+	var p2E = LycorisRandomFloat32() * remain
+	remain -= p2E
+	var p3E = LycorisRandomFloat32() * remain
+	remain -= p3E
+	var p4E = LycorisRandomFloat32() * remain
+	remain -= p4E
+	var p5E = LycorisRandomFloat32() * remain
+	remain -= p5E
+	var p6E = remain
 
-	p1_b, p2_b, p3_b, p4_b, p5_b, p6_b, mateOdds_b, mutateOdds_b, mutateTime_b = p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime
-	p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1_e, p2_e, p3_e, p4_e, p5_e, p6_e, mateOdds_e, mutateOdds_e, mutateTime_e
+	p1B, p2B, p3B, p4B, p5B, p6B, mateOddsB, mutateOddsB, mutateTimeB = p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime
+	p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1E, p2E, p3E, p4E, p5E, p6E, mateOddsE, mutateOddsE, mutateTimeE
 }
 
 // Assist in autoParameter().
@@ -320,7 +322,7 @@ func (radiata *lycoris) autoParameter() {
 				}
 				miss = 1
 			}
-			p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1_b, p2_b, p3_b, p4_b, p5_b, p6_b, mateOdds_b, mutateOdds_b, mutateTime_b
+			p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1B, p2B, p3B, p4B, p5B, p6B, mateOddsB, mutateOddsB, mutateTimeB
 		} else { // Hit.
 			hit++
 			miss = 0
