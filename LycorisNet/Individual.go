@@ -311,3 +311,12 @@ func ImportIndividual(path string) *Individual {
 	}
 	return in
 }
+
+// Return the number of nodes and genomes.
+func (in *Individual) getSize() (int, int) {
+	var size = 0
+	for _, v := range in.nodeMap {
+		size += len(v.genomeMap)
+	}
+	return len(in.nodeMap), size
+}
