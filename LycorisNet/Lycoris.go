@@ -36,7 +36,7 @@ func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
 var radiata *lycoris
 var once sync.Once
 
-// Emerge new object.
+// Emerge a new object.
 func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 	once.Do(func() {
 		runtime.GOMAXPROCS(cpuNum)
@@ -408,4 +408,28 @@ func (radiata *lycoris) RunLycoris() {
 	radiata.forward()     // Forward calculation.
 	autoParameter()       // Changing some parameters automatically.
 	radiata.chooseElite() // Sorting and choosing some individuals with higher fitness.
+}
+
+// Import the individual and emerge a new object.
+func ImportLycoris(path string, capacity int) *lycoris {
+	runtime.GOMAXPROCS(cpuNum)
+	go randFloat32() // Init the random number generator.
+
+	// Import the individual.
+	var source = ImportIndividual(path)
+	// Emerge a new lycoris and set some parameters.
+	radiata = &lycoris{}
+	radiata.Capacity = capacity
+	radiata.InputNum = source.InputNum
+	radiata.OutputNum = source.OutputNum
+	tock = 1 // Minimum step.
+	gapList = list.New()
+	var specie = species{}
+	var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
+	specie.individualList = make([]Individual, initialCapacity)
+	for i := 0; i < initialCapacity; i++ {
+		specie.individualList[i] = *(source.clone())
+	}
+	radiata.speciesList = append(radiata.speciesList, specie)
+	return radiata
 }
