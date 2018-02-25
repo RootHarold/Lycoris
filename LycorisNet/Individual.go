@@ -322,5 +322,5 @@ func (in *Individual) getSize() int {
 	for _, v := range in.nodeMap {
 		size += int(unsafe.Sizeof(v.genomeMap))
 	}
-	return len(in.nodeMap) + size
+	return size
 }

@@ -277,25 +277,53 @@ var mateOddsB float32   // The backup of mateOdds.
 var mutateOddsB float32 // The backup of mutateOdds.
 var mutateTimeB int     // The backup of mutateTime.
 
-func emergeArgs() {
-	var mutateTimeE = LycorisRandomInt(10) + 1 // [1, 10]
-	var mateOddsE = LycorisRandomFloat32()     // [0.0, 1.0)
-	var mutateOddsE = LycorisRandomFloat32()   // [0.0, 1.0)
-	var remain float32 = 1
-	var p1E = LycorisRandomFloat32()
-	remain -= p1E
-	var p2E = LycorisRandomFloat32() * remain
-	remain -= p2E
-	var p3E = LycorisRandomFloat32() * remain
-	remain -= p3E
-	var p4E = LycorisRandomFloat32() * remain
-	remain -= p4E
-	var p5E = LycorisRandomFloat32() * remain
-	remain -= p5E
-	var p6E = remain
+func emergeArgs() { // Memory exceeds the limit.
+	if memOverFlag {
+		var mutateTimeE = LycorisRandomInt(10) + 1 // [1, 10]
+		var mateOddsE = LycorisRandomFloat32()     // [0.0, 1.0)
+		var mutateOddsE = LycorisRandomFloat32()   // [0.0, 1.0)
+		var remain float32 = 1
+		var p1E float32 = 0
+		remain -= p1E
+		var p2E = LycorisRandomFloat32() * remain
+		remain -= p2E
+		var p3E float32 = 0
+		remain -= p3E
+		var p4E = LycorisRandomFloat32() * remain
+		remain -= p4E
+		var p5E float32 = 0
+		remain -= p5E
+		var p6E = remain
 
-	p1B, p2B, p3B, p4B, p5B, p6B, mateOddsB, mutateOddsB, mutateTimeB = p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime
-	p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1E, p2E, p3E, p4E, p5E, p6E, mateOddsE, mutateOddsE, mutateTimeE
+		if firstOver {
+			firstOver = false
+			p1B, p2B, p3B, p4B, p5B, p6B, mateOddsB, mutateOddsB, mutateTimeB = 0, p2E, 0, p4E, 0, p6E, mateOdds, mutateOdds, mutateTime
+			p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1E, p2E, p3E, p4E, p5E, p6E, mateOddsE, mutateOddsE, mutateTimeE
+		} else {
+			p1B, p2B, p3B, p4B, p5B, p6B, mateOddsB, mutateOddsB, mutateTimeB = p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime
+			p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1E, p2E, p3E, p4E, p5E, p6E, mateOddsE, mutateOddsE, mutateTimeE
+		}
+
+	} else {
+		var mutateTimeE = LycorisRandomInt(10) + 1 // [1, 10]
+		var mateOddsE = LycorisRandomFloat32()     // [0.0, 1.0)
+		var mutateOddsE = LycorisRandomFloat32()   // [0.0, 1.0)
+		var remain float32 = 1
+		var p1E = LycorisRandomFloat32()
+		remain -= p1E
+		var p2E = LycorisRandomFloat32() * remain
+		remain -= p2E
+		var p3E = LycorisRandomFloat32() * remain
+		remain -= p3E
+		var p4E = LycorisRandomFloat32() * remain
+		remain -= p4E
+		var p5E = LycorisRandomFloat32() * remain
+		remain -= p5E
+		var p6E = remain
+
+		p1B, p2B, p3B, p4B, p5B, p6B, mateOddsB, mutateOddsB, mutateTimeB = p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime
+		p1, p2, p3, p4, p5, p6, mateOdds, mutateOdds, mutateTime = p1E, p2E, p3E, p4E, p5E, p6E, mateOddsE, mutateOddsE, mutateTimeE
+	}
 }
 
 // Assist in autoParameter().
@@ -368,12 +396,28 @@ func (radiata *lycoris) chooseElite() {
 
 	var newSpecieList = make([]species, specieLength)
 	var newLength = int(float32(radiata.Capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
-	for i := totalLength - 1; i > totalLength-newLength-1; i-- {
+	var memSum = 0
+	var i = totalLength - 1
+	for ; i > totalLength-newLength-1; i-- {
 		if i == -1 { // TODO: Elegant repair.
 			break
 		}
 		var temp = sortList[i]
-		newSpecieList[temp.specieNum].individualList = append(newSpecieList[temp.specieNum].individualList, radiata.speciesList[temp.specieNum].individualList[temp.individualNum])
+		var tempIndividual = radiata.speciesList[temp.specieNum].individualList[temp.individualNum]
+		if memLimitFlag {
+			memSum += tempIndividual.getSize()
+		}
+		newSpecieList[temp.specieNum].individualList = append(newSpecieList[temp.specieNum].individualList, tempIndividual)
+	}
+	if memLimitFlag {
+		if memSum > (totalLength-i-1)*limitSize { // Memory exceeds the limit.
+			if !memOverFlag {
+				firstOver = true
+				memOverFlag = true
+			}
+		} else {
+			memOverFlag = false
+		}
 	}
 
 	var tempSpeciesList []species
@@ -432,4 +476,20 @@ func ImportLycoris(path string, capacity int) *lycoris {
 	}
 	radiata.speciesList = append(radiata.speciesList, specie)
 	return radiata
+}
+
+var memLimitFlag = false // The flag of memory limit.
+var limitSize int        // The size of maximum memory.
+var memOverFlag = false  // When memory exceeds the limit, this changes to true.
+var firstOver = false    // To fixed a potential bug.
+
+// Turn on memory-limit.
+func (radiata *lycoris) OpenMemLimit(size int) {
+	limitSize = size * 9 / 10
+	memLimitFlag = true
+}
+
+// Turn off memory-limit.
+func (radiata *lycoris) CloseMemLimit() {
+	memLimitFlag = false
 }
