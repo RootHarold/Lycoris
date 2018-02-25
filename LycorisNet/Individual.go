@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"io/ioutil"
 	"strings"
+	"unsafe"
 )
 
 // The "innovationNum" is the cumulative number of connections
@@ -312,11 +313,14 @@ func ImportIndividual(path string) *Individual {
 	return in
 }
 
-// Return the number of nodes and genomes.
-func (in *Individual) getSize() (int, int) {
+// Return the size of the individual.
+func (in *Individual) getSize() int {
 	var size = 0
+	size += int(unsafe.Sizeof(*in))
+	size += int(unsafe.Sizeof(in.nodeSlice))
+	size += int(unsafe.Sizeof(in.nodeMap))
 	for _, v := range in.nodeMap {
-		size += len(v.genomeMap)
+		size += int(unsafe.Sizeof(v.genomeMap))
 	}
-	return len(in.nodeMap), size
+	return len(in.nodeMap) + size
 }
