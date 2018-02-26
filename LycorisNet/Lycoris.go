@@ -25,6 +25,12 @@ var tock int                 // Used in autoParameter().
 var hit int                  // Used in autoParameter().
 var miss int                 // Used in autoParameter().
 var gapList *list.List       // The role is to automatically change some of the parameters.
+var maxTock = 16             // The maximum tock.
+
+// Set the maximum tock.
+func SetMaxTock(num int) {
+	maxTock = num
+}
 
 // Apply the core function to lycoris. It is driven by events and
 // promotes the fitting of the whole network.
@@ -279,9 +285,9 @@ var mutateTimeB int     // The backup of mutateTime.
 
 func emergeArgs() { // Memory exceeds the limit.
 	if memOverFlag {
-		var mutateTimeE = LycorisRandomInt(10) + 1 // [1, 10]
-		var mateOddsE = LycorisRandomFloat32()     // [0.0, 1.0)
-		var mutateOddsE = LycorisRandomFloat32()   // [0.0, 1.0)
+		var mutateTimeE = LycorisRandomInt(maxMutateTime) + 1 // [1, maxMutateTime]
+		var mateOddsE = LycorisRandomFloat32()                // [0.0, 1.0)
+		var mutateOddsE = LycorisRandomFloat32()              // [0.0, 1.0)
 		var remain float32 = 1
 		var p1E float32 = 0
 		remain -= p1E
@@ -305,9 +311,9 @@ func emergeArgs() { // Memory exceeds the limit.
 		}
 
 	} else {
-		var mutateTimeE = LycorisRandomInt(10) + 1 // [1, 10]
-		var mateOddsE = LycorisRandomFloat32()     // [0.0, 1.0)
-		var mutateOddsE = LycorisRandomFloat32()   // [0.0, 1.0)
+		var mutateTimeE = LycorisRandomInt(maxMutateTime) + 1 // [1, maxMutateTime]
+		var mateOddsE = LycorisRandomFloat32()                // [0.0, 1.0)
+		var mutateOddsE = LycorisRandomFloat32()              // [0.0, 1.0)
 		var remain float32 = 1
 		var p1E = LycorisRandomFloat32()
 		remain -= p1E
@@ -345,7 +351,7 @@ func autoParameter() {
 			miss++
 			hit = 0
 			if miss == 2 {
-				if tock < 16 { // Maximum step.
+				if tock < maxTock { // Maximum step.
 					tock *= 2
 				}
 				miss = 1

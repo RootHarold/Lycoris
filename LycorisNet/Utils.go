@@ -23,22 +23,68 @@ var cpuNum = runtime.NumCPU()
 var mateOdds float32 = 1
 // The initial odds of mutating.
 var mutateOdds float32 = 1
+// The maximum number of mutating.
+var maxMutateTime = 10
 // The threshold of the distance between two individuals.
 var distanceThreshold float32 = 20 // Need to be checked.
 
+// Set the threshold of the distance between two individuals.
+func SetDistanceThreshold(threshold float32) {
+	distanceThreshold = threshold
+}
+
+//Set "c1" and "c2".
+func SetDistanceArgs(a float32, b float32) {
+	c1, c2 = a, b
+}
+
+// Set the maximum number of mutating.
+func SetMaxMutateTime(num int) {
+	maxMutateTime = num
+}
+
 // This is for initializing weight.
 func weightRandom() float32 {
-	return LycorisRandomFloat32()*2 - 1
+	return LycorisRandomFloat32()*(weightB-weightA) + weightA
+}
+
+var weightA float32 = -1
+var weightB float32 = 1
+
+// Set the weightRandom()'s range.
+func SetWeigthRandom(a float32, b float32) {
+	weightA, weightB = a, b
 }
 
 // This is for initializing bias.
 func biasRandom() float32 {
-	return LycorisRandomFloat32()*2 - 1
+	return LycorisRandomFloat32()*(biasB-biasA) + biasA
 }
 
-// The activation function.
-func activateFunc(f float32) float32 {
-	return Sigmoid(f)
+var biasA float32 = -1
+var biasB float32 = 1
+
+// Set the biasRandom()'s range.
+func SetBiasRandom(a float32, b float32) {
+	biasA, biasB = a, b
+}
+
+var activateFuncName = "sigmoid"
+
+var activateFunc = Sigmoid
+
+// Set the activate function.
+func SetActivateFunc(function string) {
+	activateFuncName = function
+	if function == "sigmoid" {
+		activateFunc = Sigmoid
+	} else if function == "relu" {
+		activateFunc = ReLU
+	} else if function == "tanh" {
+		activateFunc = Tanh
+	} else {
+		panic("Wrong function name!")
+	}
 }
 
 // Used in "distance(...)".
