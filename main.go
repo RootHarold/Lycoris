@@ -17,9 +17,9 @@ func fun(in *LycorisNet.Individual) {
 }
 
 func main() {
-	fmt.Println("Lycoris core 0.9.9-32")
+	fmt.Println("Lycoris core 0.9.9-33")
 	var radiata = LycorisNet.NewLycoris(1000, 2, 2)
-	radiata.SetForwardFunc(fun)
+	LycorisNet.SetForwardFunc(fun)
 	epoch := 10
 	t1 := time.Now()
 	for i := 0; i < epoch; i++ {

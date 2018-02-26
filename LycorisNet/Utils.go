@@ -28,50 +28,16 @@ var maxMutateTime = 10
 // The threshold of the distance between two individuals.
 var distanceThreshold float32 = 20 // Need to be checked.
 
-// Set the threshold of the distance between two individuals.
-func SetDistanceThreshold(threshold float32) {
-	distanceThreshold = threshold
-}
+var activateFuncName = "sigmoid" // Name of active function.
+var activateFunc = Sigmoid       // Active function.
 
-//Set "c1" and "c2".
-func SetDistanceArgs(a float32, b float32) {
-	c1, c2 = a, b
-}
-
-// Set the maximum number of mutating.
-func SetMaxMutateTime(num int) {
-	maxMutateTime = num
-}
-
-// This is for initializing weight.
-func weightRandom() float32 {
-	return LycorisRandomFloat32()*(weightB-weightA) + weightA
-}
-
+// For SetWeigthRandom(...).
 var weightA float32 = -1
 var weightB float32 = 1
 
-// Set the weightRandom()'s range.
-func SetWeigthRandom(a float32, b float32) {
-	weightA, weightB = a, b
-}
-
-// This is for initializing bias.
-func biasRandom() float32 {
-	return LycorisRandomFloat32()*(biasB-biasA) + biasA
-}
-
+// For SetBiasRandom(...).
 var biasA float32 = -1
 var biasB float32 = 1
-
-// Set the biasRandom()'s range.
-func SetBiasRandom(a float32, b float32) {
-	biasA, biasB = a, b
-}
-
-var activateFuncName = "sigmoid"
-
-var activateFunc = Sigmoid
 
 // Set the activate function.
 func SetActivateFunc(function string) {
@@ -87,64 +53,39 @@ func SetActivateFunc(function string) {
 	}
 }
 
-// Used in "distance(...)".
-func sort1(in *Individual) (*[]float32, *[]int) {
-	var temp1 = make([]bool, in.innovationNum)
-	var temp2 = make([]float32, in.innovationNum)
-	var temp3 = make([]int, in.innovationNum)
-
-	var length = 0
-	for _, v1 := range in.nodeMap {
-		length += len(v1.genomeMap)
-		for _, v2 := range v1.genomeMap {
-			num := v2.innovationNum
-			temp1[num] = true
-			temp2[num] = v2.weight
-			temp3[num] = num
-		}
-	}
-
-	var result1 = make([]float32, length)
-	var result2 = make([]int, length)
-	var count = 0
-	for k, v := range temp1 {
-		if v {
-			result1[count] = temp2[k]
-			result2[count] = temp3[k]
-			count++
-		}
-	}
-	return &result1, &result2
+// Set the threshold of the distance between two individuals.
+func SetDistanceThreshold(threshold float32) {
+	distanceThreshold = threshold
 }
 
-// Used in "mateIndividual(...)".
-func sort2(in *Individual) (*[]gen, *[]ome) {
-	var temp1 = make([]bool, in.innovationNum)
-	var temp2 = make([]gen, in.innovationNum)
-	var temp3 = make([]ome, in.innovationNum)
+//Set "c1" and "c2".
+func SetDistanceArgs(a float32, b float32) {
+	c1, c2 = a, b
+}
 
-	var length = 0
-	for _, v1 := range in.nodeMap {
-		length += len(v1.genomeMap)
-		for k, v2 := range v1.genomeMap {
-			num := v2.innovationNum
-			temp1[num] = true
-			temp2[num] = k
-			temp3[num] = v2
-		}
-	}
+// Set the maximum number of mutating.
+func SetMaxMutateTime(num int) {
+	maxMutateTime = num
+}
 
-	var result1 = make([]gen, length)
-	var result2 = make([]ome, length)
-	var count = 0
-	for k, v := range temp1 {
-		if v {
-			result1[count] = temp2[k]
-			result2[count] = temp3[k]
-			count++
-		}
-	}
-	return &result1, &result2
+// Set the weightRandom()'s range.
+func SetWeigthRandom(a float32, b float32) {
+	weightA, weightB = a, b
+}
+
+// Set the biasRandom()'s range.
+func SetBiasRandom(a float32, b float32) {
+	biasA, biasB = a, b
+}
+
+// This is for initializing weight.
+func weightRandom() float32 {
+	return LycorisRandomFloat32()*(weightB-weightA) + weightA
+}
+
+// This is for initializing bias.
+func biasRandom() float32 {
+	return LycorisRandomFloat32()*(biasB-biasA) + biasA
 }
 
 // The distance between two different individuals.

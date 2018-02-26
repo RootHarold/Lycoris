@@ -25,6 +25,9 @@ type Individual struct {
 	Fitness       float32
 }
 
+// The odds of cleaning in "Forward()".
+var cleanOdds float32 = 0.01
+
 // Create a new individual.
 func newIndividual(inputNum int, outputNum int) *Individual {
 	var in = &Individual{InputNum: inputNum, OutputNum: outputNum, nodeSum: 0, innovationNum: 0}
@@ -73,9 +76,6 @@ func (in *Individual) GetOutput() []float32 {
 	}
 	return output
 }
-
-// The odds of cleaning in "Forward()".
-var cleanOdds float32 = 0.008
 
 // Forward calculation of the individual.
 func (in *Individual) Forward() {

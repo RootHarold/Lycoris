@@ -26,6 +26,36 @@ var hit int                  // Used in autoParameter().
 var miss int                 // Used in autoParameter().
 var gapList *list.List       // The role is to automatically change some of the parameters.
 var maxTock = 16             // The maximum tock.
+var p1B float32              // The backup of p1.
+var p2B float32              // The backup of p2.
+var p3B float32              // The backup of p3.
+var p4B float32              // The backup of p4.
+var p5B float32              // The backup of p5.
+var p6B float32              // The backup of p6.
+var mateOddsB float32        // The backup of mateOdds.
+var mutateOddsB float32      // The backup of mutateOdds.
+var mutateTimeB int          // The backup of mutateTime.
+
+// Assist in parallel computing.
+var wait sync.WaitGroup
+// The length of speciesList.
+var specieLength int
+// Store the length of individualList in speciesList.
+var oldLength []int
+// It's for singleton pattern.
+var radiata *lycoris
+var once sync.Once
+// Be sure that "go randFloat32()" is executed one time.
+var randomEngineFlag = false
+
+var limitSize int        // The size of maximum memory.
+var maxGap = 7           // The length of gapList.
+var memLimitFlag = false // The flag of memory limit.
+var memOverFlag = false  // When memory exceeds the limit, this changes to true.
+var firstOver = false    // To fixed a potential bug.
+var checkFlag = false    // Assist in autoParameter().
+var gapListFlag = true   // Assist in chooseElite().
+var firstRun = true      // To fixed a potential bug.
 
 // Set the maximum tock.
 func SetMaxTock(num int) {
@@ -34,15 +64,14 @@ func SetMaxTock(num int) {
 
 // Apply the core function to lycoris. It is driven by events and
 // promotes the fitting of the whole network.
-func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
+func SetForwardFunc(f func(in *Individual)) {
 	radiata.forwardFunc = f
 }
 
-// It's for singleton pattern.
-var radiata *lycoris
-var once sync.Once
-
-var randomEngineFlag = false
+// Set the length of gapList.
+func SetGapLength(num int) {
+	maxGap = num - 1
+}
 
 // Emerge a new object.
 func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
@@ -63,13 +92,31 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 	return radiata
 }
 
-// Assist in parallel computing.
-var wait sync.WaitGroup
+// Import the individual and emerge a new object.
+func ImportLycoris(path string, capacity int) *lycoris {
+	runtime.GOMAXPROCS(cpuNum)
+	if !randomEngineFlag {
+		go randFloat32() // Init the random number generator.
+	}
 
-// The length of speciesList.
-var specieLength int
-// Store the length of individualList in speciesList.
-var oldLength []int
+	// Import the individual.
+	var source = ImportIndividual(path)
+	// Emerge a new lycoris and set some parameters.
+	radiata = &lycoris{}
+	radiata.Capacity = capacity
+	radiata.InputNum = source.InputNum
+	radiata.OutputNum = source.OutputNum
+	tock = 1 // Minimum step.
+	gapList = list.New()
+	var specie = species{}
+	var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
+	specie.individualList = make([]Individual, initialCapacity)
+	for i := 0; i < initialCapacity; i++ {
+		specie.individualList[i] = *(source.clone())
+	}
+	radiata.speciesList = append(radiata.speciesList, specie)
+	return radiata
+}
 
 // Mating.
 func (radiata *lycoris) mate() {
@@ -269,16 +316,6 @@ func (radiata *lycoris) forwardCore(start []int, end []int) {
 	wait.Done()
 }
 
-var p1B float32         // The backup of p1.
-var p2B float32         // The backup of p2.
-var p3B float32         // The backup of p3.
-var p4B float32         // The backup of p4.
-var p5B float32         // The backup of p5.
-var p6B float32         // The backup of p6.
-var mateOddsB float32   // The backup of mateOdds.
-var mutateOddsB float32 // The backup of mutateOdds.
-var mutateTimeB int     // The backup of mutateTime.
-
 func emergeArgs() { // Memory exceeds the limit.
 	if memOverFlag {
 		var mutateTimeE = LycorisRandomInt(maxMutateTime) + 1 // [1, maxMutateTime]
@@ -328,9 +365,6 @@ func emergeArgs() { // Memory exceeds the limit.
 	}
 }
 
-// Assist in autoParameter().
-var checkFlag = false
-
 // Update some parameters automatically.
 func autoParameter() {
 	if checkFlag {
@@ -374,9 +408,6 @@ func autoParameter() {
 		tick += 1
 	}
 }
-
-// Assist in chooseElite().
-var gapListFlag = true
 
 // Choose elites and manipulate gapList.
 func (radiata *lycoris) chooseElite() {
@@ -445,16 +476,6 @@ func (radiata *lycoris) chooseElite() {
 	}
 }
 
-// The length of gapList.
-var maxGap = 7
-
-// Set the length of gapList.
-func (radiata *lycoris) SetGapLength(num int) {
-	maxGap = num - 1
-}
-
-var firstRun = true // To fixed a potential bug.
-
 // Each time this function is called, the network runs forward one time.
 func (radiata *lycoris) RunLycoris() {
 	if firstRun {
@@ -476,45 +497,14 @@ func (radiata *lycoris) RunLycoris() {
 	radiata.chooseElite() // Sorting and choosing some individuals with higher fitness.
 }
 
-// Import the individual and emerge a new object.
-func ImportLycoris(path string, capacity int) *lycoris {
-	runtime.GOMAXPROCS(cpuNum)
-	if !randomEngineFlag {
-		go randFloat32() // Init the random number generator.
-	}
-
-	// Import the individual.
-	var source = ImportIndividual(path)
-	// Emerge a new lycoris and set some parameters.
-	radiata = &lycoris{}
-	radiata.Capacity = capacity
-	radiata.InputNum = source.InputNum
-	radiata.OutputNum = source.OutputNum
-	tock = 1 // Minimum step.
-	gapList = list.New()
-	var specie = species{}
-	var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
-	specie.individualList = make([]Individual, initialCapacity)
-	for i := 0; i < initialCapacity; i++ {
-		specie.individualList[i] = *(source.clone())
-	}
-	radiata.speciesList = append(radiata.speciesList, specie)
-	return radiata
-}
-
-var memLimitFlag = false // The flag of memory limit.
-var limitSize int        // The size of maximum memory.
-var memOverFlag = false  // When memory exceeds the limit, this changes to true.
-var firstOver = false    // To fixed a potential bug.
-
 // Turn on memory-limit.
-func (radiata *lycoris) OpenMemLimit(size int) {
+func OpenMemLimit(size int) {
 	limitSize = size * 9 / 10
 	memLimitFlag = true
 }
 
 // Turn off memory-limit.
-func (radiata *lycoris) CloseMemLimit() {
+func CloseMemLimit() {
 	memLimitFlag = false
 	memOverFlag = false
 	firstOver = false
