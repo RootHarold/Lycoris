@@ -42,10 +42,13 @@ func (radiata *lycoris) SetForwardFunc(f func(in *Individual)) {
 var radiata *lycoris
 var once sync.Once
 
+var randomEngineFlag = false
+
 // Emerge a new object.
 func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 	once.Do(func() {
 		runtime.GOMAXPROCS(cpuNum)
+		randomEngineFlag = true
 		go randFloat32() // Init the random number generator.
 
 		// Emerge a new lycoris and set some parameters.
@@ -55,13 +58,6 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 		radiata.OutputNum = outputNum
 		tock = 1 // Minimum step.
 		gapList = list.New()
-		var specie = species{}
-		var initialCapacity = int(float32(capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
-		specie.individualList = make([]Individual, initialCapacity)
-		for i := 0; i < initialCapacity; i++ {
-			specie.individualList[i] = *newIndividual(inputNum, outputNum)
-		}
-		radiata.speciesList = append(radiata.speciesList, specie)
 	})
 
 	return radiata
@@ -439,7 +435,7 @@ func (radiata *lycoris) chooseElite() {
 	// len < 8
 	if gapListFlag {
 		var length = gapList.Len()
-		if length == 7 {
+		if length == maxGap {
 			gapListFlag = false
 		}
 		gapList.PushBack(difference)
@@ -449,8 +445,28 @@ func (radiata *lycoris) chooseElite() {
 	}
 }
 
+// The length of gapList.
+var maxGap = 7
+
+// Set the length of gapList.
+func (radiata *lycoris) SetGapLength(num int) {
+	maxGap = num - 1
+}
+
+var firstRun = true // To fixed a potential bug.
+
 // Each time this function is called, the network runs forward one time.
 func (radiata *lycoris) RunLycoris() {
+	if firstRun {
+		firstRun = false
+		var specie = species{}
+		var initialCapacity = int(float32(radiata.Capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
+		specie.individualList = make([]Individual, initialCapacity)
+		for i := 0; i < initialCapacity; i++ {
+			specie.individualList[i] = *newIndividual(radiata.InputNum, radiata.OutputNum)
+		}
+		radiata.speciesList = append(radiata.speciesList, specie)
+	}
 	radiata.mate()        // Mating.
 	radiata.classify()    // Computing distances of new individuals.
 	radiata.mutate()      // Mutating.
@@ -463,7 +479,9 @@ func (radiata *lycoris) RunLycoris() {
 // Import the individual and emerge a new object.
 func ImportLycoris(path string, capacity int) *lycoris {
 	runtime.GOMAXPROCS(cpuNum)
-	go randFloat32() // Init the random number generator.
+	if !randomEngineFlag {
+		go randFloat32() // Init the random number generator.
+	}
 
 	// Import the individual.
 	var source = ImportIndividual(path)
@@ -498,6 +516,21 @@ func (radiata *lycoris) OpenMemLimit(size int) {
 // Turn off memory-limit.
 func (radiata *lycoris) CloseMemLimit() {
 	memLimitFlag = false
+	memOverFlag = false
+	firstOver = false
+}
+
+// Reset some arguments.
+func Reset() {
+	tick = 1
+	hit = 0
+	miss = 0
+	gapList = list.New()
+	once = sync.Once{}
+	randomEngineFlag = false
+	checkFlag = false
+	gapListFlag = true
+	firstRun = true
 	memOverFlag = false
 	firstOver = false
 }

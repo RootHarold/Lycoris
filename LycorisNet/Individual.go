@@ -187,6 +187,8 @@ func (in *Individual) Export(path string) {
 			data.WriteString(strconv.Itoa(v2.innovationNum))
 		}
 	}
+	data.WriteString(" ")
+	data.WriteString(activateFuncName)
 	// Compress.
 	var buf bytes.Buffer
 	zw := gzip.NewWriter(&buf)
@@ -310,6 +312,7 @@ func ImportIndividual(path string) *Individual {
 		}
 		in.nodeMap[key] = n
 	}
+	SetActivateFunc(data[pointer])
 	return in
 }
 
