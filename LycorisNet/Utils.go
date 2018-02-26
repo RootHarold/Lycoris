@@ -1,154 +1,110 @@
 package LycorisNet
 
 import (
-	"container/list"
 	"runtime"
+	"container/list"
 )
 
-// Arguments in distance(...).
-var c1 float32 = 1.0
-var c2 float32 = 0.4
-// These change the mutation probability.
-var p1 float32 = 0.1 // Add the new node between a connection.
-var p2 float32 = 0.2 // Delete a node.
-var p3 float32 = 0.2 // Add a new connection between two nodes.
-var p4 float32 = 0.2 // Delete a connection.
-var p5 float32 = 0.1 // Just create a new empty node (without any genomes).
-var p6 float32 = 0.2 // Mutate the bias.
-// The number of mutations.
-var mutateTime = 1
 // The number of logical cpu.
 var cpuNum = runtime.NumCPU()
-// The initial odds of mating.
-var mateOdds float32 = 1
-// The initial odds of mutating.
-var mutateOdds float32 = 1
-// The maximum number of mutating.
-var maxMutateTime = 10
-// The threshold of the distance between two individuals.
-var distanceThreshold float32 = 20 // Need to be checked.
+
+type utils struct {
+	c1                float32 // Arguments in distance(...).
+	c2                float32 // Arguments in distance(...).
+	p1                float32 // Add the new node between a connection.
+	p2                float32 // Delete a node.
+	p3                float32 // Add a new connection between two nodes.
+	p4                float32 // Delete a connection.
+	p5                float32 // Just create a new empty node (without any genomes).
+	p6                float32 // Mutate the bias.
+	mutateTime        int     // The number of mutations.
+	mateOdds          float32 // The initial odds of mating.
+	mutateOdds        float32 // The initial odds of mutating.
+	maxMutateTime     int     // The maximum number of mutating.
+	distanceThreshold float32 // The threshold of the distance between two individuals.
+	weightA           float32
+	weightB           float32
+	biasA             float32
+	biasB             float32
+	activateFuncName  string
+	activateFun       func(f float32) float32
+}
+
+func newUtils() *utils {
+	return &(utils{
+		c1:                1.0,
+		c2:                0.4,
+		p1:                0.1,
+		p2:                0.2,
+		p3:                0.2,
+		p4:                0.2,
+		p5:                0.1,
+		p6:                0.2,
+		mutateTime:        1,
+		mateOdds:          1,
+		mutateOdds:        1,
+		maxMutateTime:     10,
+		distanceThreshold: 20,
+		weightA:           -1,
+		weightB:           1,
+		biasA:             -1,
+		biasB:             1,
+		activateFuncName:  "sigmoid",
+		activateFun:       Sigmoid,
+	})
+}
 
 // Set the threshold of the distance between two individuals.
-func SetDistanceThreshold(threshold float32) {
-	distanceThreshold = threshold
+func (u *utils) SetDistanceThreshold(threshold float32) {
+	u.distanceThreshold = threshold
 }
 
 //Set "c1" and "c2".
-func SetDistanceArgs(a float32, b float32) {
-	c1, c2 = a, b
+func (u *utils) SetDistanceArgs(a float32, b float32) {
+	u.c1, u.c2 = a, b
 }
 
 // Set the maximum number of mutating.
-func SetMaxMutateTime(num int) {
-	maxMutateTime = num
+func (u *utils) SetMaxMutateTime(num int) {
+	u.maxMutateTime = num
 }
 
 // This is for initializing weight.
-func weightRandom() float32 {
-	return LycorisRandomFloat32()*(weightB-weightA) + weightA
+func (u *utils) weightRandom() float32 {
+	return LycorisRandomFloat32()*(u.weightB-u.weightA) + u.weightA
 }
 
-var weightA float32 = -1
-var weightB float32 = 1
-
 // Set the weightRandom()'s range.
-func SetWeigthRandom(a float32, b float32) {
-	weightA, weightB = a, b
+func (u *utils) SetWeigthRandom(a float32, b float32) {
+	u.weightA, u.weightB = a, b
 }
 
 // This is for initializing bias.
-func biasRandom() float32 {
-	return LycorisRandomFloat32()*(biasB-biasA) + biasA
+func (u *utils) biasRandom() float32 {
+	return LycorisRandomFloat32()*(u.biasB-u.biasA) + u.biasA
 }
-
-var biasA float32 = -1
-var biasB float32 = 1
 
 // Set the biasRandom()'s range.
-func SetBiasRandom(a float32, b float32) {
-	biasA, biasB = a, b
+func (u *utils) SetBiasRandom(a float32, b float32) {
+	u.biasA, u.biasB = a, b
 }
-
-var activateFuncName = "sigmoid"
-
-var activateFunc = Sigmoid
 
 // Set the activate function.
-func SetActivateFunc(function string) {
-	activateFuncName = function
+func (u *utils) SetActivateFunc(function string) {
+	u.activateFuncName = function
 	if function == "sigmoid" {
-		activateFunc = Sigmoid
-	} else if function == "relu" {
-		activateFunc = ReLU
+		u.activateFun = Sigmoid
 	} else if function == "tanh" {
-		activateFunc = Tanh
+		u.activateFun = Tanh
+	} else if function == "relu" {
+		u.activateFun = ReLU
 	} else {
-		panic("Wrong function name!")
+		panic("Wrong activate function!")
 	}
-}
-
-// Used in "distance(...)".
-func sort1(in *Individual) (*[]float32, *[]int) {
-	var temp1 = make([]bool, in.innovationNum)
-	var temp2 = make([]float32, in.innovationNum)
-	var temp3 = make([]int, in.innovationNum)
-
-	var length = 0
-	for _, v1 := range in.nodeMap {
-		length += len(v1.genomeMap)
-		for _, v2 := range v1.genomeMap {
-			num := v2.innovationNum
-			temp1[num] = true
-			temp2[num] = v2.weight
-			temp3[num] = num
-		}
-	}
-
-	var result1 = make([]float32, length)
-	var result2 = make([]int, length)
-	var count = 0
-	for k, v := range temp1 {
-		if v {
-			result1[count] = temp2[k]
-			result2[count] = temp3[k]
-			count++
-		}
-	}
-	return &result1, &result2
-}
-
-// Used in "mateIndividual(...)".
-func sort2(in *Individual) (*[]gen, *[]ome) {
-	var temp1 = make([]bool, in.innovationNum)
-	var temp2 = make([]gen, in.innovationNum)
-	var temp3 = make([]ome, in.innovationNum)
-
-	var length = 0
-	for _, v1 := range in.nodeMap {
-		length += len(v1.genomeMap)
-		for k, v2 := range v1.genomeMap {
-			num := v2.innovationNum
-			temp1[num] = true
-			temp2[num] = k
-			temp3[num] = v2
-		}
-	}
-
-	var result1 = make([]gen, length)
-	var result2 = make([]ome, length)
-	var count = 0
-	for k, v := range temp1 {
-		if v {
-			result1[count] = temp2[k]
-			result2[count] = temp3[k]
-			count++
-		}
-	}
-	return &result1, &result2
 }
 
 // The distance between two different individuals.
-func distance(in1 *Individual, in2 *Individual) float32 {
+func (u *utils) distance(in1 *Individual, in2 *Individual) float32 {
 	var d float32
 	var DE = 0
 	var w1, i1 = sort1(in1)
@@ -186,12 +142,12 @@ func distance(in1 *Individual, in2 *Individual) float32 {
 		}
 	}
 	DE += len1 + len2 - point1 - point2
-	d = (c1*float32(DE))/float32(N) + (c2*float32(W))/float32(countW)
+	d = (u.c1*float32(DE))/float32(N) + (u.c2*float32(W))/float32(countW)
 	return d
 }
 
 // Mating two different individuals.
-func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
+func (u *utils) mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 	// Emerge a newborn one.
 	var offspring = Individual{InputNum: in1.InputNum, OutputNum: in1.OutputNum}
 	offspring.nodeMap = make(map[int]node)
@@ -362,15 +318,15 @@ func mateIndividual(in1 *Individual, in2 *Individual) *Individual {
 }
 
 // Mutating the individual.
-func mutateIndividual(in *Individual) *Individual {
+func (u *utils) mutateIndividual(in *Individual) *Individual {
 	// Clone the individual.
 	var offspring = in.clone()
 
 	// This process can be repeated many times.
-	for z := 0; z < mutateTime; z++ {
+	for z := 0; z < u.mutateTime; z++ {
 		var ran = LycorisRandomFloat32()
 
-		if ran < p1 { // p1
+		if ran < u.p1 { // p1
 			// Add the new node between a connection.
 			var genOld gen
 			var omeOld ome
@@ -415,7 +371,7 @@ func mutateIndividual(in *Individual) *Individual {
 				}
 				offspring.nodeSlice = newSlice
 			}
-		} else if ran >= p1 && ran < p1+p2 { // p2
+		} else if ran >= u.p1 && ran < u.p1+u.p2 { // p2
 			// Delete a node.
 			var length = len(offspring.nodeSlice)
 			var index = LycorisRandomInt(length)
@@ -430,7 +386,7 @@ func mutateIndividual(in *Individual) *Individual {
 				delete(offspring.nodeMap, sliceIndex)
 				offspring.nodeSlice = append(offspring.nodeSlice[:index], offspring.nodeSlice[index+1:]...)
 			}
-		} else if ran >= p1+p2 && ran < p1+p2+p3 { // p3
+		} else if ran >= u.p1+u.p2 && ran < u.p1+u.p2+u.p3 { // p3
 			// Add a new connection between two nodes.
 			var length = len(offspring.nodeSlice)
 			var index1 = LycorisRandomInt(length)
@@ -444,14 +400,14 @@ func mutateIndividual(in *Individual) *Individual {
 					var g = gen{inputNum, outputNum}
 					var _, ok = outputNode.genomeMap[g]
 					if !ok {
-						var o = ome{weightRandom(), true, offspring.innovationNum}
+						var o = ome{u.weightRandom(), true, offspring.innovationNum}
 						offspring.innovationNum++
 						outputNode.genomeMap[g] = o
 						offspring.nodeMap[outputNum] = outputNode
 					}
 				}
 			}
-		} else if ran >= p1+p2+p3 && ran < p1+p2+p3+p4 { // p4
+		} else if ran >= u.p1+u.p2+u.p3 && ran < u.p1+u.p2+u.p3+u.p4 { // p4
 			// Delete a connection.
 			var g gen
 			var n node
@@ -470,7 +426,7 @@ func mutateIndividual(in *Individual) *Individual {
 				delete(n.genomeMap, g)
 				offspring.nodeMap[g.out] = n
 			}
-		} else if ran >= p1+p2+p3+p4 && ran < p1+p2+p3+p4+p5 { // p5
+		} else if ran >= u.p1+u.p2+u.p3+u.p4 && ran < u.p1+u.p2+u.p3+u.p4+u.p5 { // p5
 			// Just create a new empty node (without any genomes).
 			var n = *newNode(offspring.nodeSum, 1)
 			offspring.nodeSum++
@@ -483,7 +439,7 @@ func mutateIndividual(in *Individual) *Individual {
 			var index = LycorisRandomInt(len(offspring.nodeSlice) - offspring.InputNum)
 			index += offspring.InputNum
 			var n = offspring.nodeMap[offspring.nodeSlice[index]]
-			n.bias = biasRandom()
+			n.bias = u.biasRandom()
 			offspring.nodeMap[n.nodeNum] = n
 		}
 	}
