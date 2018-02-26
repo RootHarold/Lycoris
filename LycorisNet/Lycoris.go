@@ -492,4 +492,6 @@ func (radiata *lycoris) OpenMemLimit(size int) {
 // Turn off memory-limit.
 func (radiata *lycoris) CloseMemLimit() {
 	memLimitFlag = false
+	memOverFlag = false
+	firstOver = false
 }
