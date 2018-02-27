@@ -77,8 +77,10 @@ func SetGapLength(num int) {
 func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 	once.Do(func() {
 		runtime.GOMAXPROCS(cpuNum)
-		randomEngineFlag = true
-		go randFloat32() // Init the random number generator.
+		if !randomEngineFlag {
+			randomEngineFlag = true
+			go randFloat32() // Init the random number generator.
+		}
 
 		// Emerge a new lycoris and set some parameters.
 		radiata = &lycoris{}
@@ -96,6 +98,7 @@ func NewLycoris(capacity int, inputNum int, outputNum int) *lycoris {
 func ImportLycoris(path string, capacity int) *lycoris {
 	runtime.GOMAXPROCS(cpuNum)
 	if !randomEngineFlag {
+		randomEngineFlag = true
 		go randFloat32() // Init the random number generator.
 	}
 
@@ -517,7 +520,6 @@ func Reset() {
 	miss = 0
 	gapList = list.New()
 	once = sync.Once{}
-	randomEngineFlag = false
 	checkFlag = false
 	gapListFlag = true
 	firstRun = true
