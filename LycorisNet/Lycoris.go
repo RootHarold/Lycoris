@@ -49,7 +49,7 @@ var once sync.Once
 var randomEngineFlag = false
 
 var limitSize int        // The size of maximum memory.
-var maxGap = 7           // The length of gapList.
+var maxGap = 4           // The length of gapList.
 var memLimitFlag = false // The flag of memory limit.
 var memOverFlag = false  // When memory exceeds the limit, this changes to true.
 var firstOver = false    // To fixed a potential bug.
@@ -483,6 +483,7 @@ func (radiata *lycoris) chooseElite() {
 func (radiata *lycoris) RunLycoris() {
 	if firstRun {
 		firstRun = false
+		distanceThreshold = c1*0.2 + c2*0.2*LycorisAbs(weightB-weightA)
 		var specie = species{}
 		var initialCapacity = int(float32(radiata.Capacity) / ((1 + mateOdds) * (1 + mutateOdds)))
 		specie.individualList = make([]Individual, initialCapacity)

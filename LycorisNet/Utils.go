@@ -9,12 +9,15 @@ import (
 var c1 float32 = 1.0
 var c2 float32 = 0.4
 // These change the mutation probability.
-var p1 float32 = 0.1 // Add the new node between a connection.
-var p2 float32 = 0.2 // Delete a node.
-var p3 float32 = 0.2 // Add a new connection between two nodes.
-var p4 float32 = 0.2 // Delete a connection.
-var p5 float32 = 0.1 // Just create a new empty node (without any genomes).
-var p6 float32 = 0.2 // Mutate the bias.
+var p1 float32 = 0.1             // Add the new node between a connection.
+var p2 float32 = 0.2             // Delete a node.
+var p3 float32 = 0.2             // Add a new connection between two nodes.
+var p4 float32 = 0.2             // Delete a connection.
+var p5 float32 = 0.1             // Just create a new empty node (without any genomes).
+var p6 float32 = 0.2             // Mutate the bias.
+var activateFuncName = "sigmoid" // Name of active function.
+var activateFunc = Sigmoid       // Active function.
+
 // The number of mutations.
 var mutateTime = 1
 // The number of logical cpu.
@@ -24,17 +27,12 @@ var mateOdds float32 = 1
 // The initial odds of mutating.
 var mutateOdds float32 = 1
 // The maximum number of mutating.
-var maxMutateTime = 10
+var maxMutateTime = 16
 // The threshold of the distance between two individuals.
-var distanceThreshold float32 = 20 // Need to be checked.
-
-var activateFuncName = "sigmoid" // Name of active function.
-var activateFunc = Sigmoid       // Active function.
-
+var distanceThreshold float32
 // For SetWeigthRandom(...).
 var weightA float32 = -1
 var weightB float32 = 1
-
 // For SetBiasRandom(...).
 var biasA float32 = -1
 var biasB float32 = 1
