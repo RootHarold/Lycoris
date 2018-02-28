@@ -527,3 +527,8 @@ func Reset() {
 	memOverFlag = false
 	firstOver = false
 }
+
+// Return the version information.
+func Version() string {
+	return "Lycoris core 1.0.1"
+}
