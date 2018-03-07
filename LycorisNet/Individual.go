@@ -207,6 +207,11 @@ func (in *Individual) Export(path string) {
 
 // Import the individual.
 func ImportIndividual(path string) *Individual {
+	// Init the random number generator.
+	if !randomEngineFlag {
+		randomEngineFlag = true
+		go randFloat32()
+	}
 	// Decompress.
 	f, err := os.OpenFile(path, os.O_RDONLY, 0666)
 	checkErr(err)
