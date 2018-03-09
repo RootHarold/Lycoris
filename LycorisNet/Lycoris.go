@@ -5,6 +5,7 @@ import (
 	"sync"
 	"container/list"
 	"sort"
+	"math"
 )
 
 // The structure lycoris is the highest level module of LycorisNet,
@@ -422,6 +423,11 @@ func (radiata *lycoris) chooseElite() {
 	var pointer = 0
 	for k1, v1 := range radiata.speciesList {
 		for k2, v2 := range v1.individualList {
+			// To fix the NaN & Inf problems.
+			if math.IsNaN(float64(v2.Fitness)) || math.IsInf(float64(v2.Fitness), 0) {
+				v2.Fitness = LycorisPow(10, 38) * (-3.4028)
+			}
+
 			sortList[pointer] = sortFitness{v2.Fitness, k1, k2}
 			pointer++
 		}
@@ -530,5 +536,5 @@ func Reset() {
 
 // Return the version information.
 func Version() string {
-	return "Lycoris core 1.0.2"
+	return "Lycoris core 1.0.3"
 }
