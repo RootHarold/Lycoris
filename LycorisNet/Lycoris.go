@@ -385,8 +385,8 @@ func autoParameter() {
 			miss++
 			hit = 0
 			if miss == 2 {
-				if tock < maxTock { // Maximum step.
-					tock *= 2
+				if tock > 1 { // Maximum step.
+					tock /= 2
 				}
 				miss = 1
 			}
@@ -395,8 +395,8 @@ func autoParameter() {
 			hit++
 			miss = 0
 			if hit == 2 {
-				if tock > 1 { // Minimum step.
-					tock /= 2
+				if tock < maxTock { // Minimum step.
+					tock *= 2
 				}
 				hit = 1
 			}
@@ -472,14 +472,14 @@ func (radiata *lycoris) chooseElite() {
 
 	var difference = tempBest.Fitness - radiata.Best.Fitness
 	radiata.Best = tempBest
-	// len < 8
+	// len < gapLength
 	if gapListFlag {
 		var length = gapList.Len()
 		if length == maxGap {
 			gapListFlag = false
 		}
 		gapList.PushBack(difference)
-	} else { // len == 8
+	} else { // len == gapLength
 		gapList.Remove(gapList.Front())
 		gapList.PushBack(difference)
 	}
@@ -536,5 +536,5 @@ func Reset() {
 
 // Return the version information.
 func Version() string {
-	return "Lycoris core 1.0.3"
+	return "Lycoris core 1.0.4"
 }
