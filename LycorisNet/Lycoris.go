@@ -385,7 +385,7 @@ func autoParameter() {
 			miss++
 			hit = 0
 			if miss == 2 {
-				if tock > 1 { // Maximum step.
+				if tock > 1 { // Minimum step.
 					tock /= 2
 				}
 				miss = 1
@@ -395,7 +395,7 @@ func autoParameter() {
 			hit++
 			miss = 0
 			if hit == 2 {
-				if tock < maxTock { // Minimum step.
+				if tock < maxTock { // Maximum step.
 					tock *= 2
 				}
 				hit = 1
@@ -536,5 +536,5 @@ func Reset() {
 
 // Return the version information.
 func Version() string {
-	return "Lycoris core 1.0.4"
+	return "Lycoris core 1.0.5"
 }
