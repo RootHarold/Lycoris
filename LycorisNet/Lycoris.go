@@ -425,7 +425,7 @@ func (radiata *lycoris) chooseElite() {
 		for k2, v2 := range v1.individualList {
 			// To fix the NaN & Inf problems.
 			if math.IsNaN(float64(v2.Fitness)) || math.IsInf(float64(v2.Fitness), 0) {
-				v2.Fitness = LycorisPow(10, 38) * (-3.4028)
+				radiata.speciesList[k1].individualList[k2].Fitness = LycorisPow(10, 38) * (-3.4028)
 			}
 
 			sortList[pointer] = sortFitness{v2.Fitness, k1, k2}
@@ -536,5 +536,5 @@ func Reset() {
 
 // Return the version information.
 func Version() string {
-	return "Lycoris core 1.0.5"
+	return "Lycoris core 1.0.6"
 }
