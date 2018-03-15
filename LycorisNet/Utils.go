@@ -27,7 +27,7 @@ var mateOdds float32 = 1
 // The initial odds of mutating.
 var mutateOdds float32 = 1
 // The maximum number of mutating.
-var maxMutateTime = 16
+var maxMutateTime = 10
 // The threshold of the distance between two individuals.
 var distanceThreshold float32
 // For SetWeigthRandom(...).

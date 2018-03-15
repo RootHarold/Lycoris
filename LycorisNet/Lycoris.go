@@ -50,7 +50,7 @@ var once sync.Once
 var randomEngineFlag = false
 
 var limitSize int        // The size of maximum memory.
-var maxGap = 4           // The length of gapList.
+var maxGap = 64          // The length of gapList.
 var memLimitFlag = false // The flag of memory limit.
 var memOverFlag = false  // When memory exceeds the limit, this changes to true.
 var firstOver = false    // To fixed a potential bug.
@@ -509,7 +509,7 @@ func (radiata *lycoris) RunLycoris() {
 
 // Turn on memory-limit.
 func OpenMemLimit(size int) {
-	limitSize = size * 9 / 10
+	limitSize = size * 9 / 10 // Adjust the size.
 	memLimitFlag = true
 }
 
@@ -536,5 +536,5 @@ func Reset() {
 
 // Return the version information.
 func Version() string {
-	return "Lycoris core 1.0.6"
+	return "Lycoris core 1.0.7"
 }
