@@ -4,6 +4,11 @@ project(Lycoris)
 set(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
-set(SOURCE_FILES main.cpp)
+include_directories(./LycorisNet/include)
+
+set(SOURCE_FILES
+        main.cpp
+        LycorisNet/include/genome.h
+        LycorisNet/sources/genome.cpp)
 
 add_executable(bootstrap ${SOURCE_FILES})
