@@ -14,4 +14,10 @@
 .glide/
 
 .idea/
-memo.md
+
+# Some files related to CMake
+bootstrap
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+Makefile
