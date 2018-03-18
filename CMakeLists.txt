@@ -9,6 +9,8 @@ include_directories(./LycorisNet/include)
 set(SOURCE_FILES
         main.cpp
         LycorisNet/include/genome.h
-        LycorisNet/sources/genome.cpp)
+        LycorisNet/sources/genome.cpp
+        LycorisNet/include/node.h
+        LycorisNet/sources/node.cpp)
 
 add_executable(bootstrap ${SOURCE_FILES})
