@@ -11,6 +11,14 @@ set(SOURCE_FILES
         LycorisNet/include/genome.h
         LycorisNet/sources/genome.cpp
         LycorisNet/include/node.h
-        LycorisNet/sources/node.cpp)
+        LycorisNet/sources/node.cpp
+        LycorisNet/include/factory.h
+        LycorisNet/sources/factory.cpp
+        LycorisNet/include/individual.h
+        LycorisNet/sources/individual.cpp
+        LycorisNet/include/species.h
+        LycorisNet/sources/species.cpp
+        LycorisNet/include/lycoris.h
+        LycorisNet/sources/lycoris.cpp)
 
 add_executable(bootstrap ${SOURCE_FILES})
