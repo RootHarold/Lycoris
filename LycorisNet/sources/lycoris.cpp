@@ -4,6 +4,14 @@ Lycoris::Lycoris() {
 
 }
 
-Lycoris::~Lycoris() {
+Lycoris::Lycoris(unsigned capacity) {
+    this->capacity = capacity;
+    individualList = new Individual *[capacity];
+}
 
+Lycoris::~Lycoris() {
+    for (unsigned i = 0; i < capacity; ++i) {
+        delete individualList[i];
+    }
+    delete[] individualList;
 }
