@@ -15,3 +15,7 @@ Lycoris::~Lycoris() {
     }
     delete[] individualList;
 }
+
+std::string Lycoris::version() {
+    return "Lycoris core 1.8-dev-6";
+}

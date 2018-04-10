@@ -2,6 +2,7 @@
 #define LYCORIS_LYCORIS_H
 
 #include "individual.h"
+#include <string>
 
 class Lycoris {
 public:
@@ -13,6 +14,8 @@ public:
     Lycoris(unsigned capacity);
 
     ~Lycoris();
+
+    std::string version();
 };
 
 #endif //LYCORIS_LYCORIS_H
