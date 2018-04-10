@@ -1,11 +1,11 @@
 #ifndef LYCORIS_FACTORY_H
 #define LYCORIS_FACTORY_H
 
-class Factory {
+class Utils {
 public:
-    Factory();
+    Utils();
 
-    ~Factory();
+    ~Utils();
 };
 
 #endif //LYCORIS_FACTORY_H
