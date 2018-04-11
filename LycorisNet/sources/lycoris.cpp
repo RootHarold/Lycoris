@@ -17,5 +17,5 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8-dev-6";
+    return "Lycoris core 1.8-dev-7";
 }
