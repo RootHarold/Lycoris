@@ -31,6 +31,8 @@ public:
     float biasB;
 
     float cleanOdds;
+
+    float (*activateFunc)(float);
 };
 
 #endif //LYCORIS_ARGS_H

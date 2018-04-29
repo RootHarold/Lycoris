@@ -1,4 +1,5 @@
 #include "args.h"
+#include "utils.h"
 
 
 #if !defined (_WIN32) && !defined (_WIN64)
@@ -43,6 +44,7 @@ Args::Args() {
 #endif
 
     cleanOdds = 0.01;
+    activateFunc = sigmoid;
 }
 
 Args::~Args() {

@@ -3,6 +3,7 @@
 Node::Node(unsigned nodeNum, unsigned nodeType) {
     this->nodeNum = nodeNum;
     this->nodeType = nodeType;
+    value = 0;
     genomeMap = new std::map<Gen, Ome>();
 }
 

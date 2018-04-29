@@ -13,11 +13,13 @@ public:
     unsigned innovationNum;
     unsigned nodeSum;
     float fitness;
-    std::vector<int> *nodeSlice;
-    std::map<int, Node *> *nodeMap;
+    std::vector<unsigned> *nodeSlice;
+    std::map<unsigned, Node *> *nodeMap;
     Args *args;
 
-    Individual(unsigned inputNum, unsigned outputNum);
+    Individual();
+
+    Individual(unsigned inputNum, unsigned outputNum, Args *args);
 
     ~Individual();
 
