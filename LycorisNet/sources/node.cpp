@@ -3,7 +3,6 @@
 Node::Node(unsigned nodeNum, unsigned nodeType) {
     this->nodeNum = nodeNum;
     this->nodeType = nodeType;
-    // TODO: this->bias = ...
     genomeMap = new std::map<Gen, Ome>();
 }
 
@@ -22,4 +21,8 @@ Node *Node::clone() {
     }
 
     return duplicate;
+}
+
+void Node::initializeBias(float f) {
+    this->bias = f;
 }

@@ -16,7 +16,9 @@ public:
 
     ~Node();
 
-    Node  *clone();
+    void initializeBias(float f);
+
+    Node *clone();
 };
 
 #endif //LYCORIS_NODE_H

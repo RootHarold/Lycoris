@@ -29,6 +29,8 @@ public:
     float weightB;
     float biasA;
     float biasB;
+
+    float cleanOdds;
 };
 
 #endif //LYCORIS_ARGS_H

@@ -41,6 +41,8 @@ Args::Args() {
     GetSystemInfo(&si);
     cpuNum = si.dwNumberOfProcessors;
 #endif
+
+    cleanOdds = 0.01;
 }
 
 Args::~Args() {
