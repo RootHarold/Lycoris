@@ -33,6 +33,39 @@ unsigned sort1(Individual &in, float *ret1, unsigned *ret2) {
     return length;
 }
 
+unsigned sort2(Individual &in, Gen *ret1, Ome *ret2) {
+    std::vector<bool> temp1(in.innovationNum, false);
+    Gen temp2[in.innovationNum];
+    Ome temp3[in.innovationNum];
+
+    unsigned length = 0;
+    for (auto iter = in.nodeMap->begin(); iter != in.nodeMap->end(); ++iter) {
+        auto genomeMap = iter->second->genomeMap;
+        length += genomeMap->size();
+        for (auto it = genomeMap->begin(); it != genomeMap->end(); ++it) {
+            auto num = it->second.innovationNum;
+            temp1[num] = true;
+            temp2[num] = it->first;
+            temp3[num] = it->second;
+        }
+    }
+
+    if (length != 0) {
+        ret1 = new Gen[length];
+        ret2 = new Ome[length];
+        unsigned count = 0;
+        for (int i = 0; i < temp1.size(); ++i) {
+            if (temp1[i]) {
+                ret1[count] = temp2[i];
+                ret2[count] = temp3[i];
+                count++;
+            }
+        }
+    }
+
+    return length;
+}
+
 float distance(Individual &in1, Individual &in2) {
     float d;
     unsigned DE = 0;

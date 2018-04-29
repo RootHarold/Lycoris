@@ -48,4 +48,6 @@ float distance(Individual &in1, Individual &in2);
 
 unsigned sort1(Individual &in, float *ret1, int *ret2);
 
+unsigned sort2(Individual &in, Gen *ret1, Ome *ret2);
+
 #endif //LYCORIS_FACTORY_H
