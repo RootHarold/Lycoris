@@ -1,21 +1,39 @@
 #include "lycoris.h"
 
-Lycoris::Lycoris() {
-
-}
-
-Lycoris::Lycoris(unsigned capacity) {
+Lycoris::Lycoris(unsigned capacity, unsigned inputNum, unsigned outputNum) {
     this->capacity = capacity;
-    individualList = new Individual *[capacity];
+    this->inputNum = inputNum;
+    this->outputNum = outputNum;
+    args = new Args();
+    args->tock = 1;
 }
 
 Lycoris::~Lycoris() {
-    for (unsigned i = 0; i < capacity; ++i) {
-        delete individualList[i];
+    delete args;
+
+    for (auto iter = speciesList->begin(); iter != speciesList->end(); ++iter) {
+        delete *iter;
     }
-    delete[] individualList;
+
+    delete speciesList;
 }
 
 std::string Lycoris::version() {
     return "Lycoris core 1.8-dev-8";
+}
+
+void Lycoris::setForwardFunc(void (*forwardFuncs)(Individual &)) {
+    this->forwardFuncs = forwardFuncs;
+}
+
+void Lycoris::setMaxTock(unsigned num) {
+    args->maxTock = num;
+}
+
+void Lycoris::setGapLength(unsigned num) {
+    args->maxGap = num - 1;
+}
+
+void Lycoris::mate() {
+    // TODO
 }

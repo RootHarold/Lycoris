@@ -36,7 +36,7 @@ Args::Args() {
 
     cpuNum = 1;
 #if defined (LINUX)
-    cpuNum = sysconf(_SC_NPROCESSORS_CONF);
+    cpuNum = unsigned(sysconf(_SC_NPROCESSORS_CONF));
 #elif defined (WINDOWS)
     SYSTEM_INFO si;
     GetSystemInfo(&si);
@@ -45,8 +45,11 @@ Args::Args() {
 
     cleanOdds = 0.01;
     activateFunc = sigmoid;
+    gapList = new std::vector<float>();
+    maxTock = 16;
+    maxGap = 64;
 }
 
 Args::~Args() {
-
+    delete gapList;
 }

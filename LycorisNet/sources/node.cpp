@@ -15,8 +15,7 @@ Node *Node::clone() {
     auto duplicate = new Node(nodeNum, nodeType);
     duplicate->bias = bias;
 
-    std::map<Gen, Ome>::iterator iter;
-    for (iter = genomeMap->begin(); iter != genomeMap->end(); iter++) {
+    for (auto iter = genomeMap->begin(); iter != genomeMap->end(); ++iter) {
         auto temp = const_cast<Gen *>(&(iter->first));
         duplicate->genomeMap->insert(std::pair<Gen, Ome>(temp->clone(), iter->second.clone()));
     }

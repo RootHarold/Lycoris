@@ -17,8 +17,7 @@ Individual::Individual(unsigned inputNum, unsigned outputNum, Args *args) {
 Individual::~Individual() {
     delete nodeSlice;
 
-    std::map<unsigned, Node *>::iterator iter;
-    for (iter = nodeMap->begin(); iter != nodeMap->end(); iter++) {
+    for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
         delete iter->second;
     }
     delete nodeMap;
@@ -54,7 +53,7 @@ void Individual::setInput(float *input) {
 }
 
 float *Individual::getOutput() {
-    float *output = new float[outputNum];
+    auto output = new float[outputNum];
     unsigned pointer = 0;
     for (unsigned i = inputNum; i < nodeSlice->size(); ++i) {
         auto temp = (*nodeMap)[(*nodeSlice)[i]];
@@ -74,13 +73,12 @@ void Individual::forward() {
         auto n = (*nodeMap)[index];
         float f = 0;
 
-        if (n->genomeMap->size() == 0) {
+        if (n->genomeMap->empty()) {
             if (n->nodeType == 1) {
                 clean[index] = true;
             }
         } else {
-            std::map<Gen, Ome>::iterator iter;
-            for (iter = n->genomeMap->begin(); iter != n->genomeMap->end(); iter++) {
+            for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
                 auto g = iter->first;
                 auto o = iter->second;
                 if (o.isEnable) {
@@ -91,16 +89,15 @@ void Individual::forward() {
         }
     }
 
-    if (LycorisRandomFloat(0, 1) < args->cleanOdds && clean.size() != 0) {
-        std::map<unsigned, bool>::iterator iter;
-        for (iter = clean.begin(); iter != clean.end(); iter++) {
+    if (LycorisRandomFloat(0, 1) < args->cleanOdds && !clean.empty()) {
+        for (auto iter = clean.begin(); iter != clean.end(); ++iter) {
             auto key = iter->first;
             auto temp = (*nodeMap)[key];
             nodeMap->erase(key);
             delete temp;
         }
 
-        for (std::vector<unsigned>::iterator iter = nodeSlice->begin(); iter != nodeSlice->end();) {
+        for (auto iter = nodeSlice->begin(); iter != nodeSlice->end();) {
             if (clean.find(*iter) != clean.end()) {
                 iter = nodeSlice->erase(iter);
             } else {
@@ -119,8 +116,7 @@ Individual *Individual::clone() {
     dulplicate->nodeSum = nodeSum;
 
     dulplicate->nodeMap = new std::map<unsigned, Node *>();
-    std::map<unsigned, Node *>::iterator iter;
-    for (iter = nodeMap->begin(); iter != nodeMap->end(); iter++) {
+    for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
         (*(dulplicate->nodeMap))[iter->first] = iter->second->clone();
     }
 
@@ -133,8 +129,7 @@ Individual *Individual::clone() {
 unsigned Individual::getSize() {
     unsigned size = 0;
     size += nodeSlice->size();
-    std::map<unsigned, Node *>::iterator iter;
-    for (iter = nodeMap->begin(); iter != nodeMap->end(); iter++) {
+    for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
         size += iter->second->genomeMap->size();
     }
     return size;

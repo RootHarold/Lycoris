@@ -2,6 +2,7 @@
 #define LYCORIS_ARGS_H
 
 #include <string>
+#include <vector>
 
 class Args {
 public:
@@ -33,6 +34,11 @@ public:
     float cleanOdds;
 
     float (*activateFunc)(float);
+
+    unsigned tock;
+    std::vector<float> *gapList;
+    unsigned maxTock;
+    unsigned maxGap;
 };
 
 #endif //LYCORIS_ARGS_H
