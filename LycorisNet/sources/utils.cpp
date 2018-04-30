@@ -312,7 +312,7 @@ Individual *mutateIndividual(Individual &in) {
         auto ran = LycorisRandomFloat(0, 1);
 
         if (ran < in.args->p1) {
-            Node *nodeOld = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUnsigned(
+            auto nodeOld = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUnsigned(
                     unsigned(offspring->nodeSlice->size()))]];
 
             if (!nodeOld->genomeMap->empty()) {
@@ -348,8 +348,73 @@ Individual *mutateIndividual(Individual &in) {
                 auto iter = std::find(offspring->nodeSlice->begin(), offspring->nodeSlice->end(), genOld.out);
                 offspring->nodeSlice->insert(iter, n->nodeNum);
             }
+        } else if (ran >= in.args->p1 && ran < in.args->p1 + in.args->p2) {
+            auto length = unsigned(offspring->nodeSlice->size());
+            auto index = LycorisRandomUnsigned(length);
+            auto sliceIndex = (*(offspring->nodeSlice))[index];
+            if ((*(offspring->nodeMap))[sliceIndex]->nodeType == 1) {
+                for (int i = index + 1; i < length; ++i) {
+                    auto outputNum = (*(offspring->nodeSlice))[i];
+                    auto n = (*(offspring->nodeMap))[outputNum];
+                    n->genomeMap->erase(Gen(sliceIndex, outputNum));
+                }
+                offspring->nodeMap->erase(sliceIndex);
+                offspring->nodeSlice->erase(offspring->nodeSlice->begin() + index);
+            }
+        } else if (ran >= in.args->p1 + in.args->p2 && ran < in.args->p1 + in.args->p2 + in.args->p3) {
+            auto length = unsigned(offspring->nodeSlice->size());
+            auto index1 = LycorisRandomUnsigned(length);
+            auto index2 = index1 + LycorisRandomUnsigned(length - index1);
 
-        }
+            if (index1 != index2) {
+                auto inputNum = (*(offspring->nodeSlice))[index1];
+                auto outputNum = (*(offspring->nodeSlice))[index2];
+                auto inputNode = (*(offspring->nodeMap))[inputNum];
+                auto outputNode = (*(offspring->nodeMap))[outputNum];
+
+                if (!((inputNode->nodeType == 0 && outputNode->nodeType == 0) ||
+                      (inputNode->nodeType == 2 && outputNode->nodeType == 2))) {
+                    Gen g(inputNum, outputNum);
+                    if (outputNode->genomeMap->find(g) == outputNode->genomeMap->end()) {
+                        Ome o(LycorisRandomFloat(0, 1) * (in.args->weightB - in.args->weightA) + in.args->weightA, true,
+                              offspring->innovationNum);
+                        offspring->innovationNum++;
+                        (*(outputNode->genomeMap))[g] = o;
+                    }
+                }
+            }
+        } else if (ran >= in.args->p1 + in.args->p2 + in.args->p3 &&
+                   ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4) {
+            auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUnsigned(
+                    unsigned(offspring->nodeSlice->size()))]];
+
+            if (!(n->genomeMap->empty())) {
+                Gen g;
+                auto ranPos = LycorisRandomUnsigned(unsigned(n->genomeMap->size()));
+                unsigned count = 0;
+                for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
+                    if (count == ranPos) {
+                        g = iter->first;
+                        break;
+                    }
+                }
+                n->genomeMap->erase(g);
+            }
+        } else if (ran >= in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4 &&
+                   ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4 + in.args->p5) {
+            auto n = new Node(offspring->nodeSum, 1);
+            n->initializeBias(LycorisRandomFloat(in.args->biasA, in.args->biasB));
+            offspring->nodeSum++;
+            (*(offspring->nodeMap))[n->nodeNum] = n;
+            auto index = LycorisRandomUnsigned(unsigned(offspring->nodeSlice->size()) - offspring->inputNum) +
+                         offspring->inputNum;
+            offspring->nodeSlice->insert(offspring->nodeSlice->begin() + index, n->nodeNum);
+        } else {
+            auto index = LycorisRandomUnsigned(unsigned(offspring->nodeSlice->size()) - offspring->inputNum) +
+                         offspring->inputNum;
+            auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[index]];
+            n->bias = LycorisRandomFloat(in.args->biasA, in.args->biasB);
+        };
     }
 
     return offspring;
