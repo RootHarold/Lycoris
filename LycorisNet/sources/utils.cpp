@@ -124,4 +124,182 @@ float distance(Individual &in1, Individual &in2) {
     return d;
 }
 
+Individual *mateIndividual(Individual &in1, Individual &in2) {
+    auto offspring = new Individual();
+    offspring->inputNum = in1.inputNum;
+    offspring->outputNum = in1.outputNum;
+    offspring->args = in1.args;
+    offspring->nodeMap = new std::map<unsigned, Node *>();
 
+    std::map<unsigned, bool> tempMap;
+    std::map<unsigned, bool> duplicateNodes;
+
+    for (auto iter = in1.nodeMap->begin(); iter != in1.nodeMap->end(); ++iter) {
+        auto k = iter->first;
+        tempMap[k] = true;
+        duplicateNodes[k] = false;
+    }
+
+    for (auto iter = in2.nodeMap->begin(); iter != in2.nodeMap->end(); ++iter) {
+        auto k = iter->first;
+        if (tempMap.find(k) != tempMap.end()) {
+            duplicateNodes[k] = true;
+        } else {
+            tempMap[k] = true;
+            duplicateNodes[k] = false;
+        }
+    }
+
+    std::vector<unsigned> tempSlice(tempMap.size());
+    unsigned tempCount = 0;
+    for (auto iter = tempMap.begin(); iter != tempMap.end(); ++iter) {
+        tempSlice[tempCount] = iter->first;
+        tempCount++;
+    }
+
+    auto basicNodeSum = in1.inputNum + in1.outputNum;
+    for (auto iter = tempSlice.begin(); iter != tempSlice.end(); ++iter) {
+        Node *n;
+        auto v = *iter;
+
+        if (v < offspring->inputNum) {
+            n = new Node(v, 0);
+        } else if (v >= offspring->inputNum && v < basicNodeSum) {
+            n = new Node(v, 2);
+        } else {
+            n = new Node(v, 1);
+            if (in1.nodeMap->find(v) != in1.nodeMap->end()) {
+                n->bias = (*(in1.nodeMap))[v]->bias;
+            } else {
+                n->bias = (*(in2.nodeMap))[v]->bias;
+            }
+        }
+
+        if (duplicateNodes[v]) {
+            if (LycorisRandomFloat(0, 1) < 0.5) {
+                n->bias = (*(in1.nodeMap))[v]->bias;
+            } else {
+                n->bias = (*(in2.nodeMap))[v]->bias;
+            }
+        }
+
+        (*(offspring->nodeMap))[v] = n;
+    }
+
+    Gen *g1 = nullptr;
+    Ome *o1 = nullptr;
+    Gen *g2 = nullptr;
+    Ome *o2 = nullptr;
+    auto len1 = sort2(in1, g1, o1);
+    auto len2 = sort2(in2, g2, o2);
+    unsigned point1 = 0;
+    unsigned point2 = 0;
+
+    while (true) {
+        if (point1 == len1 || point2 == len2) {
+            break;
+        }
+
+        if (o1[point1].innovationNum == o2[point2].innovationNum) {
+            if (LycorisRandomFloat(0, 1) < 0.5) {
+                (*(*(offspring->nodeMap))[g1[point1].out]->genomeMap)[g1[point1]] = o1[point1];
+            } else {
+                (*(*(offspring->nodeMap))[g2[point2].out]->genomeMap)[g2[point2]] = o2[point2];
+            }
+            point1++;
+            point2++;
+        } else if (o1[point1].innovationNum > o2[point2].innovationNum) {
+            (*(*(offspring->nodeMap))[g2[point2].out]->genomeMap)[g2[point2]] = o2[point2];
+            point2++;
+        } else {
+            (*(*(offspring->nodeMap))[g1[point1].out]->genomeMap)[g1[point1]] = o1[point1];
+            point1++;
+        }
+    }
+
+    for (int i = point1; i < len1; ++i) {
+        (*(*(offspring->nodeMap))[g1[i].out]->genomeMap)[g1[i]] = o1[i];
+    }
+
+    for (int i = point2; i < len2; ++i) {
+        (*(*(offspring->nodeMap))[g2[i].out]->genomeMap)[g2[i]] = o2[i];
+    }
+
+    if (len1 != 0) {
+        delete[] g1;
+        delete[] o1;
+    }
+    if (len2 != 0) {
+        delete[] g2;
+        delete[] o2;
+    }
+
+    std::map<unsigned, unsigned> inDegree;
+    for (auto iter = offspring->nodeMap->begin(); iter != offspring->nodeMap->end(); ++iter) {
+        inDegree[iter->first] = unsigned(iter->second->genomeMap->size());
+    }
+    std::vector<unsigned> next;
+    for (auto iter = inDegree.begin(); iter != inDegree.end(); ++iter) {
+        if (iter->second == 0) {
+            next.push_back(iter->first);
+            inDegree.erase(iter->first);
+        }
+    }
+    unsigned slicePointer = 0;
+
+    while (true) {
+        if (next.size() == 0) {
+            break;
+        }
+        auto headValue = next.front();
+        tempSlice[slicePointer] = headValue;
+        slicePointer++;
+        next.erase(next.begin());
+
+        for (auto iter = offspring->nodeMap->begin(); iter != offspring->nodeMap->end(); ++iter) {
+            auto v = iter->second;
+            for (auto it = v->genomeMap->begin(); it != v->genomeMap->end(); ++it) {
+                if (it->first.in == headValue) {
+                    auto outNum = v->nodeNum;
+                    if (inDegree[outNum] == 1) {
+                        inDegree.erase(outNum);
+                        next.push_back(outNum);
+                    } else {
+                        inDegree[outNum] = inDegree[outNum] - 1;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    for (auto iter = inDegree.begin(); iter != inDegree.end(); ++iter) {
+        tempSlice[slicePointer] = iter->first;
+        slicePointer++;
+    }
+
+    offspring->nodeSlice = new std::vector<unsigned>(tempSlice.size());
+    for (unsigned j = 0; j < in1.inputNum; ++j) {
+        (*(offspring->nodeSlice))[j] = j;
+    }
+    auto point = in1.inputNum;
+    for (auto iter = tempSlice.begin(); iter != tempSlice.end(); ++iter) {
+        if (*iter >= in1.inputNum) {
+            (*(offspring->nodeSlice))[point] = *iter;
+            point++;
+        }
+    }
+
+    if (in1.nodeSum > in2.nodeSum) {
+        offspring->nodeSum = in1.nodeSum;
+    } else {
+        offspring->nodeSum = in2.nodeSum;
+    }
+
+    if (in1.innovationNum > in2.innovationNum) {
+        offspring->innovationNum = in1.innovationNum;
+    } else {
+        offspring->innovationNum = in2.innovationNum;
+    }
+
+    return offspring;
+}

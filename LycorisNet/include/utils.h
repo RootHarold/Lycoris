@@ -50,4 +50,6 @@ unsigned sort1(Individual &in, float *ret1, int *ret2);
 
 unsigned sort2(Individual &in, Gen *ret1, Ome *ret2);
 
+Individual *mateIndividual(Individual &in1, Individual &in2);
+
 #endif //LYCORIS_FACTORY_H
