@@ -342,7 +342,6 @@ Individual *mutateIndividual(Individual &in) {
                 (*(n->genomeMap))[g1] = o1;
                 (*(nodeOld->genomeMap))[genOld] = omeOld;
                 (*(nodeOld->genomeMap))[g2] = o2;
-                (*(offspring->nodeMap))[genOld.out] = nodeOld;
                 (*(offspring->nodeMap))[n->nodeNum] = n;
 
                 auto iter = std::find(offspring->nodeSlice->begin(), offspring->nodeSlice->end(), genOld.out);
@@ -358,8 +357,10 @@ Individual *mutateIndividual(Individual &in) {
                     auto n = (*(offspring->nodeMap))[outputNum];
                     n->genomeMap->erase(Gen(sliceIndex, outputNum));
                 }
+                auto temp = (*(offspring->nodeMap))[sliceIndex];
                 offspring->nodeMap->erase(sliceIndex);
                 offspring->nodeSlice->erase(offspring->nodeSlice->begin() + index);
+                delete temp;
             }
         } else if (ran >= in.args->p1 + in.args->p2 && ran < in.args->p1 + in.args->p2 + in.args->p3) {
             auto length = unsigned(offspring->nodeSlice->size());
