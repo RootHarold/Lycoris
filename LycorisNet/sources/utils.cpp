@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "utils.h"
 
 unsigned sort1(Individual &in, float *ret1, unsigned *ret2) {
@@ -299,6 +300,56 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         offspring->innovationNum = in1.innovationNum;
     } else {
         offspring->innovationNum = in2.innovationNum;
+    }
+
+    return offspring;
+}
+
+Individual *mutateIndividual(Individual &in) {
+    auto offspring = in.clone();
+
+    for (int z = 0; z < in.args->mutateTime; ++z) {
+        auto ran = LycorisRandomFloat(0, 1);
+
+        if (ran < in.args->p1) {
+            Node *nodeOld = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUnsigned(
+                    unsigned(offspring->nodeSlice->size()))]];
+
+            if (!nodeOld->genomeMap->empty()) {
+                Gen genOld;
+                Ome omeOld;
+
+                auto ranPos = LycorisRandomUnsigned(unsigned(nodeOld->genomeMap->size()));
+                unsigned count = 0;
+                for (auto iter = nodeOld->genomeMap->begin(); iter != nodeOld->genomeMap->end(); ++iter) {
+                    if (count == ranPos) {
+                        genOld = iter->first;
+                        omeOld = iter->second;
+                        break;
+                    }
+                }
+
+                omeOld.isEnable = false;
+                auto n = new Node(offspring->nodeSum, 1);
+                n->initializeBias(LycorisRandomFloat(in.args->biasA, in.args->biasB));
+                offspring->nodeSum++;
+                Gen g1(genOld.in, n->nodeNum);
+                Ome o1(1.0, true, offspring->innovationNum);
+                offspring->innovationNum++;
+                Gen g2(n->nodeNum, genOld.out);
+                Ome o2(omeOld.weight, true, offspring->innovationNum);
+                offspring->innovationNum++;
+                (*(n->genomeMap))[g1] = o1;
+                (*(nodeOld->genomeMap))[genOld] = omeOld;
+                (*(nodeOld->genomeMap))[g2] = o2;
+                (*(offspring->nodeMap))[genOld.out] = nodeOld;
+                (*(offspring->nodeMap))[n->nodeNum] = n;
+
+                auto iter = std::find(offspring->nodeSlice->begin(), offspring->nodeSlice->end(), genOld.out);
+                offspring->nodeSlice->insert(iter, n->nodeNum);
+            }
+
+        }
     }
 
     return offspring;

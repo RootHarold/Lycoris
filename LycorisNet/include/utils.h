@@ -52,4 +52,6 @@ unsigned sort2(Individual &in, Gen *ret1, Ome *ret2);
 
 Individual *mateIndividual(Individual &in1, Individual &in2);
 
+Individual *mutateIndividual(Individual &in);
+
 #endif //LYCORIS_FACTORY_H
