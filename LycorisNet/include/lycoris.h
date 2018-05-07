@@ -15,6 +15,11 @@ public:
     std::vector<Species *> *speciesList;
     Args *args;
 
+    Individual ***tempList1;
+    unsigned **tempList2;
+    unsigned specieLength;
+    unsigned *oldLength;
+
     void (*forwardFuncs)(Individual &in);
 
     Lycoris(unsigned capacity, unsigned inputNum, unsigned outputNum);
@@ -30,6 +35,16 @@ public:
     void setGapLength(unsigned num);
 
     void mate();
+
+    void mateCore(unsigned *start, unsigned *end);
+
+    void mutate();
+
+    void mutateCore(unsigned *start, unsigned *end);
+
+    void classify();
+
+    void classifyCore(unsigned *start, unsigned *end);
 };
 
 #endif //LYCORIS_LYCORIS_H

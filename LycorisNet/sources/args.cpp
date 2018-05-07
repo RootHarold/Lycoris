@@ -1,19 +1,6 @@
 #include "args.h"
 #include "utils.h"
 
-
-#if !defined (_WIN32) && !defined (_WIN64)
-#define LINUX
-
-#include <unistd.h>
-
-#else
-#define WINDOWS
-
-#include <windows.h>
-
-#endif
-
 Args::Args() {
     c1 = 1.0;
     c2 = 0.4;
@@ -34,17 +21,11 @@ Args::Args() {
     biasA = -1;
     biasB = 1;
 
-    cpuNum = 1;
-#if defined (LINUX)
-    cpuNum = unsigned(sysconf(_SC_NPROCESSORS_CONF));
-#elif defined (WINDOWS)
-    SYSTEM_INFO si;
-    GetSystemInfo(&si);
-    cpuNum = si.dwNumberOfProcessors;
-#endif
+    cpuNum = std::thread::hardware_concurrency();
 
     cleanOdds = 0.01;
     activateFunc = sigmoid;
+    tock = 1;
     gapList = new std::vector<float>();
     maxTock = 16;
     maxGap = 64;
