@@ -24,3 +24,6 @@ set(SOURCE_FILES
         LycorisNet/sources/args.cpp)
 
 add_executable(bootstrap ${SOURCE_FILES})
+
+find_package(Threads REQUIRED)
+target_link_libraries(bootstrap Threads::Threads)

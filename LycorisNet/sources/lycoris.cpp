@@ -18,7 +18,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8-dev-10";
+    return "Lycoris core 1.8-dev-11";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFuncs)(Individual &)) {
@@ -61,7 +61,7 @@ void Lycoris::mate() {
 
     std::vector<std::thread *> threads;
     for (unsigned i = 0; i < args->cpuNum; ++i) {
-        std::thread th(mateCore, start[i], end[i]);
+        std::thread th(&Lycoris::mateCore, this, start[i], end[i]);
         threads.push_back(&th);
     }
     for (std::thread *i :threads) {
@@ -119,7 +119,7 @@ void Lycoris::mutate() {
 
     std::vector<std::thread *> threads;
     for (unsigned i = 0; i < args->cpuNum; ++i) {
-        std::thread th(mutateCore, start[i], end[i]);
+        std::thread th(&Lycoris::mutateCore, this, start[i], end[i]);
         threads.push_back(&th);
     }
     for (std::thread *i :threads) {
