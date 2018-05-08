@@ -15,10 +15,10 @@ public:
     std::vector<Species *> *speciesList;
     Args *args;
 
-    Individual ***tempList1;
-    unsigned **tempList2;
+    std::vector<std::vector<Individual *>> tempList1;
+    std::vector<std::vector<unsigned>> tempList2;
     unsigned specieLength;
-    unsigned *oldLength;
+    std::vector<unsigned> oldLength;
 
     void (*forwardFuncs)(Individual &in);
 

@@ -18,7 +18,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8-dev-11";
+    return "Lycoris core 1.8-dev-12";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFuncs)(Individual &)) {
@@ -35,8 +35,8 @@ void Lycoris::setGapLength(unsigned num) {
 
 void Lycoris::mate() {
     specieLength = unsigned(speciesList->size());
-    tempList1 = new Individual **[specieLength];
-    oldLength = new unsigned[specieLength];
+    tempList1.resize(specieLength);
+    oldLength.resize(specieLength);
     auto start = new unsigned *[args->cpuNum];
     auto end = new unsigned *[args->cpuNum];
     for (unsigned i = 0; i < args->cpuNum; ++i) {
@@ -48,7 +48,7 @@ void Lycoris::mate() {
         auto individualLength = unsigned((*speciesList)[i]->individualList->size());
         oldLength[i] = individualLength;
         auto mateLength = unsigned(float(individualLength) * args->mateOdds);
-        tempList1[i] = new Individual *[mateLength];
+        tempList1[i].resize(mateLength);
         auto part = mateLength / args->cpuNum;
         auto temp = args->cpuNum - 1;
         for (unsigned j = 0; j < temp; ++j) {
@@ -68,11 +68,6 @@ void Lycoris::mate() {
         i->join();
     }
 
-    for (unsigned i = 0; i < specieLength; ++i) {
-        delete[] tempList1[i];
-    }
-    delete[] tempList1;
-    delete[] oldLength;
     for (unsigned i = 0; i < args->cpuNum; ++i) {
         delete[] start[i];
         delete[] end[i];
@@ -93,8 +88,8 @@ void Lycoris::mateCore(unsigned *start, unsigned *end) {
 
 void Lycoris::mutate() {
     specieLength = unsigned(speciesList->size());
-    tempList1 = new Individual **[specieLength];
-    oldLength = new unsigned[specieLength];
+    tempList1.resize(specieLength);
+    oldLength.resize(specieLength);
     auto start = new unsigned *[args->cpuNum];
     auto end = new unsigned *[args->cpuNum];
     for (unsigned i = 0; i < args->cpuNum; ++i) {
@@ -106,7 +101,7 @@ void Lycoris::mutate() {
         auto individualLength = unsigned((*speciesList)[i]->individualList->size());
         oldLength[i] = individualLength;
         auto mutateLength = unsigned(float(individualLength) * args->mutateOdds);
-        tempList1[i] = new Individual *[mutateLength];
+        tempList1[i].resize(mutateLength);
         auto part = mutateLength / args->cpuNum;
         auto temp = args->cpuNum - 1;
         for (unsigned j = 0; j < temp; ++j) {
@@ -126,11 +121,6 @@ void Lycoris::mutate() {
         i->join();
     }
 
-    for (unsigned i = 0; i < specieLength; ++i) {
-        delete[] tempList1[i];
-    }
-    delete[] tempList1;
-    delete[] oldLength;
     for (unsigned i = 0; i < args->cpuNum; ++i) {
         delete[] start[i];
         delete[] end[i];
@@ -149,7 +139,7 @@ void Lycoris::mutateCore(unsigned *start, unsigned *end) {
 }
 
 void Lycoris::classify() {
-    tempList2 = new unsigned *[specieLength];
+    tempList2.resize(specieLength);
     auto start = new unsigned *[args->cpuNum];
     auto end = new unsigned *[args->cpuNum];
     for (unsigned i = 0; i < args->cpuNum; ++i) {
