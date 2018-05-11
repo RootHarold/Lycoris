@@ -21,8 +21,8 @@ std::string Lycoris::version() {
     return "Lycoris core 1.8-dev-14";
 }
 
-void Lycoris::setForwardFunc(void (*forwardFuncs)(Individual &)) {
-    this->forwardFuncs = forwardFuncs;
+void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
+    this->forwardFunc = forwardFunc;
 }
 
 void Lycoris::setMaxTock(uint32_t num) {
@@ -214,6 +214,52 @@ void Lycoris::classifyCore(uint32_t *start, uint32_t *end) {
                     tempList2[i][j] = UINT32_MAX;
                 }
             }
+        }
+    }
+}
+
+void Lycoris::forward() {
+    specieLength = uint32_t(speciesList->size());
+    auto start = new uint32_t *[args->cpuNum];
+    auto end = new uint32_t *[args->cpuNum];
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
+        start[i] = new uint32_t[specieLength];
+        end[i] = new uint32_t[specieLength];
+    }
+
+    for (uint32_t i = 0; i < specieLength; ++i) {
+        auto individualLength = uint32_t((*speciesList)[i]->individualList->size());
+        auto part = individualLength / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t j = 0; j < temp; ++j) {
+            start[j][i] = j * part;
+            end[j][i] = (j + 1) * part;
+        }
+        start[temp][i] = temp * part;
+        end[temp][i] = individualLength;
+    }
+
+    std::vector<std::thread *> threads;
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
+        std::thread th(&Lycoris::forwardCore, this, start[i], end[i]);
+        threads.push_back(&th);
+    }
+    for (std::thread *i :threads) {
+        i->join();
+    }
+
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
+        delete[] start[i];
+        delete[] end[i];
+    }
+    delete[] start;
+    delete[] end;
+}
+
+void Lycoris::forwardCore(uint32_t *start, uint32_t *end) {
+    for (uint32_t i = 0; i < specieLength; ++i) {
+        for (uint32_t j = start[i]; j < end[i]; ++j) {
+            forwardFunc(*((*(*speciesList)[i]->individualList)[j]));
         }
     }
 }

@@ -20,7 +20,7 @@ public:
     uint32_t specieLength;
     std::vector<uint32_t> oldLength;
 
-    void (*forwardFuncs)(Individual &in);
+    void (*forwardFunc)(Individual &in);
 
     Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum);
 
@@ -30,7 +30,7 @@ public:
 
     void setMaxTock(uint32_t num);
 
-    void setForwardFunc(void (*forwardFuncs)(Individual &in));
+    void setForwardFunc(void (*forwardFunc)(Individual &in));
 
     void setGapLength(uint32_t num);
 
@@ -47,6 +47,10 @@ public:
     void classify();
 
     void classifyCore(uint32_t *start, uint32_t *end);
+
+    void forward();
+
+    void forwardCore(uint32_t *start, uint32_t *end);
 };
 
 #endif //LYCORIS_LYCORIS_H
