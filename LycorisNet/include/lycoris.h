@@ -34,6 +34,8 @@ public:
 
     void setGapLength(uint32_t num);
 
+    void setDistanceThreshold(float threshold);
+
     void mate();
 
     void mateCore(uint32_t *start, uint32_t *end);

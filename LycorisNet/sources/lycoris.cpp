@@ -33,6 +33,10 @@ void Lycoris::setGapLength(uint32_t num) {
     args->maxGap = num - 1;
 }
 
+void Lycoris::setDistanceThreshold(float threshold) {
+    args->distanceThreshold = threshold;
+}
+
 void Lycoris::mate() {
     specieLength = uint32_t(speciesList->size());
     tempList1.resize(specieLength);
@@ -160,7 +164,40 @@ void Lycoris::classify() {
         end[temp][i] = tempList1Length;
     }
 
-    // TODO
+    std::vector<std::thread *> threads;
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
+        std::thread th(&Lycoris::classifyCore, this, start[i], end[i]);
+        threads.push_back(&th);
+    }
+    for (std::thread *i :threads) {
+        i->join();
+    }
+
+    speciesList->push_back(new Species());
+    for (uint32_t i = 0; i < tempList2.size(); ++i) {
+        for (uint32_t j = 0; j < tempList2[i].size(); ++j) {
+            if (tempList2[i][j] != UINT32_MAX) {
+                (*speciesList)[tempList2[i][j]]->individualList->push_back(tempList1[i][j]);
+            } else {
+                (*speciesList)[specieLength]->individualList->push_back(tempList1[i][j]);
+            }
+        }
+    }
+
+    for (auto iter = speciesList->begin(); iter != speciesList->end();) {
+        if ((*iter)->individualList->empty()) {
+            iter = speciesList->erase(iter);
+        } else {
+            ++iter;
+        }
+    }
+
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
+        delete[] start[i];
+        delete[] end[i];
+    }
+    delete[] start;
+    delete[] end;
 }
 
 void Lycoris::classifyCore(uint32_t *start, uint32_t *end) {
