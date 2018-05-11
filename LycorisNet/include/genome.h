@@ -7,12 +7,12 @@
 
 class Gen {
 public:
-    unsigned in;
-    unsigned out;
+    uint32_t in;
+    uint32_t out;
 
     Gen();
 
-    Gen(unsigned in, unsigned out);
+    Gen(uint32_t in, uint32_t out);
 
     Gen clone();
 
@@ -29,11 +29,11 @@ class Ome {
 public:
     float weight;
     bool isEnable;
-    unsigned innovationNum;
+    uint32_t innovationNum;
 
     Ome();
 
-    Ome(float weight, bool isEnable, unsigned innovationNum);
+    Ome(float weight, bool isEnable, uint32_t innovationNum);
 
     Ome clone();
 };

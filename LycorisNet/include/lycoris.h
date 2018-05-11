@@ -9,42 +9,42 @@
 class Lycoris {
 public:
     Individual *best;
-    unsigned capacity;
-    unsigned inputNum;
-    unsigned outputNum;
+    uint32_t capacity;
+    uint32_t inputNum;
+    uint32_t outputNum;
     std::vector<Species *> *speciesList;
     Args *args;
 
     std::vector<std::vector<Individual *>> tempList1;
-    std::vector<std::vector<unsigned>> tempList2;
-    unsigned specieLength;
-    std::vector<unsigned> oldLength;
+    std::vector<std::vector<uint32_t >> tempList2;
+    uint32_t specieLength;
+    std::vector<uint32_t> oldLength;
 
     void (*forwardFuncs)(Individual &in);
 
-    Lycoris(unsigned capacity, unsigned inputNum, unsigned outputNum);
+    Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum);
 
     ~Lycoris();
 
     std::string version();
 
-    void setMaxTock(unsigned num);
+    void setMaxTock(uint32_t num);
 
     void setForwardFunc(void (*forwardFuncs)(Individual &in));
 
-    void setGapLength(unsigned num);
+    void setGapLength(uint32_t num);
 
     void mate();
 
-    void mateCore(unsigned *start, unsigned *end);
+    void mateCore(uint32_t *start, uint32_t *end);
 
     void mutate();
 
-    void mutateCore(unsigned *start, unsigned *end);
+    void mutateCore(uint32_t *start, uint32_t *end);
 
     void classify();
 
-    void classifyCore(unsigned *start, unsigned *end);
+    void classifyCore(uint32_t *start, uint32_t *end);
 };
 
 #endif //LYCORIS_LYCORIS_H

@@ -8,18 +8,18 @@
 
 class Individual {
 public:
-    unsigned inputNum;
-    unsigned outputNum;
-    unsigned innovationNum;
-    unsigned nodeSum;
+    uint32_t inputNum;
+    uint32_t outputNum;
+    uint32_t innovationNum;
+    uint32_t nodeSum;
     float fitness;
-    std::vector<unsigned> *nodeSlice;
-    std::map<unsigned, Node *> *nodeMap;
+    std::vector<uint32_t> *nodeSlice;
+    std::map<uint32_t, Node *> *nodeMap;
     Args *args;
 
     Individual();
 
-    Individual(unsigned inputNum, unsigned outputNum, Args *args);
+    Individual(uint32_t inputNum, uint32_t outputNum, Args *args);
 
     ~Individual();
 
@@ -33,7 +33,7 @@ public:
 
     Individual *clone();
 
-    unsigned getSize();
+    uint32_t getSize();
 };
 
 #endif //LYCORIS_INDIVIDUAL_H

@@ -1,12 +1,12 @@
 #include <algorithm>
 #include "utils.h"
 
-unsigned sort1(Individual &in, float *ret1, unsigned *ret2) {
+uint32_t sort1(Individual &in, float *ret1, uint32_t *ret2) {
     std::vector<bool> temp1(in.innovationNum, false);
     float temp2[in.innovationNum];
-    unsigned temp3[in.innovationNum];
+    uint32_t temp3[in.innovationNum];
 
-    unsigned length = 0;
+    uint32_t length = 0;
     for (auto iter = in.nodeMap->begin(); iter != in.nodeMap->end(); ++iter) {
         auto genomeMap = iter->second->genomeMap;
         length += genomeMap->size();
@@ -20,8 +20,8 @@ unsigned sort1(Individual &in, float *ret1, unsigned *ret2) {
 
     if (length != 0) {
         ret1 = new float[length];
-        ret2 = new unsigned[length];
-        unsigned count = 0;
+        ret2 = new uint32_t [length];
+        uint32_t count = 0;
         for (int i = 0; i < temp1.size(); ++i) {
             if (temp1[i]) {
                 ret1[count] = temp2[i];
@@ -34,12 +34,12 @@ unsigned sort1(Individual &in, float *ret1, unsigned *ret2) {
     return length;
 }
 
-unsigned sort2(Individual &in, Gen *ret1, Ome *ret2) {
+uint32_t sort2(Individual &in, Gen *ret1, Ome *ret2) {
     std::vector<bool> temp1(in.innovationNum, false);
     Gen temp2[in.innovationNum];
     Ome temp3[in.innovationNum];
 
-    unsigned length = 0;
+    uint32_t length = 0;
     for (auto iter = in.nodeMap->begin(); iter != in.nodeMap->end(); ++iter) {
         auto genomeMap = iter->second->genomeMap;
         length += genomeMap->size();
@@ -54,7 +54,7 @@ unsigned sort2(Individual &in, Gen *ret1, Ome *ret2) {
     if (length != 0) {
         ret1 = new Gen[length];
         ret2 = new Ome[length];
-        unsigned count = 0;
+        uint32_t count = 0;
         for (int i = 0; i < temp1.size(); ++i) {
             if (temp1[i]) {
                 ret1[count] = temp2[i];
@@ -69,14 +69,14 @@ unsigned sort2(Individual &in, Gen *ret1, Ome *ret2) {
 
 float distance(Individual &in1, Individual &in2) {
     float d;
-    unsigned DE = 0;
+    uint32_t DE = 0;
     float *w1 = nullptr;
-    unsigned *i1 = nullptr;
+    uint32_t *i1 = nullptr;
     float *w2 = nullptr;
-    unsigned *i2 = nullptr;
+    uint32_t *i2 = nullptr;
     auto len1 = sort1(in1, w1, i1);
     auto len2 = sort1(in2, w2, i2);
-    unsigned N = 0;
+    uint32_t N = 0;
     if (len1 > len2) {
         N = len1;
     } else {
@@ -86,9 +86,9 @@ float distance(Individual &in1, Individual &in2) {
         return 0;
     }
     float W = 0;
-    unsigned countW = 0;
-    unsigned point1 = 0;
-    unsigned point2 = 0;
+    uint32_t countW = 0;
+    uint32_t point1 = 0;
+    uint32_t point2 = 0;
 
     while (true) {
         if (point1 == len1 || point2 == len2) {
@@ -130,10 +130,10 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
     offspring->inputNum = in1.inputNum;
     offspring->outputNum = in1.outputNum;
     offspring->args = in1.args;
-    offspring->nodeMap = new std::map<unsigned, Node *>();
+    offspring->nodeMap = new std::map<uint32_t , Node *>();
 
-    std::map<unsigned, bool> tempMap;
-    std::map<unsigned, bool> duplicateNodes;
+    std::map<uint32_t , bool> tempMap;
+    std::map<uint32_t , bool> duplicateNodes;
 
     for (auto iter = in1.nodeMap->begin(); iter != in1.nodeMap->end(); ++iter) {
         auto k = iter->first;
@@ -151,8 +151,8 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         }
     }
 
-    std::vector<unsigned> tempSlice(tempMap.size());
-    unsigned tempCount = 0;
+    std::vector<uint32_t > tempSlice(tempMap.size());
+    uint32_t tempCount = 0;
     for (auto iter = tempMap.begin(); iter != tempMap.end(); ++iter) {
         tempSlice[tempCount] = iter->first;
         tempCount++;
@@ -193,8 +193,8 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
     Ome *o2 = nullptr;
     auto len1 = sort2(in1, g1, o1);
     auto len2 = sort2(in2, g2, o2);
-    unsigned point1 = 0;
-    unsigned point2 = 0;
+    uint32_t point1 = 0;
+    uint32_t point2 = 0;
 
     while (true) {
         if (point1 == len1 || point2 == len2) {
@@ -235,18 +235,18 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         delete[] o2;
     }
 
-    std::map<unsigned, unsigned> inDegree;
+    std::map<uint32_t , uint32_t > inDegree;
     for (auto iter = offspring->nodeMap->begin(); iter != offspring->nodeMap->end(); ++iter) {
-        inDegree[iter->first] = unsigned(iter->second->genomeMap->size());
+        inDegree[iter->first] = uint32_t (iter->second->genomeMap->size());
     }
-    std::vector<unsigned> next;
+    std::vector<uint32_t > next;
     for (auto iter = inDegree.begin(); iter != inDegree.end(); ++iter) {
         if (iter->second == 0) {
             next.push_back(iter->first);
             inDegree.erase(iter->first);
         }
     }
-    unsigned slicePointer = 0;
+    uint32_t slicePointer = 0;
 
     while (true) {
         if (next.size() == 0) {
@@ -278,8 +278,8 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         slicePointer++;
     }
 
-    offspring->nodeSlice = new std::vector<unsigned>(tempSlice.size());
-    for (unsigned j = 0; j < in1.inputNum; ++j) {
+    offspring->nodeSlice = new std::vector<uint32_t >(tempSlice.size());
+    for (uint32_t j = 0; j < in1.inputNum; ++j) {
         (*(offspring->nodeSlice))[j] = j;
     }
     auto point = in1.inputNum;
@@ -312,15 +312,15 @@ Individual *mutateIndividual(Individual &in) {
         auto ran = LycorisRandomFloat(0, 1);
 
         if (ran < in.args->p1) {
-            auto nodeOld = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUnsigned(
-                    unsigned(offspring->nodeSlice->size()))]];
+            auto nodeOld = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUint32_t (
+                    uint32_t (offspring->nodeSlice->size()))]];
 
             if (!nodeOld->genomeMap->empty()) {
                 Gen genOld;
                 Ome omeOld;
 
-                auto ranPos = LycorisRandomUnsigned(unsigned(nodeOld->genomeMap->size()));
-                unsigned count = 0;
+                auto ranPos = LycorisRandomUint32_t (uint32_t (nodeOld->genomeMap->size()));
+                uint32_t count = 0;
                 for (auto iter = nodeOld->genomeMap->begin(); iter != nodeOld->genomeMap->end(); ++iter) {
                     if (count == ranPos) {
                         genOld = iter->first;
@@ -348,8 +348,8 @@ Individual *mutateIndividual(Individual &in) {
                 offspring->nodeSlice->insert(iter, n->nodeNum);
             }
         } else if (ran >= in.args->p1 && ran < in.args->p1 + in.args->p2) {
-            auto length = unsigned(offspring->nodeSlice->size());
-            auto index = LycorisRandomUnsigned(length);
+            auto length = uint32_t (offspring->nodeSlice->size());
+            auto index = LycorisRandomUint32_t (length);
             auto sliceIndex = (*(offspring->nodeSlice))[index];
             if ((*(offspring->nodeMap))[sliceIndex]->nodeType == 1) {
                 for (int i = index + 1; i < length; ++i) {
@@ -363,9 +363,9 @@ Individual *mutateIndividual(Individual &in) {
                 delete temp;
             }
         } else if (ran >= in.args->p1 + in.args->p2 && ran < in.args->p1 + in.args->p2 + in.args->p3) {
-            auto length = unsigned(offspring->nodeSlice->size());
-            auto index1 = LycorisRandomUnsigned(length);
-            auto index2 = index1 + LycorisRandomUnsigned(length - index1);
+            auto length = uint32_t (offspring->nodeSlice->size());
+            auto index1 = LycorisRandomUint32_t (length);
+            auto index2 = index1 + LycorisRandomUint32_t (length - index1);
 
             if (index1 != index2) {
                 auto inputNum = (*(offspring->nodeSlice))[index1];
@@ -386,13 +386,13 @@ Individual *mutateIndividual(Individual &in) {
             }
         } else if (ran >= in.args->p1 + in.args->p2 + in.args->p3 &&
                    ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4) {
-            auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUnsigned(
-                    unsigned(offspring->nodeSlice->size()))]];
+            auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUint32_t (
+                    uint32_t (offspring->nodeSlice->size()))]];
 
             if (!(n->genomeMap->empty())) {
                 Gen g;
-                auto ranPos = LycorisRandomUnsigned(unsigned(n->genomeMap->size()));
-                unsigned count = 0;
+                auto ranPos = LycorisRandomUint32_t (uint32_t (n->genomeMap->size()));
+                uint32_t count = 0;
                 for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
                     if (count == ranPos) {
                         g = iter->first;
@@ -407,11 +407,11 @@ Individual *mutateIndividual(Individual &in) {
             n->initializeBias(LycorisRandomFloat(in.args->biasA, in.args->biasB));
             offspring->nodeSum++;
             (*(offspring->nodeMap))[n->nodeNum] = n;
-            auto index = LycorisRandomUnsigned(unsigned(offspring->nodeSlice->size()) - offspring->inputNum) +
+            auto index = LycorisRandomUint32_t (uint32_t (offspring->nodeSlice->size()) - offspring->inputNum) +
                          offspring->inputNum;
             offspring->nodeSlice->insert(offspring->nodeSlice->begin() + index, n->nodeNum);
         } else {
-            auto index = LycorisRandomUnsigned(unsigned(offspring->nodeSlice->size()) - offspring->inputNum) +
+            auto index = LycorisRandomUint32_t (uint32_t (offspring->nodeSlice->size()) - offspring->inputNum) +
                          offspring->inputNum;
             auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[index]];
             n->bias = LycorisRandomFloat(in.args->biasA, in.args->biasB);

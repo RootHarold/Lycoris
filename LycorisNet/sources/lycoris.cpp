@@ -1,6 +1,6 @@
 #include "lycoris.h"
 
-Lycoris::Lycoris(unsigned capacity, unsigned inputNum, unsigned outputNum) {
+Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
     this->capacity = capacity;
     this->inputNum = inputNum;
     this->outputNum = outputNum;
@@ -18,40 +18,40 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8-dev-12";
+    return "Lycoris core 1.8-dev-14";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFuncs)(Individual &)) {
     this->forwardFuncs = forwardFuncs;
 }
 
-void Lycoris::setMaxTock(unsigned num) {
+void Lycoris::setMaxTock(uint32_t num) {
     args->maxTock = num;
 }
 
-void Lycoris::setGapLength(unsigned num) {
+void Lycoris::setGapLength(uint32_t num) {
     args->maxGap = num - 1;
 }
 
 void Lycoris::mate() {
-    specieLength = unsigned(speciesList->size());
+    specieLength = uint32_t(speciesList->size());
     tempList1.resize(specieLength);
     oldLength.resize(specieLength);
-    auto start = new unsigned *[args->cpuNum];
-    auto end = new unsigned *[args->cpuNum];
-    for (unsigned i = 0; i < args->cpuNum; ++i) {
-        start[i] = new unsigned[specieLength];
-        end[i] = new unsigned[specieLength];
+    auto start = new uint32_t *[args->cpuNum];
+    auto end = new uint32_t *[args->cpuNum];
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
+        start[i] = new uint32_t[specieLength];
+        end[i] = new uint32_t[specieLength];
     }
 
-    for (unsigned i = 0; i < specieLength; ++i) {
-        auto individualLength = unsigned((*speciesList)[i]->individualList->size());
+    for (uint32_t i = 0; i < specieLength; ++i) {
+        auto individualLength = uint32_t((*speciesList)[i]->individualList->size());
         oldLength[i] = individualLength;
-        auto mateLength = unsigned(float(individualLength) * args->mateOdds);
+        auto mateLength = uint32_t(float(individualLength) * args->mateOdds);
         tempList1[i].resize(mateLength);
         auto part = mateLength / args->cpuNum;
         auto temp = args->cpuNum - 1;
-        for (unsigned j = 0; j < temp; ++j) {
+        for (uint32_t j = 0; j < temp; ++j) {
             start[j][i] = j * part;
             end[j][i] = (j + 1) * part;
         }
@@ -60,7 +60,7 @@ void Lycoris::mate() {
     }
 
     std::vector<std::thread *> threads;
-    for (unsigned i = 0; i < args->cpuNum; ++i) {
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
         std::thread th(&Lycoris::mateCore, this, start[i], end[i]);
         threads.push_back(&th);
     }
@@ -68,7 +68,7 @@ void Lycoris::mate() {
         i->join();
     }
 
-    for (unsigned i = 0; i < args->cpuNum; ++i) {
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
         delete[] start[i];
         delete[] end[i];
     }
@@ -76,35 +76,35 @@ void Lycoris::mate() {
     delete[] end;
 }
 
-void Lycoris::mateCore(unsigned *start, unsigned *end) {
-    for (unsigned i = 0; i < specieLength; ++i) {
+void Lycoris::mateCore(uint32_t *start, uint32_t *end) {
+    for (uint32_t i = 0; i < specieLength; ++i) {
         auto l = (*speciesList)[i]->individualList;
-        for (unsigned j = start[i]; j < end[i]; ++j) {
-            tempList1[i][j] = mateIndividual(*((*l)[LycorisRandomUnsigned(oldLength[i])]),
-                                             *((*l)[LycorisRandomUnsigned(oldLength[i])]));
+        for (uint32_t j = start[i]; j < end[i]; ++j) {
+            tempList1[i][j] = mateIndividual(*((*l)[LycorisRandomUint32_t(oldLength[i])]),
+                                             *((*l)[LycorisRandomUint32_t(oldLength[i])]));
         }
     }
 }
 
 void Lycoris::mutate() {
-    specieLength = unsigned(speciesList->size());
+    specieLength = uint32_t(speciesList->size());
     tempList1.resize(specieLength);
     oldLength.resize(specieLength);
-    auto start = new unsigned *[args->cpuNum];
-    auto end = new unsigned *[args->cpuNum];
-    for (unsigned i = 0; i < args->cpuNum; ++i) {
-        start[i] = new unsigned[specieLength];
-        end[i] = new unsigned[specieLength];
+    auto start = new uint32_t *[args->cpuNum];
+    auto end = new uint32_t *[args->cpuNum];
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
+        start[i] = new uint32_t[specieLength];
+        end[i] = new uint32_t[specieLength];
     }
 
-    for (unsigned i = 0; i < specieLength; ++i) {
-        auto individualLength = unsigned((*speciesList)[i]->individualList->size());
+    for (uint32_t i = 0; i < specieLength; ++i) {
+        auto individualLength = uint32_t((*speciesList)[i]->individualList->size());
         oldLength[i] = individualLength;
-        auto mutateLength = unsigned(float(individualLength) * args->mutateOdds);
+        auto mutateLength = uint32_t(float(individualLength) * args->mutateOdds);
         tempList1[i].resize(mutateLength);
         auto part = mutateLength / args->cpuNum;
         auto temp = args->cpuNum - 1;
-        for (unsigned j = 0; j < temp; ++j) {
+        for (uint32_t j = 0; j < temp; ++j) {
             start[j][i] = j * part;
             end[j][i] = (j + 1) * part;
         }
@@ -113,7 +113,7 @@ void Lycoris::mutate() {
     }
 
     std::vector<std::thread *> threads;
-    for (unsigned i = 0; i < args->cpuNum; ++i) {
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
         std::thread th(&Lycoris::mutateCore, this, start[i], end[i]);
         threads.push_back(&th);
     }
@@ -121,7 +121,7 @@ void Lycoris::mutate() {
         i->join();
     }
 
-    for (unsigned i = 0; i < args->cpuNum; ++i) {
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
         delete[] start[i];
         delete[] end[i];
     }
@@ -129,29 +129,54 @@ void Lycoris::mutate() {
     delete[] end;
 }
 
-void Lycoris::mutateCore(unsigned *start, unsigned *end) {
-    for (unsigned i = 0; i < specieLength; ++i) {
+void Lycoris::mutateCore(uint32_t *start, uint32_t *end) {
+    for (uint32_t i = 0; i < specieLength; ++i) {
         auto l = (*speciesList)[i]->individualList;
-        for (unsigned j = start[i]; j < end[i]; ++j) {
-            tempList1[i][j] = mutateIndividual(*((*l)[LycorisRandomUnsigned(oldLength[i])]));
+        for (uint32_t j = start[i]; j < end[i]; ++j) {
+            tempList1[i][j] = mutateIndividual(*((*l)[LycorisRandomUint32_t(oldLength[i])]));
         }
     }
 }
 
 void Lycoris::classify() {
     tempList2.resize(specieLength);
-    auto start = new unsigned *[args->cpuNum];
-    auto end = new unsigned *[args->cpuNum];
-    for (unsigned i = 0; i < args->cpuNum; ++i) {
-        start[i] = new unsigned[specieLength];
-        end[i] = new unsigned[specieLength];
+    auto start = new uint32_t *[args->cpuNum];
+    auto end = new uint32_t *[args->cpuNum];
+    for (uint32_t i = 0; i < args->cpuNum; ++i) {
+        start[i] = new uint32_t[specieLength];
+        end[i] = new uint32_t[specieLength];
     }
 
-    for (unsigned i = 0; i < specieLength; ++i) {
-        // TODO
+    for (uint32_t i = 0; i < specieLength; ++i) {
+        auto tempList1Length = uint32_t(tempList1[i].size());
+        tempList2[i].resize(tempList1Length);
+        auto part = tempList1Length / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t j = 0; j < temp; ++j) {
+            start[j][i] = j * part;
+            end[j][i] = (j + 1) * part;
+        }
+        start[temp][i] = temp * part;
+        end[temp][i] = tempList1Length;
     }
+
+    // TODO
 }
 
-void Lycoris::classifyCore(unsigned *start, unsigned *end) {
-
+void Lycoris::classifyCore(uint32_t *start, uint32_t *end) {
+    for (uint32_t i = 0; i < specieLength; ++i) {
+        for (uint32_t j = start[i]; j < end[i]; ++j) {
+            auto temp = tempList1[i][j];
+            for (uint32_t k = 0; k < specieLength; ++k) {
+                auto l = (*speciesList)[k]->individualList;
+                auto dis = distance(*temp, *((*l)[LycorisRandomUint32_t(oldLength[k])]));
+                if (dis <= args->distanceThreshold) {
+                    tempList2[i][j] = k;
+                    break;
+                } else {
+                    tempList2[i][j] = UINT32_MAX;
+                }
+            }
+        }
+    }
 }

@@ -5,7 +5,7 @@ Individual::Individual() {
 
 }
 
-Individual::Individual(unsigned inputNum, unsigned outputNum, Args *args) {
+Individual::Individual(uint32_t inputNum, uint32_t outputNum, Args *args) {
     this->inputNum = inputNum;
     this->outputNum = outputNum;
     this->args = args;
@@ -24,10 +24,10 @@ Individual::~Individual() {
 }
 
 void Individual::initialize() {
-    nodeMap = new std::map<unsigned, Node *>();
-    nodeSlice = new std::vector<unsigned>(inputNum + outputNum);
+    nodeMap = new std::map<uint32_t, Node *>();
+    nodeSlice = new std::vector<uint32_t>(inputNum + outputNum);
 
-    for (unsigned i = 0; i < inputNum; ++i) {
+    for (uint32_t i = 0; i < inputNum; ++i) {
         auto temp = nodeSum;
         auto newNode = new Node(temp, 0);
         newNode->initializeBias(LycorisRandomFloat(args->biasA, args->biasB));
@@ -36,7 +36,7 @@ void Individual::initialize() {
         nodeSum++;
     }
 
-    for (unsigned i = 0; i < outputNum; ++i) {
+    for (uint32_t i = 0; i < outputNum; ++i) {
         auto temp = nodeSum;
         auto newNode = new Node(temp, 2);
         newNode->initializeBias(LycorisRandomFloat(args->biasA, args->biasB));
@@ -47,15 +47,15 @@ void Individual::initialize() {
 }
 
 void Individual::setInput(float *input) {
-    for (unsigned i = 0; i < inputNum; ++i) {
+    for (uint32_t i = 0; i < inputNum; ++i) {
         (*nodeMap)[i]->value = input[i];
     }
 }
 
 float *Individual::getOutput() {
     auto output = new float[outputNum];
-    unsigned pointer = 0;
-    for (unsigned i = inputNum; i < nodeSlice->size(); ++i) {
+    uint32_t pointer = 0;
+    for (uint32_t i = inputNum; i < nodeSlice->size(); ++i) {
         auto temp = (*nodeMap)[(*nodeSlice)[i]];
         if (temp->nodeType == 2) {
             output[pointer] = temp->value;
@@ -66,9 +66,9 @@ float *Individual::getOutput() {
 }
 
 void Individual::forward() {
-    std::map<unsigned, bool> clean;
+    std::map<uint32_t, bool> clean;
 
-    for (unsigned i = inputNum; i < nodeSlice->size(); ++i) {
+    for (uint32_t i = inputNum; i < nodeSlice->size(); ++i) {
         auto index = (*nodeSlice)[i];
         auto n = (*nodeMap)[index];
         float f = 0;
@@ -115,19 +115,19 @@ Individual *Individual::clone() {
     dulplicate->innovationNum = innovationNum;
     dulplicate->nodeSum = nodeSum;
 
-    dulplicate->nodeMap = new std::map<unsigned, Node *>();
+    dulplicate->nodeMap = new std::map<uint32_t, Node *>();
     for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
         (*(dulplicate->nodeMap))[iter->first] = iter->second->clone();
     }
 
-    dulplicate->nodeSlice = new std::vector<unsigned>();
+    dulplicate->nodeSlice = new std::vector<uint32_t>();
     dulplicate->nodeSlice->assign(nodeSlice->begin(), nodeSlice->end());
 
     return dulplicate;
 }
 
-unsigned Individual::getSize() {
-    unsigned size = 0;
+uint32_t Individual::getSize() {
+    uint32_t size = 0;
     size += nodeSlice->size();
     for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
         size += iter->second->genomeMap->size();

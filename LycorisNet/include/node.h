@@ -6,13 +6,13 @@
 
 class Node {
 public:
-    unsigned nodeNum;
-    unsigned nodeType;
+    uint32_t nodeNum;
+    uint32_t nodeType;
     float value;
     float bias;
     std::map<Gen, Ome> *genomeMap;
 
-    Node(unsigned nodeNum, unsigned nodeType);
+    Node(uint32_t nodeNum, uint32_t nodeType);
 
     ~Node();
 

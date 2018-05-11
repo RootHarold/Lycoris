@@ -11,8 +11,8 @@ inline float LycorisRandomFloat(float min, float max) {
     return temp * (max - min) + min;
 };
 
-inline unsigned LycorisRandomUnsigned(unsigned N) {
-    return unsigned(rd() % N);
+inline uint32_t LycorisRandomUint32_t(uint32_t N) {
+    return uint32_t(rd() % N);
 };
 
 inline float sigmoid(float f) {
@@ -27,17 +27,17 @@ inline float relu(float f) {
     return f > 0 ? f : f * 0.01f;
 }
 
-inline float *softmax(float *input, unsigned length) {
-    float *ret = new float[length];
+inline float *softmax(float *input, uint32_t length) {
+    auto *ret = new float[length];
     float sum = 0;
 
-    for (unsigned i = 0; i < length; ++i) {
-        float temp = float(exp(double(input[i])));
+    for (uint32_t i = 0; i < length; ++i) {
+        auto temp = float(exp(double(input[i])));
         ret[i] = temp;
         sum += temp;
     }
 
-    for (unsigned i = 0; i < length; ++i) {
+    for (uint32_t i = 0; i < length; ++i) {
         ret[i] /= sum;
     }
 
@@ -46,9 +46,9 @@ inline float *softmax(float *input, unsigned length) {
 
 float distance(Individual &in1, Individual &in2);
 
-unsigned sort1(Individual &in, float *ret1, int *ret2);
+uint32_t sort1(Individual &in, float *ret1, int *ret2);
 
-unsigned sort2(Individual &in, Gen *ret1, Ome *ret2);
+uint32_t sort2(Individual &in, Gen *ret1, Ome *ret2);
 
 Individual *mateIndividual(Individual &in1, Individual &in2);
 

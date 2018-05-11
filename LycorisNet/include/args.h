@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <thread>
+#include <climits>
 
 class Args {
 public:
@@ -21,11 +22,11 @@ public:
     float p6;
     std::string activateFuncName;
 
-    unsigned mutateTime;
-    unsigned cpuNum;
+    uint32_t mutateTime;
+    uint32_t cpuNum;
     float mateOdds;
     float mutateOdds;
-    unsigned maxMutateTime;
+    uint32_t maxMutateTime;
     float distanceThreshold;
     float weightA;
     float weightB;
@@ -36,10 +37,10 @@ public:
 
     float (*activateFunc)(float);
 
-    unsigned tock;
+    uint32_t tock;
     std::vector<float> *gapList;
-    unsigned maxTock;
-    unsigned maxGap;
+    uint32_t maxTock;
+    uint32_t maxGap;
 };
 
 #endif //LYCORIS_ARGS_H

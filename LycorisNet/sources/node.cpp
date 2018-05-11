@@ -1,6 +1,6 @@
 #include "node.h"
 
-Node::Node(unsigned nodeNum, unsigned nodeType) {
+Node::Node(uint32_t nodeNum, uint32_t nodeType) {
     this->nodeNum = nodeNum;
     this->nodeType = nodeType;
     value = 0;
