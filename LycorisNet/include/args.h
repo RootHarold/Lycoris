@@ -52,6 +52,10 @@ public:
     float mateOddsB;
     float mutateOddsB;
     uint32_t mutateTimeB;
+    bool checkFlag;
+    uint32_t miss;
+    uint32_t hit;
+    uint32_t tick;
 };
 
 #endif //LYCORIS_ARGS_H

@@ -31,6 +31,10 @@ Args::Args() {
     maxGap = 64;
     memOverFlag = false;
     firstOver = false;
+    checkFlag = false;
+    miss = 0;
+    hit = 0;
+    tick = 1;
 }
 
 Args::~Args() {

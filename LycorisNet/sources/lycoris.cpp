@@ -18,7 +18,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8-dev-15";
+    return "Lycoris core 1.8-dev-16";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
@@ -361,7 +361,55 @@ void Lycoris::emergeArgs() {
 }
 
 void Lycoris::autoParameter() {
+    if (args->checkFlag) {
+        auto length = uint32_t(args->gapList->size());
+        auto lastValue = args->gapList->back();
+        uint32_t count = 0;
+        for (auto iter = args->gapList->begin(); iter < args->gapList->end(); ++iter) {
+            if (lastValue > (*iter)) {
+                count++;
+            }
+        }
 
+        if (count < (length / 2 + 1)) {
+            args->miss++;
+            args->hit = 0;
+            if (args->miss == 2) {
+                if (args->tock > 1) {
+                    args->tock /= 2;
+                }
+                args->miss = 1;
+            }
+
+            args->p1 = args->p1B;
+            args->p2 = args->p2B;
+            args->p3 = args->p3B;
+            args->p4 = args->p4B;
+            args->p5 = args->p5B;
+            args->p6 = args->p6B;
+            args->mateOdds = args->mateOddsB;
+            args->mutateOdds = args->mutateOddsB;
+            args->mutateTime = args->mutateTimeB;
+        } else {
+            args->hit++;
+            args->miss = 0;
+            if (args->hit == 2) {
+                if (args->tock < args->maxTock) {
+                    args->tock *= 2;
+                }
+                args->hit = 1;
+            }
+        }
+        args->checkFlag = false;
+    }
+
+    if (args->tick == args->tock) {
+        emergeArgs();
+        args->checkFlag = true;
+        args->tick = 0;
+    } else {
+        args->tick += 1;
+    }
 }
 
 void Lycoris::chooseElite() {
