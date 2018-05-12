@@ -54,4 +54,19 @@ Individual *mateIndividual(Individual &in1, Individual &in2);
 
 Individual *mutateIndividual(Individual &in);
 
+class SortFitness {
+public:
+    float fitness;
+    uint32_t specieNum;
+    uint32_t individualNum;
+
+    SortFitness();
+
+    SortFitness(float fitness, uint32_t specieNum, uint32_t individualNum);
+
+    ~SortFitness();
+};
+
+bool compareFitness(const SortFitness &a, const SortFitness &b);
+
 #endif //LYCORIS_FACTORY_H

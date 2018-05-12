@@ -1,4 +1,5 @@
 #include "lycoris.h"
+#include <algorithm>
 
 Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
     this->capacity = capacity;
@@ -416,6 +417,15 @@ void Lycoris::chooseElite() {
     uint32_t totalLength = 0;
     for (auto iter = speciesList->begin(); iter < speciesList->end(); ++iter) {
         totalLength += (*iter)->individualList->size();
-        // TODO
     }
+
+    std::vector<SortFitness> sortList(totalLength);
+    uint32_t pointer = 0;
+    for (auto iter = speciesList->begin(); iter < speciesList->end(); ++iter) {
+        auto temp = (*iter)->individualList;
+        for (auto it = temp->begin(); it < temp->end(); ++it) {
+
+        }
+    }
+    std::sort(sortList.begin(), sortList.end(), compareFitness);
 }
