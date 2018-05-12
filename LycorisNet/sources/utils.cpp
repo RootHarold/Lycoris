@@ -422,7 +422,7 @@ Individual *mutateIndividual(Individual &in) {
 }
 
 SortFitness::SortFitness() {
-    
+
 }
 
 SortFitness::SortFitness(float fitness, uint32_t specieNum, uint32_t individualNum) {
@@ -433,8 +433,4 @@ SortFitness::SortFitness(float fitness, uint32_t specieNum, uint32_t individualN
 
 SortFitness::~SortFitness() {
 
-}
-
-bool compareFitness(const SortFitness &a, const SortFitness &b) {
-    return a.fitness < b.fitness;
 }

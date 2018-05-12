@@ -42,6 +42,7 @@ public:
     uint32_t maxTock;
     uint32_t maxGap;
     bool memOverFlag;
+    bool memLimitFlag;
     bool firstOver;
     float p1B;
     float p2B;
@@ -56,6 +57,8 @@ public:
     uint32_t miss;
     uint32_t hit;
     uint32_t tick;
+    uint32_t limitSize;
+    bool gapListFlag;
 };
 
 #endif //LYCORIS_ARGS_H

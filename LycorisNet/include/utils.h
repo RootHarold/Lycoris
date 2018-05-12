@@ -67,6 +67,8 @@ public:
     ~SortFitness();
 };
 
-bool compareFitness(const SortFitness &a, const SortFitness &b);
+inline bool compareFitness(const SortFitness &a, const SortFitness &b) {
+    return a.fitness < b.fitness;
+}
 
 #endif //LYCORIS_FACTORY_H

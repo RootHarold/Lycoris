@@ -30,11 +30,13 @@ Args::Args() {
     maxTock = 16;
     maxGap = 64;
     memOverFlag = false;
+    memLimitFlag = false;
     firstOver = false;
     checkFlag = false;
     miss = 0;
     hit = 0;
     tick = 1;
+    gapListFlag = true;
 }
 
 Args::~Args() {

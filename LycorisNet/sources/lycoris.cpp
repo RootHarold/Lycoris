@@ -1,5 +1,6 @@
 #include "lycoris.h"
 #include <algorithm>
+#include <float.h>
 
 Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
     this->capacity = capacity;
@@ -187,6 +188,7 @@ void Lycoris::classify() {
 
     for (auto iter = speciesList->begin(); iter != speciesList->end();) {
         if ((*iter)->individualList->empty()) {
+            delete *iter;
             iter = speciesList->erase(iter);
         } else {
             ++iter;
@@ -421,11 +423,80 @@ void Lycoris::chooseElite() {
 
     std::vector<SortFitness> sortList(totalLength);
     uint32_t pointer = 0;
-    for (auto iter = speciesList->begin(); iter < speciesList->end(); ++iter) {
-        auto temp = (*iter)->individualList;
-        for (auto it = temp->begin(); it < temp->end(); ++it) {
+    for (uint32_t i = 0; i < speciesList->size(); ++i) {
+        auto temp = (*speciesList)[i]->individualList;
+        for (uint32_t j = 0; j < temp->size(); ++j) {
+            if (std::isnan((*temp)[j]->fitness) || std::isinf((*temp)[j]->fitness)) {
+                (*temp)[j]->fitness = FLT_MIN;
+            }
 
+            sortList[pointer] = SortFitness((*temp)[j]->fitness, i, j);
+            pointer++;
         }
     }
     std::sort(sortList.begin(), sortList.end(), compareFitness);
+    auto last = sortList[totalLength - 1];
+    auto tempBest = best->fitness;
+    best = (*(*speciesList)[last.specieNum]->individualList)[last.individualNum];
+
+    auto newSpecieList = new std::vector<Species *>(specieLength, new Species());
+    auto newLength = uint32_t(float(capacity) / ((1 + args->mateOdds) * (1 + args->mutateOdds)));
+    uint32_t memSum = 0;
+    auto z = totalLength;
+    for (; z > totalLength - newLength; z--) {
+        if (z == 0) {
+            break;
+        }
+        auto temp = sortList[z - 1];
+        auto tempIndividual = (*(*speciesList)[temp.specieNum]->individualList)[temp.individualNum];
+        if (args->memLimitFlag) {
+            memSum += tempIndividual->getSize();
+        }
+        (*newSpecieList)[temp.specieNum]->individualList->push_back(tempIndividual);
+    }
+    if (args->memLimitFlag) {
+        if (memSum > (totalLength - z) * args->limitSize) {
+            if (!args->memOverFlag) {
+                args->firstOver = true;
+                args->memOverFlag = true;
+            }
+        } else {
+            args->memOverFlag = false;
+        }
+    }
+
+    for (auto iter = newSpecieList->begin(); iter != newSpecieList->end();) {
+        if ((*iter)->individualList->empty()) {
+            delete *iter;
+            iter = newSpecieList->erase(iter);
+        } else {
+            ++iter;
+        }
+    }
+
+    if (totalLength - newLength > 0) {
+        for (uint32_t i = 0; i < totalLength - newLength; ++i) {
+            auto temp = sortList[i];
+            auto tempIndividual = (*(*speciesList)[temp.specieNum]->individualList)[temp.individualNum];
+            delete tempIndividual;
+        }
+    }
+    for (auto iter = speciesList->begin(); iter != speciesList->end(); ++iter) {
+        (*iter)->individualList->clear();
+        delete *iter;
+    }
+    delete speciesList;
+    speciesList = newSpecieList;
+
+    auto difference = best->fitness - tempBest;
+    if (args->gapListFlag) {
+        auto length = args->gapList->size();
+        if (length == args->maxGap) {
+            args->gapListFlag = false;
+        }
+        args->gapList->push_back(difference);
+    } else {
+        args->gapList->erase(args->gapList->begin());
+        args->gapList->push_back(difference);
+    }
 }
