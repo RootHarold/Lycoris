@@ -18,7 +18,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8-dev-14";
+    return "Lycoris core 1.8-dev-15";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
@@ -261,5 +261,113 @@ void Lycoris::forwardCore(uint32_t *start, uint32_t *end) {
         for (uint32_t j = start[i]; j < end[i]; ++j) {
             forwardFunc(*((*(*speciesList)[i]->individualList)[j]));
         }
+    }
+}
+
+void Lycoris::emergeArgs() {
+    if (args->memOverFlag) {
+        auto mutateTimeE = LycorisRandomUint32_t(args->maxMutateTime) + 1;
+        auto mateOddsE = LycorisRandomFloat(0, 1);
+        auto mutateOddsE = LycorisRandomFloat(0, 1);
+        float remain = 1;
+        float p1E = 0;
+        remain -= p1E;
+        auto p2E = LycorisRandomFloat(0, 1) * remain;
+        remain -= p2E;
+        float p3E = 0;
+        remain -= p3E;
+        auto p4E = LycorisRandomFloat(0, 1) * remain;
+        remain -= p4E;
+        float p5E = 0;
+        remain -= p5E;
+        auto p6E = remain;
+
+        if (args->firstOver) {
+            args->firstOver = false;
+            args->p1B = 0;
+            args->p2B = p2E;
+            args->p3B = 0;
+            args->p4B = p4E;
+            args->p5B = 0;
+            args->p6B = p6E;
+            args->mateOddsB = args->mateOdds;
+            args->mutateOddsB = args->mutateOdds;
+            args->mutateTimeB = args->mutateTime;
+            args->p1 = p1E;
+            args->p2 = p2E;
+            args->p3 = p3E;
+            args->p4 = p4E;
+            args->p5 = p5E;
+            args->p6 = p6E;
+            args->mateOdds = mateOddsE;
+            args->mutateOdds = mutateOddsE;
+            args->mutateTime = mutateTimeE;
+        } else {
+            args->p1B = args->p1;
+            args->p2B = args->p2;
+            args->p3B = args->p3;
+            args->p4B = args->p4;
+            args->p5B = args->p5;
+            args->p6B = args->p6;
+            args->mateOddsB = args->mateOdds;
+            args->mutateOddsB = args->mutateOdds;
+            args->mutateTimeB = args->mutateTime;
+            args->p1 = p1E;
+            args->p2 = p2E;
+            args->p3 = p3E;
+            args->p4 = p4E;
+            args->p5 = p5E;
+            args->p6 = p6E;
+            args->mateOdds = mateOddsE;
+            args->mutateOdds = mutateOddsE;
+            args->mutateTime = mutateTimeE;
+        }
+    } else {
+        auto mutateTimeE = LycorisRandomUint32_t(args->maxMutateTime) + 1;
+        auto mateOddsE = LycorisRandomFloat(0, 1);
+        auto mutateOddsE = LycorisRandomFloat(0, 1);
+        float remain = 1;
+        auto p1E = LycorisRandomFloat(0, 1);
+        remain -= p1E;
+        auto p2E = LycorisRandomFloat(0, 1) * remain;
+        remain -= p2E;
+        auto p3E = LycorisRandomFloat(0, 1) * remain;
+        remain -= p3E;
+        auto p4E = LycorisRandomFloat(0, 1) * remain;
+        remain -= p4E;
+        auto p5E = LycorisRandomFloat(0, 1) * remain;
+        remain -= p5E;
+        auto p6E = remain;
+
+        args->p1B = args->p1;
+        args->p2B = args->p2;
+        args->p3B = args->p3;
+        args->p4B = args->p4;
+        args->p5B = args->p5;
+        args->p6B = args->p6;
+        args->mateOddsB = args->mateOdds;
+        args->mutateOddsB = args->mutateOdds;
+        args->mutateTimeB = args->mutateTime;
+        args->p1 = p1E;
+        args->p2 = p2E;
+        args->p3 = p3E;
+        args->p4 = p4E;
+        args->p5 = p5E;
+        args->p6 = p6E;
+        args->mateOdds = mateOddsE;
+        args->mutateOdds = mutateOddsE;
+        args->mutateTime = mutateTimeE;
+    }
+}
+
+void Lycoris::autoParameter() {
+
+}
+
+void Lycoris::chooseElite() {
+    uint32_t totalLength = 0;
+    for (auto iter = speciesList->begin(); iter < speciesList->end(); ++iter) {
+        totalLength += (*iter)->individualList->size();
+        // TODO
     }
 }

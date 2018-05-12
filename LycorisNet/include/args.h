@@ -41,6 +41,17 @@ public:
     std::vector<float> *gapList;
     uint32_t maxTock;
     uint32_t maxGap;
+    bool memOverFlag;
+    bool firstOver;
+    float p1B;
+    float p2B;
+    float p3B;
+    float p4B;
+    float p5B;
+    float p6B;
+    float mateOddsB;
+    float mutateOddsB;
+    uint32_t mutateTimeB;
 };
 
 #endif //LYCORIS_ARGS_H

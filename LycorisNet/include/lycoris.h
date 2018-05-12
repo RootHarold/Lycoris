@@ -51,6 +51,12 @@ public:
     void forward();
 
     void forwardCore(uint32_t *start, uint32_t *end);
+
+    void emergeArgs();
+
+    void autoParameter();
+
+    void chooseElite();
 };
 
 #endif //LYCORIS_LYCORIS_H

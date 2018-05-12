@@ -29,6 +29,8 @@ Args::Args() {
     gapList = new std::vector<float>();
     maxTock = 16;
     maxGap = 64;
+    memOverFlag = false;
+    firstOver = false;
 }
 
 Args::~Args() {
