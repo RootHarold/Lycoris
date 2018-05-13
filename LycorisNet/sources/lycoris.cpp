@@ -1,6 +1,7 @@
 #include "lycoris.h"
 #include <algorithm>
-#include <float.h>
+#include <cfloat>
+#include <iostream>
 
 Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
     this->capacity = capacity;
@@ -20,7 +21,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8-dev-16";
+    return "Lycoris core 1.8-dev-17";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
@@ -498,5 +499,78 @@ void Lycoris::chooseElite() {
     } else {
         args->gapList->erase(args->gapList->begin());
         args->gapList->push_back(difference);
+    }
+}
+
+void Lycoris::runLycoris() {
+    if (args->firstRun) {
+        args->firstRun = false;
+        float weightDiff;
+        if (args->weightB > args->weightA) {
+            weightDiff = args->weightB - args->weightA;
+        } else {
+            weightDiff = args->weightA - args->weightB;
+        }
+        args->distanceThreshold = args->c1 * 0.2f + args->c2 * 0.2f * weightDiff;
+
+        auto specie = new Species();
+        auto initialCapacity = uint32_t(float(capacity) / ((1 + args->mateOdds) * (1 + args->mutateOdds)));
+        specie->individualList->resize(initialCapacity);
+        for (unsigned i = 0; i < initialCapacity; ++i) {
+            (*(specie->individualList))[i] = new Individual(inputNum, outputNum, args);
+        }
+        speciesList = new std::vector<Species *>();
+        speciesList->push_back(specie);
+    }
+
+    mate();
+    classify();
+    mutate();
+    classify();
+    forward();
+    autoParameter();
+    chooseElite();
+}
+
+void Lycoris::openMemLimit(uint32_t size) {
+    args->limitSize = size * 9 / 10;
+    args->memLimitFlag = true;
+}
+
+void Lycoris::closeMemLimit() {
+    args->memLimitFlag = false;
+    args->memOverFlag = false;
+    args->firstOver = false;
+}
+
+void Lycoris::setDistanceArgs(float a, float b) {
+    args->c1 = a;
+    args->c2 = b;
+}
+
+void Lycoris::setMaxMutateTime(uint32_t num) {
+    args->maxMutateTime = num;
+}
+
+void Lycoris::setWeigthRandom(float a, float b) {
+    args->weightA = a;
+    args->weightB = b;
+}
+
+void Lycoris::setBiasRandom(float a, float b) {
+    args->biasA = a;
+    args->biasB = b;
+}
+
+void Lycoris::setActivateFunc(std::string function) {
+    args->activateFuncName = function;
+    if (function == "sigmoid") {
+        args->activateFunc = sigmoid;
+    } else if (function == "relu") {
+        args->activateFunc = relu;
+    } else if (function == "tanh") {
+        args->activateFunc = tanh;
+    } else {
+        std::cout << "Wrong function name!" << std::endl;
     }
 }

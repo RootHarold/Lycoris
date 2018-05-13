@@ -57,6 +57,22 @@ public:
     void autoParameter();
 
     void chooseElite();
+
+    void runLycoris();
+
+    void openMemLimit(uint32_t size);
+
+    void closeMemLimit();
+
+    void setDistanceArgs(float a, float b);
+
+    void setMaxMutateTime(uint32_t num);
+
+    void setWeigthRandom(float a, float b);
+
+    void setBiasRandom(float a, float b);
+
+    void setActivateFunc(std::string function);
 };
 
 #endif //LYCORIS_LYCORIS_H

@@ -59,6 +59,7 @@ public:
     uint32_t tick;
     uint32_t limitSize;
     bool gapListFlag;
+    bool firstRun;
 };
 
 #endif //LYCORIS_ARGS_H

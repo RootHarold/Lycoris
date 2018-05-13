@@ -37,6 +37,7 @@ Args::Args() {
     hit = 0;
     tick = 1;
     gapListFlag = true;
+    firstRun = true;
 }
 
 Args::~Args() {
