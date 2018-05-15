@@ -436,11 +436,14 @@ void Lycoris::chooseElite() {
     auto tempBest = best->fitness;
     best = (*(*speciesList)[last.specieNum]->individualList)[last.individualNum];
 
-    auto newSpecieList = new std::vector<Species *>(specieLength, new Species());
+    auto newSpecieList = new std::vector<Species *>(specieLength);
+    for (uint32_t i = 0; i < specieLength; ++i) {
+        (*newSpecieList)[i] = new Species();
+    }
     auto newLength = uint32_t(float(capacity) / ((1 + args->mateOdds) * (1 + args->mutateOdds)));
     uint32_t memSum = 0;
     auto z = totalLength;
-    for (; z > totalLength - newLength; z--) {
+    for (; z > totalLength - newLength; --z) {
         if (z == 0) {
             break;
         }
