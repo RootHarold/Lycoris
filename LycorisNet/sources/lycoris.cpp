@@ -521,6 +521,7 @@ void Lycoris::runLycoris() {
         }
         speciesList = new std::vector<Species *>();
         speciesList->push_back(specie);
+        best = (*(*speciesList)[0]->individualList)[0];
     }
 
     mate();
