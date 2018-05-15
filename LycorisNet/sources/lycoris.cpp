@@ -66,13 +66,12 @@ void Lycoris::mate() {
         end[temp][i] = mateLength;
     }
 
-    std::vector<std::thread *> threads;
+    std::vector<std::thread> threads;
     for (uint32_t i = 0; i < args->cpuNum; ++i) {
-        std::thread th(&Lycoris::mateCore, this, start[i], end[i]);
-        threads.push_back(&th);
+        threads.emplace_back(std::thread(&Lycoris::mateCore, this, start[i], end[i]));
     }
-    for (std::thread *i :threads) {
-        i->join();
+    for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+        (*iter).join();
     }
 
     for (uint32_t i = 0; i < args->cpuNum; ++i) {
@@ -119,13 +118,12 @@ void Lycoris::mutate() {
         end[temp][i] = mutateLength;
     }
 
-    std::vector<std::thread *> threads;
+    std::vector<std::thread> threads;
     for (uint32_t i = 0; i < args->cpuNum; ++i) {
-        std::thread th(&Lycoris::mutateCore, this, start[i], end[i]);
-        threads.push_back(&th);
+        threads.emplace_back(std::thread(&Lycoris::mateCore, this, start[i], end[i]));
     }
-    for (std::thread *i :threads) {
-        i->join();
+    for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+        (*iter).join();
     }
 
     for (uint32_t i = 0; i < args->cpuNum; ++i) {
@@ -167,13 +165,12 @@ void Lycoris::classify() {
         end[temp][i] = tempList1Length;
     }
 
-    std::vector<std::thread *> threads;
+    std::vector<std::thread> threads;
     for (uint32_t i = 0; i < args->cpuNum; ++i) {
-        std::thread th(&Lycoris::classifyCore, this, start[i], end[i]);
-        threads.push_back(&th);
+        threads.emplace_back(std::thread(&Lycoris::classifyCore, this, start[i], end[i]));
     }
-    for (std::thread *i :threads) {
-        i->join();
+    for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+        (*iter).join();
     }
 
     speciesList->push_back(new Species());
@@ -243,13 +240,12 @@ void Lycoris::forward() {
         end[temp][i] = individualLength;
     }
 
-    std::vector<std::thread *> threads;
+    std::vector<std::thread> threads;
     for (uint32_t i = 0; i < args->cpuNum; ++i) {
-        std::thread th(&Lycoris::forwardCore, this, start[i], end[i]);
-        threads.push_back(&th);
+        threads.emplace_back(std::thread(&Lycoris::forwardCore, this, start[i], end[i]));
     }
-    for (std::thread *i :threads) {
-        i->join();
+    for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+        (*iter).join();
     }
 
     for (uint32_t i = 0; i < args->cpuNum; ++i) {
@@ -369,7 +365,7 @@ void Lycoris::autoParameter() {
         auto length = uint32_t(args->gapList->size());
         auto lastValue = args->gapList->back();
         uint32_t count = 0;
-        for (auto iter = args->gapList->begin(); iter < args->gapList->end(); ++iter) {
+        for (auto iter = args->gapList->begin(); iter != args->gapList->end(); ++iter) {
             if (lastValue > (*iter)) {
                 count++;
             }
@@ -418,7 +414,7 @@ void Lycoris::autoParameter() {
 
 void Lycoris::chooseElite() {
     uint32_t totalLength = 0;
-    for (auto iter = speciesList->begin(); iter < speciesList->end(); ++iter) {
+    for (auto iter = speciesList->begin(); iter != speciesList->end(); ++iter) {
         totalLength += (*iter)->individualList->size();
     }
 
