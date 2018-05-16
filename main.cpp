@@ -28,7 +28,7 @@ int main() {
     std::cout << "Hello, the CPP version of Lycoris!" << std::endl;
     auto lie = new Lycoris(100, 2, 2);
     lie->setForwardFunc(handle);
-    for (int i = 0; i < 1; ++i) {
+    for (int i = 0; i < 500; ++i) {
         lie->runLycoris();
         std::cout << "fitness " << lie->best->fitness << std::endl;
     }

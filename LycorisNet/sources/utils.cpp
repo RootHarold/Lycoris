@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "utils.h"
 
-uint32_t sort1(Individual &in, float *ret1, uint32_t *ret2) {
+uint32_t sort1(Individual &in, std::vector<float> &ret1, std::vector<uint32_t> &ret2) {
     std::vector<bool> temp1(in.innovationNum, false);
     float temp2[in.innovationNum];
     uint32_t temp3[in.innovationNum];
@@ -19,8 +19,8 @@ uint32_t sort1(Individual &in, float *ret1, uint32_t *ret2) {
     }
 
     if (length != 0) {
-        ret1 = new float[length];
-        ret2 = new uint32_t[length];
+        ret1.resize(length);
+        ret2.resize(length);
         uint32_t count = 0;
         for (int i = 0; i < temp1.size(); ++i) {
             if (temp1[i]) {
@@ -34,7 +34,7 @@ uint32_t sort1(Individual &in, float *ret1, uint32_t *ret2) {
     return length;
 }
 
-uint32_t sort2(Individual &in, Gen *ret1, Ome *ret2) {
+uint32_t sort2(Individual &in, std::vector<Gen> &ret1, std::vector<Ome> &ret2) {
     std::vector<bool> temp1(in.innovationNum, false);
     Gen temp2[in.innovationNum];
     Ome temp3[in.innovationNum];
@@ -52,8 +52,8 @@ uint32_t sort2(Individual &in, Gen *ret1, Ome *ret2) {
     }
 
     if (length != 0) {
-        ret1 = new Gen[length];
-        ret2 = new Ome[length];
+        ret1.resize(length);
+        ret2.resize(length);
         uint32_t count = 0;
         for (int i = 0; i < temp1.size(); ++i) {
             if (temp1[i]) {
@@ -70,10 +70,11 @@ uint32_t sort2(Individual &in, Gen *ret1, Ome *ret2) {
 float distance(Individual &in1, Individual &in2) {
     float d;
     uint32_t DE = 0;
-    float *w1 = nullptr;
-    uint32_t *i1 = nullptr;
-    float *w2 = nullptr;
-    uint32_t *i2 = nullptr;
+    std::vector<float> w1;
+    std::vector<uint32_t> i1;
+    std::vector<float> w2;
+    std::vector<uint32_t> i2;
+
     auto len1 = sort1(in1, w1, i1);
     auto len2 = sort1(in2, w2, i2);
     uint32_t N = 0;
@@ -112,15 +113,6 @@ float distance(Individual &in1, Individual &in2) {
 
     DE += len1 + len2 - point1 - point2;
     d = (in1.args->c1 * DE) / N + (in1.args->c2 * W) / countW;
-
-    if (len1 != 0) {
-        delete[] w1;
-        delete[] i1;
-    }
-    if (len2 != 0) {
-        delete[] w2;
-        delete[] i2;
-    }
 
     return d;
 }
@@ -187,10 +179,11 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         (*(offspring->nodeMap))[v] = n;
     }
 
-    Gen *g1 = nullptr;
-    Ome *o1 = nullptr;
-    Gen *g2 = nullptr;
-    Ome *o2 = nullptr;
+    std::vector<Gen> g1;
+    std::vector<Ome> o1;
+    std::vector<Gen> g2;
+    std::vector<Ome> o2;
+
     auto len1 = sort2(in1, g1, o1);
     auto len2 = sort2(in2, g2, o2);
     uint32_t point1 = 0;
@@ -224,15 +217,6 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
 
     for (int i = point2; i < len2; ++i) {
         (*(*(offspring->nodeMap))[g2[i].out]->genomeMap)[g2[i]] = o2[i];
-    }
-
-    if (len1 != 0) {
-        delete[] g1;
-        delete[] o1;
-    }
-    if (len2 != 0) {
-        delete[] g2;
-        delete[] o2;
     }
 
     std::map<uint32_t, uint32_t> inDegree;
@@ -308,7 +292,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
 Individual *mutateIndividual(Individual &in) {
     auto offspring = in.clone();
 
-    for (int z = 0; z < in.args->mutateTime; ++z) {
+    for (uint32_t z = 0; z < in.args->mutateTime; ++z) {
         auto ran = LycorisRandomFloat(0, 1);
 
         if (ran < in.args->p1) {
