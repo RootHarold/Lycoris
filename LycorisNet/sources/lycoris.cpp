@@ -476,6 +476,9 @@ void Lycoris::chooseElite() {
 
     if (totalLength - newLength > 0) {
         for (uint32_t i = 0; i < totalLength - newLength; ++i) {
+            if (i == totalLength) {
+                break;
+            }
             auto temp = sortList[i];
             auto tempIndividual = (*(*speciesList)[temp.specieNum]->individualList)[temp.individualNum];
             delete tempIndividual;
