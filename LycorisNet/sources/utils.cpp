@@ -311,6 +311,7 @@ Individual *mutateIndividual(Individual &in) {
                         omeOld = iter->second;
                         break;
                     }
+                    count++;
                 }
 
                 omeOld.isEnable = false;
@@ -382,6 +383,7 @@ Individual *mutateIndividual(Individual &in) {
                         g = iter->first;
                         break;
                     }
+                    count++;
                 }
                 n->genomeMap->erase(g);
             }
