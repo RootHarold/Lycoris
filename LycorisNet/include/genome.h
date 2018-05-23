@@ -1,9 +1,7 @@
 #ifndef LYCORIS_GENOME_H
 #define LYCORIS_GENOME_H
 
-#include <cstring>
-#include <string>
-#include <sstream>
+#include <cstdint>
 
 class Gen {
 public:
@@ -14,12 +12,14 @@ public:
 
     Gen(uint32_t in, uint32_t out);
 
-    bool operator<(const Gen &gen) const {
-        std::stringstream stream1;
-        stream1 << in << out;
-        std::stringstream stream2;
-        stream2 << gen.in << gen.out;
-        return stream1.str() < stream2.str();
+    inline bool operator<(const Gen &gen) const {
+        if (in < gen.in) {
+            return true;
+        } else if (in == gen.in) {
+            return out < gen.out;
+        } else {
+            return false;
+        }
     }
 };
 
