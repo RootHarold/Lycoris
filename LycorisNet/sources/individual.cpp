@@ -82,7 +82,10 @@ void Individual::forward() {
                 auto g = iter->first;
                 auto o = iter->second;
                 if (o.isEnable) {
-                    f += (*nodeMap)[g.in]->value * o.weight;
+                    auto temp = nodeMap->find(g.in);
+                    if (temp != nodeMap->end()) {
+                        f += temp->second->value * o.weight;
+                    }
                 }
             }
             n->value = args->activateFunc(f + n->bias);
