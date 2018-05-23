@@ -14,8 +14,6 @@ public:
 
     Gen(uint32_t in, uint32_t out);
 
-    Gen clone();
-
     bool operator<(const Gen &gen) const {
         std::stringstream stream1;
         stream1 << in << out;
@@ -34,8 +32,6 @@ public:
     Ome();
 
     Ome(float weight, bool isEnable, uint32_t innovationNum);
-
-    Ome clone();
 };
 
 #endif //LYCORIS_GENOME_H
