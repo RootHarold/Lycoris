@@ -418,6 +418,11 @@ void Lycoris::chooseElite() {
         totalLength += (*iter)->individualList->size();
     }
 
+    if (totalLength == 0) {
+        std::cout << "All died." << std::endl;
+        exit(0);
+    }
+
     std::vector<SortFitness> sortList(totalLength);
     uint32_t pointer = 0;
     for (uint32_t i = 0; i < speciesList->size(); ++i) {
