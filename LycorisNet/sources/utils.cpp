@@ -129,8 +129,8 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
 
     for (auto iter = in1.nodeMap->begin(); iter != in1.nodeMap->end(); ++iter) {
         auto k = iter->first;
-        tempMap[k] = true;
-        duplicateNodes[k] = false;
+        tempMap.insert(std::make_pair(k, true));
+        duplicateNodes.insert(std::make_pair(k, false));
     }
 
     for (auto iter = in2.nodeMap->begin(); iter != in2.nodeMap->end(); ++iter) {
@@ -138,8 +138,8 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         if (tempMap.find(k) != tempMap.end()) {
             duplicateNodes[k] = true;
         } else {
-            tempMap[k] = true;
-            duplicateNodes[k] = false;
+            tempMap.insert(std::make_pair(k, true));
+            duplicateNodes.insert(std::make_pair(k, false));
         }
     }
 
@@ -176,7 +176,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
             }
         }
 
-        (*(offspring->nodeMap))[v] = n;
+        offspring->nodeMap->insert(std::make_pair(v, n));
     }
 
     std::vector<Gen> g1;
@@ -196,32 +196,32 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
 
         if (o1[point1].innovationNum == o2[point2].innovationNum) {
             if (LycorisRandomFloat(0, 1) < 0.5) {
-                (*(*(offspring->nodeMap))[g1[point1].out]->genomeMap)[g1[point1]] = o1[point1];
+                (*(offspring->nodeMap))[g1[point1].out]->genomeMap->insert(std::make_pair(g1[point1], o1[point1]));
             } else {
-                (*(*(offspring->nodeMap))[g2[point2].out]->genomeMap)[g2[point2]] = o2[point2];
+                (*(offspring->nodeMap))[g2[point2].out]->genomeMap->insert(std::make_pair(g2[point2], o2[point2]));
             }
             point1++;
             point2++;
         } else if (o1[point1].innovationNum > o2[point2].innovationNum) {
-            (*(*(offspring->nodeMap))[g2[point2].out]->genomeMap)[g2[point2]] = o2[point2];
+            (*(offspring->nodeMap))[g2[point2].out]->genomeMap->insert(std::make_pair(g2[point2], o2[point2]));
             point2++;
         } else {
-            (*(*(offspring->nodeMap))[g1[point1].out]->genomeMap)[g1[point1]] = o1[point1];
+            (*(offspring->nodeMap))[g1[point1].out]->genomeMap->insert(std::make_pair(g1[point1], o1[point1]));
             point1++;
         }
     }
 
     for (uint32_t i = point1; i < len1; ++i) {
-        (*(*(offspring->nodeMap))[g1[i].out]->genomeMap)[g1[i]] = o1[i];
+        (*(offspring->nodeMap))[g1[i].out]->genomeMap->insert(std::make_pair(g1[i], o1[i]));
     }
 
     for (uint32_t i = point2; i < len2; ++i) {
-        (*(*(offspring->nodeMap))[g2[i].out]->genomeMap)[g2[i]] = o2[i];
+        (*(offspring->nodeMap))[g2[i].out]->genomeMap->insert(std::make_pair(g2[i], o2[i]));
     }
 
     std::map<uint32_t, uint32_t> inDegree;
     for (auto iter = offspring->nodeMap->begin(); iter != offspring->nodeMap->end(); ++iter) {
-        inDegree[iter->first] = uint32_t(iter->second->genomeMap->size());
+        inDegree.insert(std::make_pair(iter->first, uint32_t(iter->second->genomeMap->size())));
     }
     std::vector<uint32_t> next;
     for (auto iter = inDegree.begin(); iter != inDegree.end(); ++iter) {
@@ -324,10 +324,10 @@ Individual *mutateIndividual(Individual &in) {
                 Gen g2(n->nodeNum, genOld.out);
                 Ome o2(omeOld.weight, true, offspring->innovationNum);
                 offspring->innovationNum++;
-                (*(n->genomeMap))[g1] = o1;
+                n->genomeMap->insert(std::make_pair(g1, o1));
                 (*(nodeOld->genomeMap))[genOld] = omeOld;
-                (*(nodeOld->genomeMap))[g2] = o2;
-                (*(offspring->nodeMap))[n->nodeNum] = n;
+                nodeOld->genomeMap->insert(std::make_pair(g2, o2));
+                offspring->nodeMap->insert(std::make_pair(n->nodeNum, n));
 
                 auto iter = std::find(offspring->nodeSlice->begin(), offspring->nodeSlice->end(), genOld.out);
                 offspring->nodeSlice->insert(iter, n->nodeNum);
@@ -365,7 +365,7 @@ Individual *mutateIndividual(Individual &in) {
                         Ome o(LycorisRandomFloat(0, 1) * (in.args->weightB - in.args->weightA) + in.args->weightA, true,
                               offspring->innovationNum);
                         offspring->innovationNum++;
-                        (*(outputNode->genomeMap))[g] = o;
+                        outputNode->genomeMap->insert(std::make_pair(g, o));
                     }
                 }
             }
@@ -392,7 +392,7 @@ Individual *mutateIndividual(Individual &in) {
             auto n = new Node(offspring->nodeSum, 1);
             n->initializeBias(LycorisRandomFloat(in.args->biasA, in.args->biasB));
             offspring->nodeSum++;
-            (*(offspring->nodeMap))[n->nodeNum] = n;
+            offspring->nodeMap->insert(std::make_pair(n->nodeNum, n));
             auto index = LycorisRandomUint32_t(uint32_t(offspring->nodeSlice->size()) - offspring->inputNum) +
                          offspring->inputNum;
             offspring->nodeSlice->insert(offspring->nodeSlice->begin() + index, n->nodeNum);

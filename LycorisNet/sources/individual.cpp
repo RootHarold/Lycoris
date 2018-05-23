@@ -31,7 +31,7 @@ void Individual::initialize() {
         auto temp = nodeSum;
         auto newNode = new Node(temp, 0);
         newNode->initializeBias(LycorisRandomFloat(args->biasA, args->biasB));
-        (*nodeMap)[temp] = newNode;
+        nodeMap->insert(std::make_pair(temp, newNode));
         (*nodeSlice)[temp] = temp;
         nodeSum++;
     }
@@ -40,7 +40,7 @@ void Individual::initialize() {
         auto temp = nodeSum;
         auto newNode = new Node(temp, 2);
         newNode->initializeBias(LycorisRandomFloat(args->biasA, args->biasB));
-        (*nodeMap)[temp] = newNode;
+        nodeMap->insert(std::make_pair(temp, newNode));
         (*nodeSlice)[temp] = temp;
         nodeSum++;
     }
@@ -75,7 +75,7 @@ void Individual::forward() {
 
         if (n->genomeMap->empty()) {
             if (n->nodeType == 1) {
-                clean[index] = true;
+                clean.insert(std::make_pair(index, true));
             }
         } else {
             for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
@@ -120,7 +120,7 @@ Individual *Individual::clone() {
 
     dulplicate->nodeMap = new std::map<uint32_t, Node *>();
     for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
-        (*(dulplicate->nodeMap))[iter->first] = iter->second->clone();
+        dulplicate->nodeMap->insert(std::make_pair(iter->first, iter->second->clone()));
     }
 
     dulplicate->nodeSlice = new std::vector<uint32_t>();

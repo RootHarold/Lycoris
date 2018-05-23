@@ -25,9 +25,9 @@ void handle(Individual &in) {
 
 int main() {
     std::cout << "Hello, the CPP version of Lycoris!" << std::endl;
-    auto lie = new Lycoris(100, 2, 2);
+    auto lie = new Lycoris(256, 2, 2);
     lie->setForwardFunc(handle);
-    for (int i = 0; i < 500; ++i) {
+    for (int i = 0; i < 16; ++i) {
         lie->runLycoris();
         std::cout << lie->best->fitness << std::endl;
     }
