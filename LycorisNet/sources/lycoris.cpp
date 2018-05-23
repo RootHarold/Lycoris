@@ -176,11 +176,7 @@ void Lycoris::classify() {
     speciesList->push_back(new Species());
     for (uint32_t i = 0; i < tempList2.size(); ++i) {
         for (uint32_t j = 0; j < tempList2[i].size(); ++j) {
-            if (tempList2[i][j] != UINT32_MAX) {
-                (*speciesList)[tempList2[i][j]]->individualList->push_back(tempList1[i][j]);
-            } else {
-                (*speciesList)[specieLength]->individualList->push_back(tempList1[i][j]);
-            }
+            (*speciesList)[tempList2[i][j]]->individualList->push_back(tempList1[i][j]);
         }
     }
 
@@ -212,7 +208,7 @@ void Lycoris::classifyCore(uint32_t *start, uint32_t *end) {
                     tempList2[i][j] = k;
                     break;
                 } else {
-                    tempList2[i][j] = UINT32_MAX;
+                    tempList2[i][j] = specieLength;
                 }
             }
         }

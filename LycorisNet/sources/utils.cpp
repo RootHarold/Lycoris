@@ -233,7 +233,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
     uint32_t slicePointer = 0;
 
     while (true) {
-        if (next.size() == 0) {
+        if (next.empty()) {
             break;
         }
         auto headValue = next.front();
