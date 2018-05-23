@@ -6,8 +6,8 @@ void handle(Individual &in) {
     auto output = new float[2];
     input[0] = 0;
     input[1] = 1;
-    output[0] = 1;
-    output[1] = 0;
+    output[0] = 0.5;
+    output[1] = 0.5;
 
     in.setInput(input);
     in.forward();
@@ -21,7 +21,6 @@ void handle(Individual &in) {
     delete[] input;
     delete[] output;
     delete[] out;
-    //in.fitness = 0.93;
 }
 
 int main() {
@@ -30,8 +29,8 @@ int main() {
     lie->setForwardFunc(handle);
     for (int i = 0; i < 500; ++i) {
         lie->runLycoris();
-        std::cout << "fitness " << lie->best->fitness << std::endl;
+        std::cout << lie->best->fitness << std::endl;
     }
-    // delete lie;
+    delete lie;
     return 0;
 }

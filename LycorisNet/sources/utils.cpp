@@ -22,7 +22,7 @@ uint32_t sort1(Individual &in, std::vector<float> &ret1, std::vector<uint32_t> &
         ret1.resize(length);
         ret2.resize(length);
         uint32_t count = 0;
-        for (int i = 0; i < temp1.size(); ++i) {
+        for (uint32_t i = 0; i < temp1.size(); ++i) {
             if (temp1[i]) {
                 ret1[count] = temp2[i];
                 ret2[count] = temp3[i];
@@ -55,7 +55,7 @@ uint32_t sort2(Individual &in, std::vector<Gen> &ret1, std::vector<Ome> &ret2) {
         ret1.resize(length);
         ret2.resize(length);
         uint32_t count = 0;
-        for (int i = 0; i < temp1.size(); ++i) {
+        for (uint32_t i = 0; i < temp1.size(); ++i) {
             if (temp1[i]) {
                 ret1[count] = temp2[i];
                 ret2[count] = temp3[i];
@@ -211,11 +211,11 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         }
     }
 
-    for (int i = point1; i < len1; ++i) {
+    for (uint32_t i = point1; i < len1; ++i) {
         (*(*(offspring->nodeMap))[g1[i].out]->genomeMap)[g1[i]] = o1[i];
     }
 
-    for (int i = point2; i < len2; ++i) {
+    for (uint32_t i = point2; i < len2; ++i) {
         (*(*(offspring->nodeMap))[g2[i].out]->genomeMap)[g2[i]] = o2[i];
     }
 
