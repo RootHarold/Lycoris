@@ -263,8 +263,8 @@ void Lycoris::forwardCore(uint32_t *start, uint32_t *end) {
 void Lycoris::emergeArgs() {
     if (args->memOverFlag) {
         auto mutateTimeE = LycorisRandomUint32_t(args->maxMutateTime) + 1;
-        auto mateOddsE = LycorisRandomFloat(0, 1);
-        auto mutateOddsE = LycorisRandomFloat(0, 1);
+        auto mateOddsE = LycorisRandomFloat(1, 2);
+        auto mutateOddsE = LycorisRandomFloat(1, 2);
         float remain = 1;
         float p1E = 0;
         remain -= p1E;
@@ -320,8 +320,8 @@ void Lycoris::emergeArgs() {
         }
     } else {
         auto mutateTimeE = LycorisRandomUint32_t(args->maxMutateTime) + 1;
-        auto mateOddsE = LycorisRandomFloat(0, 1);
-        auto mutateOddsE = LycorisRandomFloat(0, 1);
+        auto mateOddsE = LycorisRandomFloat(1, 2);
+        auto mutateOddsE = LycorisRandomFloat(1, 2);
         float remain = 1;
         auto p1E = LycorisRandomFloat(0, 1);
         remain -= p1E;
