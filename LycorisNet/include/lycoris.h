@@ -74,7 +74,9 @@ public:
 
     void setActivateFunc(std::string function);
 
-    static Lycoris *import(std::string path, uint32_t capacity);
+    static Lycoris *importLycoris(std::string path, uint32_t capacity);
+
+    void exportLycoris(std::string path);
 };
 
 #endif //LYCORIS_LYCORIS_H

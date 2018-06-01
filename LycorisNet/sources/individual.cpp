@@ -138,6 +138,10 @@ uint32_t Individual::getSize() {
     return size;
 }
 
-Individual *Individual::import(std::string path) {
+Individual *Individual::importIndividual(std::string path) {
+
+}
+
+void Individual::exportIndividual(std::string path) {
 
 }

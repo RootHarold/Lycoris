@@ -35,7 +35,9 @@ public:
 
     uint32_t getSize();
 
-    static Individual* import(std::string path);
+    static Individual* importIndividual(std::string path);
+
+    void exportIndividual(std::string path);
 };
 
 #endif //LYCORIS_INDIVIDUAL_H

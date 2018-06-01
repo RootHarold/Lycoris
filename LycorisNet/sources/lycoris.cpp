@@ -579,6 +579,10 @@ void Lycoris::setActivateFunc(std::string function) {
     }
 }
 
-Lycoris *Lycoris::import(std::string path, uint32_t capacity) {
+Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
+
+}
+
+void Lycoris::exportLycoris(std::string path) {
 
 }
