@@ -578,3 +578,7 @@ void Lycoris::setActivateFunc(std::string function) {
         std::cout << "Wrong function name!" << std::endl;
     }
 }
+
+Lycoris *Lycoris::import(std::string path, uint32_t capacity) {
+
+}

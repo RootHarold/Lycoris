@@ -73,6 +73,8 @@ public:
     void setBiasRandom(float a, float b);
 
     void setActivateFunc(std::string function);
+
+    static Lycoris *import(std::string path, uint32_t capacity);
 };
 
 #endif //LYCORIS_LYCORIS_H

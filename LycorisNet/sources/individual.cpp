@@ -137,3 +137,7 @@ uint32_t Individual::getSize() {
     }
     return size;
 }
+
+Individual *Individual::import(std::string path) {
+
+}
