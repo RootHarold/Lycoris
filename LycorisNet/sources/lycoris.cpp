@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cfloat>
 #include <iostream>
+#include <fstream>
 
 Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
     this->capacity = capacity;
@@ -519,7 +520,7 @@ void Lycoris::runLycoris() {
         auto specie = new Species();
         auto initialCapacity = uint32_t(float(capacity) / ((1 + args->mateOdds) * (1 + args->mutateOdds)));
         specie->individualList->resize(initialCapacity);
-        for (unsigned i = 0; i < initialCapacity; ++i) {
+        for (uint32_t i = 0; i < initialCapacity; ++i) {
             (*(specie->individualList))[i] = new Individual(inputNum, outputNum, args);
         }
         speciesList = new std::vector<Species *>();
@@ -580,9 +581,109 @@ void Lycoris::setActivateFunc(std::string function) {
 }
 
 Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
+    std::ifstream infile(path);
+    std::string str;
+    std::getline(infile, str);
+    infile.close();
 
+    auto data = split(str);
+    auto source = new Individual();
+    source->inputNum = uint32_t(std::stoul(data[0]));
+    source->outputNum = uint32_t(std::stoul(data[1]));
+    source->innovationNum = uint32_t(std::stoul(data[2]));
+    source->nodeSum = uint32_t(std::stoul(data[3]));
+    source->fitness = std::stof(data[4]);
+
+    source->nodeSlice = new std::vector<uint32_t>(std::stoul(data[5]));
+    uint32_t pointer = 6;
+    for (uint32_t i = 0; i < std::stoul(data[5]); ++i) {
+        (*(source->nodeSlice))[i] = uint32_t(std::stoul(data[pointer++]));
+    }
+
+    auto mapLength = uint32_t(std::stoul(data[pointer++]));
+    source->nodeMap = new std::map<uint32_t, Node *>();
+    for (uint32_t i = 0; i < mapLength; ++i) {
+        auto key = uint32_t(std::stoul(data[pointer++]));
+        auto n = new Node(uint32_t(std::stoul(data[pointer++])), uint32_t(std::stoul(data[pointer++])));
+        n->value = std::stof(data[pointer++]);
+        n->bias = std::stof(data[pointer++]);
+
+        auto genomeLength = uint32_t(std::stoul(data[pointer++]));
+        n->genomeMap = new std::map<Gen, Ome>();
+        for (uint32_t j = 0; j < genomeLength; ++j) {
+            Gen g;
+            g.in = uint32_t(std::stoul(data[pointer++]));
+            g.out = uint32_t(std::stoul(data[pointer++]));
+            Ome o;
+            o.weight = std::stof(data[pointer++]);
+            o.isEnable = (std::stoul(data[pointer++]) == 1);
+            o.innovationNum = uint32_t(std::stoul(data[pointer++]));
+            (*(n->genomeMap))[g] = o;
+        }
+
+        (*(source->nodeMap))[key] = n;
+    }
+
+    auto activateFuncName = data[pointer];
+
+    auto radiata = new Lycoris(capacity, source->inputNum, source->outputNum);
+    source->args = radiata->args;
+    radiata->setActivateFunc(activateFuncName);
+
+    auto specie = new Species();
+    auto initialCapacity = uint32_t(
+            float(capacity) / ((1 + radiata->args->mateOdds) * (1 + radiata->args->mutateOdds)));
+    specie->individualList->resize(initialCapacity);
+    for (uint32_t i = 0; i < initialCapacity; ++i) {
+        (*(specie->individualList))[i] = source->clone();
+    }
+    radiata->speciesList = new std::vector<Species *>();
+    radiata->speciesList->push_back(specie);
+    radiata->best = (*(*(radiata->speciesList))[0]->individualList)[0];
+    radiata->args->firstRun = false;
+
+    delete source;
+    return radiata;
 }
 
 void Lycoris::exportLycoris(std::string path) {
+    std::ofstream outfile;
+    outfile.open(path);
 
+    outfile << std::to_string(best->inputNum) << " ";
+    outfile << std::to_string(best->outputNum) << " ";
+    outfile << std::to_string(best->innovationNum) << " ";
+    outfile << std::to_string(best->nodeSum) << " ";
+    outfile << std::to_string(best->fitness) << " ";
+
+    outfile << std::to_string(best->nodeSlice->size()) << " ";
+    for (auto iter = best->nodeSlice->begin(); iter != best->nodeSlice->end(); ++iter) {
+        outfile << std::to_string(*iter) << " ";
+    }
+
+    outfile << std::to_string(best->nodeMap->size()) << " ";
+    for (auto iter = best->nodeMap->begin(); iter != best->nodeMap->end(); ++iter) {
+        outfile << std::to_string(iter->first) << " ";
+        outfile << std::to_string(iter->second->nodeNum) << " ";
+        outfile << std::to_string(iter->second->nodeType) << " ";
+        outfile << std::to_string(iter->second->value) << " ";
+        outfile << std::to_string(iter->second->bias) << " ";
+
+        outfile << std::to_string(iter->second->genomeMap->size()) << " ";
+        for (auto it = iter->second->genomeMap->begin(); it != iter->second->genomeMap->end(); ++it) {
+            outfile << std::to_string(it->first.in) << " ";
+            outfile << std::to_string(it->first.out) << " ";
+            outfile << std::to_string(it->second.weight) << " ";
+            if (it->second.isEnable) {
+                outfile << "1 ";
+            } else {
+                outfile << "0 ";
+            }
+            outfile << std::to_string(it->second.innovationNum) << " ";
+        }
+    }
+
+    outfile << args->activateFuncName;
+
+    outfile.close();
 }

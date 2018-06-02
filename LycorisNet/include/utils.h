@@ -2,6 +2,7 @@
 #define LYCORIS_FACTORY_H
 
 #include <random>
+#include <regex>
 #include "individual.h"
 
 static std::random_device rd;
@@ -69,6 +70,17 @@ public:
 
 inline bool compareFitness(const SortFitness &a, const SortFitness &b) {
     return a.fitness < b.fitness;
+}
+
+inline std::vector<std::string> split(const std::string &subject) {
+    static const std::regex re{"\\s+"};
+
+    std::vector<std::string> container{
+            std::sregex_token_iterator(subject.begin(), subject.end(), re, -1),
+            std::sregex_token_iterator()
+    };
+    
+    return container;
 }
 
 #endif //LYCORIS_FACTORY_H

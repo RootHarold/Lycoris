@@ -25,12 +25,21 @@ void handle(Individual &in) {
 
 int main() {
     std::cout << "Hello, the CPP version of Lycoris!" << std::endl;
-    auto lie = new Lycoris(256, 2, 2);
-    lie->setForwardFunc(handle);
-    for (int i = 0; i < 16; ++i) {
-        lie->runLycoris();
-        std::cout << lie->best->fitness << std::endl;
+    auto lie1 = new Lycoris(256, 2, 2);
+    lie1->setForwardFunc(handle);
+    for (int i = 0; i < 4; ++i) {
+        lie1->runLycoris();
+        std::cout << lie1->best->fitness << std::endl;
     }
-    delete lie;
+    lie1->exportLycoris("model");
+    auto lie2 = Lycoris::importLycoris("model", 256);
+    /*lie2->setForwardFunc(handle);
+    std::cout << lie2->best->fitness << std::endl;
+    for (int i = 0; i < 16; ++i) {
+        lie2->runLycoris();
+        std::cout << lie2->best->fitness << std::endl;
+    }*/
+    delete lie2;
+    delete lie1;
     return 0;
 }

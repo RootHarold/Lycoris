@@ -117,6 +117,7 @@ Individual *Individual::clone() {
     dulplicate->args = args;
     dulplicate->innovationNum = innovationNum;
     dulplicate->nodeSum = nodeSum;
+    dulplicate->fitness = fitness;
 
     dulplicate->nodeMap = new std::map<uint32_t, Node *>();
     for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
@@ -136,12 +137,4 @@ uint32_t Individual::getSize() {
         size += iter->second->genomeMap->size();
     }
     return size;
-}
-
-Individual *Individual::importIndividual(std::string path) {
-
-}
-
-void Individual::exportIndividual(std::string path) {
-
 }
