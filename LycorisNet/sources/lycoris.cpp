@@ -9,20 +9,24 @@ Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
     this->inputNum = inputNum;
     this->outputNum = outputNum;
     args = new Args();
+
+    this->speciesList = nullptr;
 }
 
 Lycoris::~Lycoris() {
     delete args;
 
-    for (auto iter = speciesList->begin(); iter != speciesList->end(); ++iter) {
-        delete *iter;
-    }
+    if (speciesList != nullptr) {
+        for (auto iter = speciesList->begin(); iter != speciesList->end(); ++iter) {
+            delete *iter;
+        }
 
-    delete speciesList;
+        delete speciesList;
+    }
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8";
+    return "Lycoris core 1.8.1";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
