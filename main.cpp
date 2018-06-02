@@ -33,12 +33,12 @@ int main() {
     }
     lie1->exportLycoris("model");
     auto lie2 = Lycoris::importLycoris("model", 256);
-    /*lie2->setForwardFunc(handle);
+    lie2->setForwardFunc(handle);
     std::cout << lie2->best->fitness << std::endl;
     for (int i = 0; i < 16; ++i) {
         lie2->runLycoris();
         std::cout << lie2->best->fitness << std::endl;
-    }*/
+    }
     delete lie2;
     delete lie1;
     return 0;

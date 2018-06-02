@@ -609,7 +609,6 @@ Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
         n->bias = std::stof(data[pointer++]);
 
         auto genomeLength = uint32_t(std::stoul(data[pointer++]));
-        n->genomeMap = new std::map<Gen, Ome>();
         for (uint32_t j = 0; j < genomeLength; ++j) {
             Gen g;
             g.in = uint32_t(std::stoul(data[pointer++]));
