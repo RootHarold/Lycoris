@@ -26,7 +26,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8.2";
+    return "Lycoris core 1.8.3";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
@@ -91,7 +91,7 @@ void Lycoris::mateCore(uint32_t *start, uint32_t *end) {
     for (uint32_t i = 0; i < specieLength; ++i) {
         auto l = (*speciesList)[i]->individualList;
         for (uint32_t j = start[i]; j < end[i]; ++j) {
-            tempList1[i][j] = LycorisUtils::mateIndividual(*((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[i])]),
+            tempList1[i][j] = mateIndividual(*((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[i])]),
                                              *((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[i])]));
         }
     }
@@ -143,7 +143,7 @@ void Lycoris::mutateCore(uint32_t *start, uint32_t *end) {
     for (uint32_t i = 0; i < specieLength; ++i) {
         auto l = (*speciesList)[i]->individualList;
         for (uint32_t j = start[i]; j < end[i]; ++j) {
-            tempList1[i][j] = LycorisUtils::mutateIndividual(*((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[i])]));
+            tempList1[i][j] = mutateIndividual(*((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[i])]));
         }
     }
 }
@@ -208,7 +208,7 @@ void Lycoris::classifyCore(uint32_t *start, uint32_t *end) {
             auto temp = tempList1[i][j];
             for (uint32_t k = 0; k < specieLength; ++k) {
                 auto l = (*speciesList)[k]->individualList;
-                auto dis = LycorisUtils::distance(*temp, *((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[k])]));
+                auto dis = distance(*temp, *((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[k])]));
                 if (dis <= args->distanceThreshold) {
                     tempList2[i][j] = k;
                     break;
@@ -601,26 +601,41 @@ Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
     source->nodeSlice = new std::vector<uint32_t>(std::stoul(data[5]));
     uint32_t pointer = 6;
     for (uint32_t i = 0; i < std::stoul(data[5]); ++i) {
-        (*(source->nodeSlice))[i] = uint32_t(std::stoul(data[pointer++]));
+        (*(source->nodeSlice))[i] = uint32_t(std::stoul(data[pointer]));
+        pointer++;
     }
 
-    auto mapLength = uint32_t(std::stoul(data[pointer++]));
+    auto mapLength = uint32_t(std::stoul(data[pointer]));
+    pointer++;
     source->nodeMap = new std::map<uint32_t, Node *>();
     for (uint32_t i = 0; i < mapLength; ++i) {
-        auto key = uint32_t(std::stoul(data[pointer++]));
-        auto n = new Node(uint32_t(std::stoul(data[pointer++])), uint32_t(std::stoul(data[pointer++])));
-        n->value = std::stof(data[pointer++]);
-        n->bias = std::stof(data[pointer++]);
+        auto key = uint32_t(std::stoul(data[pointer]));
+        pointer++;
+        auto temp1 = data[pointer];
+        pointer++;
+        auto temp2 = data[pointer];
+        pointer++;
+        auto n = new Node(uint32_t(std::stoul(temp1)), uint32_t(std::stoul(temp2)));
+        n->value = std::stof(data[pointer]);
+        pointer++;
+        n->bias = std::stof(data[pointer]);
+        pointer++;
 
-        auto genomeLength = uint32_t(std::stoul(data[pointer++]));
+        auto genomeLength = uint32_t(std::stoul(data[pointer]));
+        pointer++;
         for (uint32_t j = 0; j < genomeLength; ++j) {
             Gen g;
-            g.in = uint32_t(std::stoul(data[pointer++]));
-            g.out = uint32_t(std::stoul(data[pointer++]));
+            g.in = uint32_t(std::stoul(data[pointer]));
+            pointer++;
+            g.out = uint32_t(std::stoul(data[pointer]));
+            pointer++;
             Ome o;
-            o.weight = std::stof(data[pointer++]);
-            o.isEnable = (std::stoul(data[pointer++]) == 1);
-            o.innovationNum = uint32_t(std::stoul(data[pointer++]));
+            o.weight = std::stof(data[pointer]);
+            pointer++;
+            o.isEnable = (std::stoul(data[pointer]) == 1);
+            pointer++;
+            o.innovationNum = uint32_t(std::stoul(data[pointer]));
+            pointer++;
             (*(n->genomeMap))[g] = o;
         }
 

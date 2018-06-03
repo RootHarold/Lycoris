@@ -5,7 +5,7 @@
 #include <regex>
 #include "individual.h"
 
-namespace LycorisUtils{
+namespace LycorisUtils {
 
     static std::random_device rd;
 
@@ -47,15 +47,9 @@ namespace LycorisUtils{
         return ret;
     }
 
-    float distance(Individual &in1, Individual &in2);
-
     uint32_t sort1(Individual &in, float *ret1, int *ret2);
 
     uint32_t sort2(Individual &in, Gen *ret1, Ome *ret2);
-
-    Individual *mateIndividual(Individual &in1, Individual &in2);
-
-    Individual *mutateIndividual(Individual &in);
 
     class SortFitness {
     public:
@@ -86,5 +80,11 @@ namespace LycorisUtils{
     }
 
 }
+
+float distance(Individual &in1, Individual &in2);
+
+Individual *mateIndividual(Individual &in1, Individual &in2);
+
+Individual *mutateIndividual(Individual &in);
 
 #endif //LYCORIS_FACTORY_H
