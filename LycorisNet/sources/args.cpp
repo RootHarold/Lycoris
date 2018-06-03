@@ -24,7 +24,7 @@ Args::Args() {
     cpuNum = std::thread::hardware_concurrency();
 
     cleanOdds = 0.01;
-    activateFunc = sigmoid;
+    activateFunc = LycorisUtils::sigmoid;
     tock = 1;
     gapList = new std::vector<float>();
     maxTock = 16;

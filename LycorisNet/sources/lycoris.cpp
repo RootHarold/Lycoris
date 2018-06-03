@@ -26,7 +26,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8.1";
+    return "Lycoris core 1.8.2";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
@@ -91,8 +91,8 @@ void Lycoris::mateCore(uint32_t *start, uint32_t *end) {
     for (uint32_t i = 0; i < specieLength; ++i) {
         auto l = (*speciesList)[i]->individualList;
         for (uint32_t j = start[i]; j < end[i]; ++j) {
-            tempList1[i][j] = mateIndividual(*((*l)[LycorisRandomUint32_t(oldLength[i])]),
-                                             *((*l)[LycorisRandomUint32_t(oldLength[i])]));
+            tempList1[i][j] = LycorisUtils::mateIndividual(*((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[i])]),
+                                             *((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[i])]));
         }
     }
 }
@@ -143,7 +143,7 @@ void Lycoris::mutateCore(uint32_t *start, uint32_t *end) {
     for (uint32_t i = 0; i < specieLength; ++i) {
         auto l = (*speciesList)[i]->individualList;
         for (uint32_t j = start[i]; j < end[i]; ++j) {
-            tempList1[i][j] = mutateIndividual(*((*l)[LycorisRandomUint32_t(oldLength[i])]));
+            tempList1[i][j] = LycorisUtils::mutateIndividual(*((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[i])]));
         }
     }
 }
@@ -208,7 +208,7 @@ void Lycoris::classifyCore(uint32_t *start, uint32_t *end) {
             auto temp = tempList1[i][j];
             for (uint32_t k = 0; k < specieLength; ++k) {
                 auto l = (*speciesList)[k]->individualList;
-                auto dis = distance(*temp, *((*l)[LycorisRandomUint32_t(oldLength[k])]));
+                auto dis = LycorisUtils::distance(*temp, *((*l)[LycorisUtils::LycorisRandomUint32_t(oldLength[k])]));
                 if (dis <= args->distanceThreshold) {
                     tempList2[i][j] = k;
                     break;
@@ -267,17 +267,17 @@ void Lycoris::forwardCore(uint32_t *start, uint32_t *end) {
 
 void Lycoris::emergeArgs() {
     if (args->memOverFlag) {
-        auto mutateTimeE = LycorisRandomUint32_t(args->maxMutateTime) + 1;
-        auto mateOddsE = LycorisRandomFloat(1, 2);
-        auto mutateOddsE = LycorisRandomFloat(1, 2);
+        auto mutateTimeE = LycorisUtils::LycorisRandomUint32_t(args->maxMutateTime) + 1;
+        auto mateOddsE = LycorisUtils::LycorisRandomFloat(1, 2);
+        auto mutateOddsE = LycorisUtils::LycorisRandomFloat(1, 2);
         float remain = 1;
         float p1E = 0;
         remain -= p1E;
-        auto p2E = LycorisRandomFloat(0, 1) * remain;
+        auto p2E = LycorisUtils::LycorisRandomFloat(0, 1) * remain;
         remain -= p2E;
         float p3E = 0;
         remain -= p3E;
-        auto p4E = LycorisRandomFloat(0, 1) * remain;
+        auto p4E = LycorisUtils::LycorisRandomFloat(0, 1) * remain;
         remain -= p4E;
         float p5E = 0;
         remain -= p5E;
@@ -324,19 +324,19 @@ void Lycoris::emergeArgs() {
             args->mutateTime = mutateTimeE;
         }
     } else {
-        auto mutateTimeE = LycorisRandomUint32_t(args->maxMutateTime) + 1;
-        auto mateOddsE = LycorisRandomFloat(1, 2);
-        auto mutateOddsE = LycorisRandomFloat(1, 2);
+        auto mutateTimeE = LycorisUtils::LycorisRandomUint32_t(args->maxMutateTime) + 1;
+        auto mateOddsE = LycorisUtils::LycorisRandomFloat(1, 2);
+        auto mutateOddsE = LycorisUtils::LycorisRandomFloat(1, 2);
         float remain = 1;
-        auto p1E = LycorisRandomFloat(0, 1);
+        auto p1E = LycorisUtils::LycorisRandomFloat(0, 1);
         remain -= p1E;
-        auto p2E = LycorisRandomFloat(0, 1) * remain;
+        auto p2E = LycorisUtils::LycorisRandomFloat(0, 1) * remain;
         remain -= p2E;
-        auto p3E = LycorisRandomFloat(0, 1) * remain;
+        auto p3E = LycorisUtils::LycorisRandomFloat(0, 1) * remain;
         remain -= p3E;
-        auto p4E = LycorisRandomFloat(0, 1) * remain;
+        auto p4E = LycorisUtils::LycorisRandomFloat(0, 1) * remain;
         remain -= p4E;
-        auto p5E = LycorisRandomFloat(0, 1) * remain;
+        auto p5E = LycorisUtils::LycorisRandomFloat(0, 1) * remain;
         remain -= p5E;
         auto p6E = remain;
 
@@ -424,7 +424,7 @@ void Lycoris::chooseElite() {
         exit(0);
     }
 
-    std::vector<SortFitness> sortList(totalLength);
+    std::vector<LycorisUtils::SortFitness> sortList(totalLength);
     uint32_t pointer = 0;
     for (uint32_t i = 0; i < speciesList->size(); ++i) {
         auto temp = (*speciesList)[i]->individualList;
@@ -433,11 +433,11 @@ void Lycoris::chooseElite() {
                 (*temp)[j]->fitness = FLT_MIN;
             }
 
-            sortList[pointer] = SortFitness((*temp)[j]->fitness, i, j);
+            sortList[pointer] = LycorisUtils::SortFitness((*temp)[j]->fitness, i, j);
             pointer++;
         }
     }
-    std::sort(sortList.begin(), sortList.end(), compareFitness);
+    std::sort(sortList.begin(), sortList.end(), LycorisUtils::compareFitness);
     auto last = sortList[totalLength - 1];
     auto tempBest = best->fitness;
     best = (*(*speciesList)[last.specieNum]->individualList)[last.individualNum];
@@ -574,11 +574,11 @@ void Lycoris::setBiasRandom(float a, float b) {
 void Lycoris::setActivateFunc(std::string function) {
     args->activateFuncName = function;
     if (function == "sigmoid") {
-        args->activateFunc = sigmoid;
+        args->activateFunc = LycorisUtils::sigmoid;
     } else if (function == "relu") {
-        args->activateFunc = relu;
+        args->activateFunc = LycorisUtils::relu;
     } else if (function == "tanh") {
-        args->activateFunc = tanh;
+        args->activateFunc = LycorisUtils::tanh;
     } else {
         std::cout << "Wrong function name!" << std::endl;
     }
@@ -590,7 +590,7 @@ Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
     std::getline(infile, str);
     infile.close();
 
-    auto data = split(str);
+    auto data = LycorisUtils::split(str);
     auto source = new Individual();
     source->inputNum = uint32_t(std::stoul(data[0]));
     source->outputNum = uint32_t(std::stoul(data[1]));

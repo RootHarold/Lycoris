@@ -30,7 +30,7 @@ void Individual::initialize() {
     for (uint32_t i = 0; i < inputNum; ++i) {
         auto temp = nodeSum;
         auto newNode = new Node(temp, 0);
-        newNode->initializeBias(LycorisRandomFloat(args->biasA, args->biasB));
+        newNode->initializeBias(LycorisUtils::LycorisRandomFloat(args->biasA, args->biasB));
         nodeMap->insert(std::make_pair(temp, newNode));
         (*nodeSlice)[temp] = temp;
         nodeSum++;
@@ -39,7 +39,7 @@ void Individual::initialize() {
     for (uint32_t i = 0; i < outputNum; ++i) {
         auto temp = nodeSum;
         auto newNode = new Node(temp, 2);
-        newNode->initializeBias(LycorisRandomFloat(args->biasA, args->biasB));
+        newNode->initializeBias(LycorisUtils::LycorisRandomFloat(args->biasA, args->biasB));
         nodeMap->insert(std::make_pair(temp, newNode));
         (*nodeSlice)[temp] = temp;
         nodeSum++;
@@ -92,7 +92,7 @@ void Individual::forward() {
         }
     }
 
-    if (LycorisRandomFloat(0, 1) < args->cleanOdds && !clean.empty()) {
+    if (LycorisUtils::LycorisRandomFloat(0, 1) < args->cleanOdds && !clean.empty()) {
         for (auto iter = clean.begin(); iter != clean.end(); ++iter) {
             auto key = iter->first;
             auto temp = (*nodeMap)[key];

@@ -169,7 +169,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         }
 
         if (duplicateNodes[v]) {
-            if (LycorisRandomFloat(0, 1) < 0.5) {
+            if (LycorisUtils::LycorisRandomFloat(0, 1) < 0.5) {
                 n->bias = (*(in1.nodeMap))[v]->bias;
             } else {
                 n->bias = (*(in2.nodeMap))[v]->bias;
@@ -195,7 +195,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         }
 
         if (o1[point1].innovationNum == o2[point2].innovationNum) {
-            if (LycorisRandomFloat(0, 1) < 0.5) {
+            if (LycorisUtils::LycorisRandomFloat(0, 1) < 0.5) {
                 (*(offspring->nodeMap))[g1[point1].out]->genomeMap->insert(std::make_pair(g1[point1], o1[point1]));
             } else {
                 (*(offspring->nodeMap))[g2[point2].out]->genomeMap->insert(std::make_pair(g2[point2], o2[point2]));
@@ -293,17 +293,17 @@ Individual *mutateIndividual(Individual &in) {
     auto offspring = in.clone();
 
     for (uint32_t z = 0; z < in.args->mutateTime; ++z) {
-        auto ran = LycorisRandomFloat(0, 1);
+        auto ran = LycorisUtils::LycorisRandomFloat(0, 1);
 
         if (ran < in.args->p1) {
-            auto nodeOld = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUint32_t(
+            auto nodeOld = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisUtils::LycorisRandomUint32_t(
                     uint32_t(offspring->nodeSlice->size()))]];
 
             if (!nodeOld->genomeMap->empty()) {
                 Gen genOld;
                 Ome omeOld;
 
-                auto ranPos = LycorisRandomUint32_t(uint32_t(nodeOld->genomeMap->size()));
+                auto ranPos = LycorisUtils::LycorisRandomUint32_t(uint32_t(nodeOld->genomeMap->size()));
                 uint32_t count = 0;
                 for (auto iter = nodeOld->genomeMap->begin(); iter != nodeOld->genomeMap->end(); ++iter) {
                     if (count == ranPos) {
@@ -316,7 +316,7 @@ Individual *mutateIndividual(Individual &in) {
 
                 omeOld.isEnable = false;
                 auto n = new Node(offspring->nodeSum, 1);
-                n->initializeBias(LycorisRandomFloat(in.args->biasA, in.args->biasB));
+                n->initializeBias(LycorisUtils::LycorisRandomFloat(in.args->biasA, in.args->biasB));
                 offspring->nodeSum++;
                 Gen g1(genOld.in, n->nodeNum);
                 Ome o1(1.0, true, offspring->innovationNum);
@@ -334,7 +334,7 @@ Individual *mutateIndividual(Individual &in) {
             }
         } else if (ran >= in.args->p1 && ran < in.args->p1 + in.args->p2) {
             auto length = uint32_t(offspring->nodeSlice->size());
-            auto index = LycorisRandomUint32_t(length);
+            auto index = LycorisUtils::LycorisRandomUint32_t(length);
             auto sliceIndex = (*(offspring->nodeSlice))[index];
             if ((*(offspring->nodeMap))[sliceIndex]->nodeType == 1) {
                 for (int i = index + 1; i < length; ++i) {
@@ -349,8 +349,8 @@ Individual *mutateIndividual(Individual &in) {
             }
         } else if (ran >= in.args->p1 + in.args->p2 && ran < in.args->p1 + in.args->p2 + in.args->p3) {
             auto length = uint32_t(offspring->nodeSlice->size());
-            auto index1 = LycorisRandomUint32_t(length);
-            auto index2 = index1 + LycorisRandomUint32_t(length - index1);
+            auto index1 = LycorisUtils::LycorisRandomUint32_t(length);
+            auto index2 = index1 + LycorisUtils::LycorisRandomUint32_t(length - index1);
 
             if (index1 != index2) {
                 auto inputNum = (*(offspring->nodeSlice))[index1];
@@ -362,7 +362,7 @@ Individual *mutateIndividual(Individual &in) {
                       (inputNode->nodeType == 2 && outputNode->nodeType == 2))) {
                     Gen g(inputNum, outputNum);
                     if (outputNode->genomeMap->find(g) == outputNode->genomeMap->end()) {
-                        Ome o(LycorisRandomFloat(0, 1) * (in.args->weightB - in.args->weightA) + in.args->weightA, true,
+                        Ome o(LycorisUtils::LycorisRandomFloat(0, 1) * (in.args->weightB - in.args->weightA) + in.args->weightA, true,
                               offspring->innovationNum);
                         offspring->innovationNum++;
                         outputNode->genomeMap->insert(std::make_pair(g, o));
@@ -371,12 +371,12 @@ Individual *mutateIndividual(Individual &in) {
             }
         } else if (ran >= in.args->p1 + in.args->p2 + in.args->p3 &&
                    ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4) {
-            auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisRandomUint32_t(
+            auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisUtils::LycorisRandomUint32_t(
                     uint32_t(offspring->nodeSlice->size()))]];
 
             if (!(n->genomeMap->empty())) {
                 Gen g;
-                auto ranPos = LycorisRandomUint32_t(uint32_t(n->genomeMap->size()));
+                auto ranPos = LycorisUtils::LycorisRandomUint32_t(uint32_t(n->genomeMap->size()));
                 uint32_t count = 0;
                 for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
                     if (count == ranPos) {
@@ -390,33 +390,33 @@ Individual *mutateIndividual(Individual &in) {
         } else if (ran >= in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4 &&
                    ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4 + in.args->p5) {
             auto n = new Node(offspring->nodeSum, 1);
-            n->initializeBias(LycorisRandomFloat(in.args->biasA, in.args->biasB));
+            n->initializeBias(LycorisUtils::LycorisRandomFloat(in.args->biasA, in.args->biasB));
             offspring->nodeSum++;
             offspring->nodeMap->insert(std::make_pair(n->nodeNum, n));
-            auto index = LycorisRandomUint32_t(uint32_t(offspring->nodeSlice->size()) - offspring->inputNum) +
+            auto index = LycorisUtils::LycorisRandomUint32_t(uint32_t(offspring->nodeSlice->size()) - offspring->inputNum) +
                          offspring->inputNum;
             offspring->nodeSlice->insert(offspring->nodeSlice->begin() + index, n->nodeNum);
         } else {
-            auto index = LycorisRandomUint32_t(uint32_t(offspring->nodeSlice->size()) - offspring->inputNum) +
+            auto index = LycorisUtils::LycorisRandomUint32_t(uint32_t(offspring->nodeSlice->size()) - offspring->inputNum) +
                          offspring->inputNum;
             auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[index]];
-            n->bias = LycorisRandomFloat(in.args->biasA, in.args->biasB);
+            n->bias = LycorisUtils::LycorisRandomFloat(in.args->biasA, in.args->biasB);
         };
     }
 
     return offspring;
 }
 
-SortFitness::SortFitness() {
+LycorisUtils::SortFitness::SortFitness() {
 
 }
 
-SortFitness::SortFitness(float fitness, uint32_t specieNum, uint32_t individualNum) {
+LycorisUtils::SortFitness::SortFitness(float fitness, uint32_t specieNum, uint32_t individualNum) {
     this->fitness = fitness;
     this->specieNum = specieNum;
     this->individualNum = individualNum;
 }
 
-SortFitness::~SortFitness() {
+LycorisUtils::SortFitness::~SortFitness() {
 
 }
