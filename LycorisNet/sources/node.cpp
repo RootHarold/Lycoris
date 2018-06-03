@@ -1,3 +1,11 @@
+/*
+    Copyright (c) 2018, RootHarold
+    All rights reserved.
+
+    Use of this source code is governed by an Apache license that can be found
+    in the LICENSE file.
+*/
+
 #include "node.h"
 
 Node::Node(uint32_t nodeNum, uint32_t nodeType) {

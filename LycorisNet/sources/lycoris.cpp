@@ -1,3 +1,11 @@
+/*
+    Copyright (c) 2018, RootHarold
+    All rights reserved.
+
+    Use of this source code is governed by an Apache license that can be found
+    in the LICENSE file.
+*/
+
 #include "lycoris.h"
 #include <algorithm>
 #include <cfloat>
@@ -266,7 +274,7 @@ void Lycoris::forwardCore(uint32_t *start, uint32_t *end) {
 }
 
 void Lycoris::emergeArgs() {
-    if (args->memOverFlag) {
+    if (args->memOverFlag) { // Memory exceeds the limit.
         auto mutateTimeE = LycorisUtils::LycorisRandomUint32_t(args->maxMutateTime) + 1;
         auto mateOddsE = LycorisUtils::LycorisRandomFloat(1, 2);
         auto mutateOddsE = LycorisUtils::LycorisRandomFloat(1, 2);
@@ -429,6 +437,7 @@ void Lycoris::chooseElite() {
     for (uint32_t i = 0; i < speciesList->size(); ++i) {
         auto temp = (*speciesList)[i]->individualList;
         for (uint32_t j = 0; j < temp->size(); ++j) {
+            // To fix the NaN & Inf problems.
             if (std::isnan((*temp)[j]->fitness) || std::isinf((*temp)[j]->fitness)) {
                 (*temp)[j]->fitness = FLT_MIN;
             }
@@ -450,7 +459,7 @@ void Lycoris::chooseElite() {
     uint32_t memSum = 0;
     auto z = totalLength;
     for (; z > totalLength - newLength; --z) {
-        if (z == 0) {
+        if (z == 0) { // This needs elegant repairs.
             break;
         }
         auto temp = sortList[z - 1];
@@ -461,7 +470,7 @@ void Lycoris::chooseElite() {
         (*newSpecieList)[temp.specieNum]->individualList->push_back(tempIndividual);
     }
     if (args->memLimitFlag) {
-        if (memSum > (totalLength - z) * args->limitSize) {
+        if (memSum > (totalLength - z) * args->limitSize) { // Memory exceeds the limit.
             if (!args->memOverFlag) {
                 args->firstOver = true;
                 args->memOverFlag = true;
@@ -498,7 +507,7 @@ void Lycoris::chooseElite() {
     speciesList = newSpecieList;
 
     auto difference = best->fitness - tempBest;
-    if (args->gapListFlag) {
+    if (args->gapListFlag) { // len < gapLength
         auto length = args->gapList->size();
         if (length == args->maxGap) {
             args->gapListFlag = false;
@@ -532,12 +541,19 @@ void Lycoris::runLycoris() {
         best = (*(*speciesList)[0]->individualList)[0];
     }
 
+    // Mating.
     mate();
+    // Computing distances of new individuals.
     classify();
+    // Mutating.
     mutate();
+    // Computing distances of new individuals.
     classify();
+    // Forward calculation.
     forward();
+    // Changing some parameters automatically.
     autoParameter();
+    // Sorting and choosing some individuals with higher fitness.
     chooseElite();
 }
 

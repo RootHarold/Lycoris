@@ -1,3 +1,11 @@
+/*
+    Copyright (c) 2018, RootHarold
+    All rights reserved.
+
+    Use of this source code is governed by an Apache license that can be found
+    in the LICENSE file.
+*/
+
 #include <algorithm>
 #include "utils.h"
 
@@ -118,12 +126,14 @@ float distance(Individual &in1, Individual &in2) {
 }
 
 Individual *mateIndividual(Individual &in1, Individual &in2) {
+    // Emerge a newborn one.
     auto offspring = new Individual();
     offspring->inputNum = in1.inputNum;
     offspring->outputNum = in1.outputNum;
     offspring->args = in1.args;
     offspring->nodeMap = new std::map<uint32_t, Node *>();
 
+    // Mate nodes.
     std::map<uint32_t, bool> tempMap;
     std::map<uint32_t, bool> duplicateNodes;
 
@@ -168,6 +178,8 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
             }
         }
 
+        // Mate the bias of nodes. And the strategy is choosing bias
+        // between parents randomly.
         if (duplicateNodes[v]) {
             if (LycorisUtils::LycorisRandomFloat(0, 1) < 0.5) {
                 n->bias = (*(in1.nodeMap))[v]->bias;
@@ -179,6 +191,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         offspring->nodeMap->insert(std::make_pair(v, n));
     }
 
+    // Mate genomes.
     std::vector<Gen> g1;
     std::vector<Ome> o1;
     std::vector<Gen> g2;
@@ -219,6 +232,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         (*(offspring->nodeMap))[g2[i].out]->genomeMap->insert(std::make_pair(g2[i], o2[i]));
     }
 
+    // Make the nodes in a reasonable order of calculation.
     std::map<uint32_t, uint32_t> inDegree;
     for (auto iter = offspring->nodeMap->begin(); iter != offspring->nodeMap->end(); ++iter) {
         inDegree.insert(std::make_pair(iter->first, uint32_t(iter->second->genomeMap->size())));
@@ -232,6 +246,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
     }
     uint32_t slicePointer = 0;
 
+    // Topological Order
     while (true) {
         if (next.empty()) {
             break;
@@ -262,6 +277,7 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         slicePointer++;
     }
 
+    // Save nodes in a slice.
     offspring->nodeSlice = new std::vector<uint32_t>(tempSlice.size());
     for (uint32_t j = 0; j < in1.inputNum; ++j) {
         (*(offspring->nodeSlice))[j] = j;
@@ -274,12 +290,14 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
         }
     }
 
+    // Choose the nodeSum of offspring.
     if (in1.nodeSum > in2.nodeSum) {
         offspring->nodeSum = in1.nodeSum;
     } else {
         offspring->nodeSum = in2.nodeSum;
     }
 
+    // Choose the innovationNum of offspring.
     if (in1.innovationNum > in2.innovationNum) {
         offspring->innovationNum = in1.innovationNum;
     } else {
@@ -290,15 +308,19 @@ Individual *mateIndividual(Individual &in1, Individual &in2) {
 }
 
 Individual *mutateIndividual(Individual &in) {
+    // Clone the individual.
     auto offspring = in.clone();
 
+    // This process can be repeated many times.
     for (uint32_t z = 0; z < in.args->mutateTime; ++z) {
         auto ran = LycorisUtils::LycorisRandomFloat(0, 1);
 
-        if (ran < in.args->p1) {
+        if (ran < in.args->p1) { // p1
+            // Add the new node between a connection.
             auto nodeOld = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisUtils::LycorisRandomUint32_t(
                     uint32_t(offspring->nodeSlice->size()))]];
 
+            // If there is a suitable connection.
             if (!nodeOld->genomeMap->empty()) {
                 Gen genOld;
                 Ome omeOld;
@@ -332,7 +354,8 @@ Individual *mutateIndividual(Individual &in) {
                 auto iter = std::find(offspring->nodeSlice->begin(), offspring->nodeSlice->end(), genOld.out);
                 offspring->nodeSlice->insert(iter, n->nodeNum);
             }
-        } else if (ran >= in.args->p1 && ran < in.args->p1 + in.args->p2) {
+        } else if (ran >= in.args->p1 && ran < in.args->p1 + in.args->p2) { // p2
+            // Delete a node.
             auto length = uint32_t(offspring->nodeSlice->size());
             auto index = LycorisUtils::LycorisRandomUint32_t(length);
             auto sliceIndex = (*(offspring->nodeSlice))[index];
@@ -347,7 +370,8 @@ Individual *mutateIndividual(Individual &in) {
                 offspring->nodeSlice->erase(offspring->nodeSlice->begin() + index);
                 delete temp;
             }
-        } else if (ran >= in.args->p1 + in.args->p2 && ran < in.args->p1 + in.args->p2 + in.args->p3) {
+        } else if (ran >= in.args->p1 + in.args->p2 && ran < in.args->p1 + in.args->p2 + in.args->p3) { // p3
+            // Add a new connection between two nodes.
             auto length = uint32_t(offspring->nodeSlice->size());
             auto index1 = LycorisUtils::LycorisRandomUint32_t(length);
             auto index2 = index1 + LycorisUtils::LycorisRandomUint32_t(length - index1);
@@ -370,7 +394,8 @@ Individual *mutateIndividual(Individual &in) {
                 }
             }
         } else if (ran >= in.args->p1 + in.args->p2 + in.args->p3 &&
-                   ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4) {
+                   ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4) { // p4
+            // Delete a connection.
             auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[LycorisUtils::LycorisRandomUint32_t(
                     uint32_t(offspring->nodeSlice->size()))]];
 
@@ -388,7 +413,8 @@ Individual *mutateIndividual(Individual &in) {
                 n->genomeMap->erase(g);
             }
         } else if (ran >= in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4 &&
-                   ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4 + in.args->p5) {
+                   ran < in.args->p1 + in.args->p2 + in.args->p3 + in.args->p4 + in.args->p5) { // p5
+            // Just create a new empty node (without any genomes).
             auto n = new Node(offspring->nodeSum, 1);
             n->initializeBias(LycorisUtils::LycorisRandomFloat(in.args->biasA, in.args->biasB));
             offspring->nodeSum++;
@@ -396,7 +422,8 @@ Individual *mutateIndividual(Individual &in) {
             auto index = LycorisUtils::LycorisRandomUint32_t(uint32_t(offspring->nodeSlice->size()) - offspring->inputNum) +
                          offspring->inputNum;
             offspring->nodeSlice->insert(offspring->nodeSlice->begin() + index, n->nodeNum);
-        } else {
+        } else { // p6
+            // Mutate the bias.
             auto index = LycorisUtils::LycorisRandomUint32_t(uint32_t(offspring->nodeSlice->size()) - offspring->inputNum) +
                          offspring->inputNum;
             auto n = (*(offspring->nodeMap))[(*(offspring->nodeSlice))[index]];

@@ -1,3 +1,11 @@
+/*
+    Copyright (c) 2018, RootHarold
+    All rights reserved.
+
+    Use of this source code is governed by an Apache license that can be found
+    in the LICENSE file.
+*/
+
 #include "individual.h"
 #include "utils.h"
 
@@ -92,6 +100,7 @@ void Individual::forward() {
         }
     }
 
+    // Clean empty nodes according to a certain chance (cleanOdds).
     if (LycorisUtils::LycorisRandomFloat(0, 1) < args->cleanOdds && !clean.empty()) {
         for (auto iter = clean.begin(); iter != clean.end(); ++iter) {
             auto key = iter->first;
