@@ -34,7 +34,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8.3";
+    return "Lycoris core 1.8.4";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
@@ -439,7 +439,7 @@ void Lycoris::chooseElite() {
         for (uint32_t j = 0; j < temp->size(); ++j) {
             // To fix the NaN & Inf problems.
             if (std::isnan((*temp)[j]->fitness) || std::isinf((*temp)[j]->fitness)) {
-                (*temp)[j]->fitness = FLT_MIN;
+                (*temp)[j]->fitness = -FLT_MAX;
             }
 
             sortList[pointer] = LycorisUtils::SortFitness((*temp)[j]->fitness, i, j);
