@@ -24,3 +24,4 @@ Makefile
 Lycoris.cbp
 cmake-build-debug/
 cmake-build-release/
+install_manifest.txt

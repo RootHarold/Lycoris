@@ -1,15 +1,15 @@
-cmake_minimum_required(VERSION 3.7)
-project(Lycoris)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.7)
+PROJECT(Lycoris)
 
-set(CMAKE_CXX_STANDARD 11)
+SET(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/LycorisNet/lib)
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/LycorisNet/lib)
 
-include_directories(./LycorisNet/include)
+INCLUDE_DIRECTORIES(./LycorisNet/include)
 
-set(SOURCE_FILES
+SET(SOURCE_FILES
         LycorisNet/include/genome.h
         LycorisNet/sources/genome.cpp
         LycorisNet/include/node.h
@@ -27,5 +27,15 @@ set(SOURCE_FILES
 
 ADD_LIBRARY(lycoris SHARED ${SOURCE_FILES})
 
-find_package(Threads REQUIRED)
-target_link_libraries(lycoris Threads::Threads)
+FIND_PACKAGE(Threads REQUIRED)
+TARGET_LINK_LIBRARIES(lycoris Threads::Threads)
+
+INSTALL(TARGETS lycoris
+        LIBRARY DESTINATION lib)
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/args.h DESTINATION include)
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/genome.h DESTINATION include)
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/individual.h DESTINATION include)
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/lycoris.h DESTINATION include)
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/node.h DESTINATION include)
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/species.h DESTINATION include)
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/utils.h DESTINATION include)

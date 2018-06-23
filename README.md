@@ -15,12 +15,8 @@ cd Lycoris
 
 ```
 cmake .
-make
+sudo make install
 ```
-
-* Step 3:
-
-The header files is in ```path_to_Lycoris/LycorisNet/inlude``` and the dynamic link library is in ```path_to_Lycoris/LycorisNet/lib```. You can add these two directories to the environment variable.
 
 # Documents
 **Detailed tutorials and manuals will be updated within a few days**.
