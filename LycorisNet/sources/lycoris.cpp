@@ -432,7 +432,7 @@ void Lycoris::chooseElite() {
         exit(0);
     }
 
-    std::vector<LycorisUtils::SortFitness> sortList(totalLength);
+    std::vector<SortFitness> sortList(totalLength);
     uint32_t pointer = 0;
     for (uint32_t i = 0; i < speciesList->size(); ++i) {
         auto temp = (*speciesList)[i]->individualList;
@@ -442,11 +442,11 @@ void Lycoris::chooseElite() {
                 (*temp)[j]->fitness = -FLT_MAX;
             }
 
-            sortList[pointer] = LycorisUtils::SortFitness((*temp)[j]->fitness, i, j);
+            sortList[pointer] = SortFitness((*temp)[j]->fitness, i, j);
             pointer++;
         }
     }
-    std::sort(sortList.begin(), sortList.end(), LycorisUtils::compareFitness);
+    std::sort(sortList.begin(), sortList.end(), compareFitness);
     auto last = sortList[totalLength - 1];
     auto tempBest = best->fitness;
     best = (*(*speciesList)[last.specieNum]->individualList)[last.individualNum];

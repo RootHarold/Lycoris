@@ -434,16 +434,16 @@ Individual *mutateIndividual(Individual &in) {
     return offspring;
 }
 
-LycorisUtils::SortFitness::SortFitness() {
+SortFitness::SortFitness() {
 
 }
 
-LycorisUtils::SortFitness::SortFitness(float fitness, uint32_t specieNum, uint32_t individualNum) {
+SortFitness::SortFitness(float fitness, uint32_t specieNum, uint32_t individualNum) {
     this->fitness = fitness;
     this->specieNum = specieNum;
     this->individualNum = individualNum;
 }
 
-LycorisUtils::SortFitness::~SortFitness() {
+SortFitness::~SortFitness() {
 
 }
