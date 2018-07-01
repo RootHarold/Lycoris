@@ -64,17 +64,17 @@ namespace LycorisUtils {
         return ret;
     }
 
-    inline std::vector<std::string> split(const std::string &subject) {
-        static const std::regex re{"\\s+"};
+}
 
-        std::vector<std::string> container{
-                std::sregex_token_iterator(subject.begin(), subject.end(), re, -1),
-                std::sregex_token_iterator()
-        };
+inline std::vector<std::string> split(const std::string &subject) {
+    static const std::regex re{"\\s+"};
 
-        return container;
-    }
+    std::vector<std::string> container{
+            std::sregex_token_iterator(subject.begin(), subject.end(), re, -1),
+            std::sregex_token_iterator()
+    };
 
+    return container;
 }
 
 // Used when sorting individuals.

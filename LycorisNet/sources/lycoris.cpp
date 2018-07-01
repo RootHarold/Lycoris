@@ -34,7 +34,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8.5";
+    return "Lycoris core 1.8.6";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
@@ -606,7 +606,7 @@ Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
     std::getline(infile, str);
     infile.close();
 
-    auto data = LycorisUtils::split(str);
+    auto data = split(str);
     auto source = new Individual();
     source->inputNum = uint32_t(std::stoul(data[0]));
     source->outputNum = uint32_t(std::stoul(data[1]));
