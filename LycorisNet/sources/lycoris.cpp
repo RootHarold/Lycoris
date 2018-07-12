@@ -12,6 +12,11 @@
 #include <iostream>
 #include <fstream>
 
+// The null handle of 'forwardFunc'.
+void nullHandle(Individual &in) {
+    std::cout << "Please set 'forwardFunc'." << std::endl;
+}
+
 Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
     this->capacity = capacity;
     this->inputNum = inputNum;
@@ -19,6 +24,7 @@ Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
     args = new Args();
 
     this->speciesList = nullptr;
+    this->forwardFunc = nullHandle;
 }
 
 Lycoris::~Lycoris() {
@@ -34,7 +40,7 @@ Lycoris::~Lycoris() {
 }
 
 std::string Lycoris::version() {
-    return "Lycoris core 1.8.6";
+    return "Lycoris core 1.8.7";
 }
 
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
@@ -605,6 +611,11 @@ Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
     std::string str;
     std::getline(infile, str);
     infile.close();
+
+    if (str.empty()) {
+        std::cout << "Wrong path." << std::endl;
+        exit(0);
+    }
 
     auto data = split(str);
     auto source = new Individual();
