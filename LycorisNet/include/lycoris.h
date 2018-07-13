@@ -33,9 +33,6 @@ public:
 
     ~Lycoris();
 
-    // Return the version information.
-    static std::string version();
-
     // Apply the core function to lycoris. It is driven by events and
     // promotes the fitting of the whole network.
     void setForwardFunc(void (*forwardFunc)(Individual &in));

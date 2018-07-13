@@ -64,6 +64,11 @@ namespace LycorisUtils {
         return ret;
     }
 
+    // Return the version information.
+    inline std::string version() {
+        return "Lycoris core 1.8.7";
+    }
+    
 }
 
 inline std::vector<std::string> split(const std::string &subject) {

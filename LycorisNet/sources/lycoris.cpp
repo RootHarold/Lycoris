@@ -39,10 +39,6 @@ Lycoris::~Lycoris() {
     }
 }
 
-std::string Lycoris::version() {
-    return "Lycoris core 1.8.7";
-}
-
 void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
     this->forwardFunc = forwardFunc;
 }
