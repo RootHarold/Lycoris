@@ -66,7 +66,7 @@ namespace LycorisUtils {
 
     // Return the version information.
     inline std::string version() {
-        return "Lycoris core 1.8.7";
+        return "Lycoris core 1.8.8";
     }
     
 }

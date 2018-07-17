@@ -15,6 +15,7 @@
 // The null handle of 'forwardFunc'.
 void nullHandle(Individual &in) {
     std::cout << "Please set 'forwardFunc'." << std::endl;
+    exit(1);
 }
 
 Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum) {
@@ -431,7 +432,7 @@ void Lycoris::chooseElite() {
 
     if (totalLength == 0) {
         std::cout << "All died." << std::endl;
-        exit(0);
+        exit(1);
     }
 
     std::vector<SortFitness> sortList(totalLength);
@@ -599,6 +600,7 @@ void Lycoris::setActivateFunc(std::string function) {
         args->activateFunc = LycorisUtils::tanh;
     } else {
         std::cout << "Wrong function name!" << std::endl;
+        exit(1);
     }
 }
 
@@ -610,7 +612,7 @@ Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
 
     if (str.empty()) {
         std::cout << "Wrong path." << std::endl;
-        exit(0);
+        exit(1);
     }
 
     auto data = split(str);
