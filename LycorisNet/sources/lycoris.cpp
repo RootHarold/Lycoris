@@ -45,7 +45,7 @@ void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
 }
 
 void Lycoris::setMaxTock(uint32_t num) {
-    args->maxTock = num;
+    args->maxEmergeTock = num;
 }
 
 void Lycoris::setGapLength(uint32_t num) {
@@ -374,53 +374,61 @@ void Lycoris::emergeArgs() {
 
 void Lycoris::autoParameter() {
     if (args->checkFlag) {
-        auto length = uint32_t(args->gapList->size());
-        auto lastValue = args->gapList->back();
-        uint32_t count = 0;
-        for (auto iter = args->gapList->begin(); iter != args->gapList->end(); ++iter) {
-            if (lastValue > (*iter)) {
-                count++;
-            }
-        }
+        if (!args->gapListFlag) {
+            auto temp1 = LycorisUtils::slope(*args->gapList);
+            std::vector<float> tempList(args->slopeTick);
+            tempList.assign(args->gapList->end() - args->slopeTick, args->gapList->end());
+            auto temp2 = LycorisUtils::slope(tempList);
 
-        if (count < (length / 2 + 1)) {
-            args->miss++;
-            args->hit = 0;
-            if (args->miss == 2) {
-                if (args->tock > 1) {
-                    args->tock /= 2;
-                }
-                args->miss = 1;
-            }
+            if (temp1 >= temp2) {
+                args->miss++;
+                args->hit = 0;
+                if (args->miss == 2) {
+                    if (args->emergeTock > 1) {
+                        args->emergeTock /= 2;
+                    }
 
-            args->p1 = args->p1B;
-            args->p2 = args->p2B;
-            args->p3 = args->p3B;
-            args->p4 = args->p4B;
-            args->p5 = args->p5B;
-            args->p6 = args->p6B;
-            args->mateOdds = args->mateOddsB;
-            args->mutateOdds = args->mutateOddsB;
-            args->mutateTime = args->mutateTimeB;
-        } else {
-            args->hit++;
-            args->miss = 0;
-            if (args->hit == 2) {
-                if (args->tock < args->maxTock) {
-                    args->tock *= 2;
+                    if (args->slopeTick < args->maxSlopeTick) {
+                        args->slopeTick *= 2;
+                    }
+
+                    args->miss = 1;
                 }
-                args->hit = 1;
+
+                args->p1 = args->p1B;
+                args->p2 = args->p2B;
+                args->p3 = args->p3B;
+                args->p4 = args->p4B;
+                args->p5 = args->p5B;
+                args->p6 = args->p6B;
+                args->mateOdds = args->mateOddsB;
+                args->mutateOdds = args->mutateOddsB;
+                args->mutateTime = args->mutateTimeB;
+            } else {
+                args->hit++;
+                args->miss = 0;
+                if (args->hit == 2) {
+                    if (args->emergeTock < args->maxEmergeTock) {
+                        args->emergeTock *= 2;
+                    }
+
+                    if (args->slopeTick > 2) {
+                        args->slopeTick /= 2;
+                    }
+
+                    args->hit = 1;
+                }
             }
         }
         args->checkFlag = false;
     }
 
-    if (args->tick == args->tock) {
+    if (args->emergeTick == args->emergeTock) {
         emergeArgs();
         args->checkFlag = true;
-        args->tick = 0;
+        args->emergeTick = 0;
     } else {
-        args->tick += 1;
+        args->emergeTick += 1;
     }
 }
 
@@ -451,7 +459,6 @@ void Lycoris::chooseElite() {
     }
     std::sort(sortList.begin(), sortList.end(), compareFitness);
     auto last = sortList[totalLength - 1];
-    auto tempBest = best->fitness;
     best = (*(*speciesList)[last.specieNum]->individualList)[last.individualNum];
 
     auto newSpecieList = new std::vector<Species *>(specieLength);
@@ -509,16 +516,15 @@ void Lycoris::chooseElite() {
     delete speciesList;
     speciesList = newSpecieList;
 
-    auto difference = best->fitness - tempBest;
     if (args->gapListFlag) { // len < gapLength
         auto length = args->gapList->size();
         if (length == args->maxGap) {
             args->gapListFlag = false;
         }
-        args->gapList->push_back(difference);
+        args->gapList->push_back(best->fitness);
     } else {
         args->gapList->erase(args->gapList->begin());
-        args->gapList->push_back(difference);
+        args->gapList->push_back(best->fitness);
     }
 }
 

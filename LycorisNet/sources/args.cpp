@@ -33,19 +33,22 @@ Args::Args() {
 
     cleanOdds = 0.01;
     activateFunc = LycorisUtils::sigmoid;
-    tock = 1;
     gapList = new std::vector<float>();
-    maxTock = 16;
     maxGap = 64;
     memOverFlag = false;
     memLimitFlag = false;
     firstOver = false;
-    checkFlag = false;
-    miss = 0;
-    hit = 0;
-    tick = 1;
     gapListFlag = true;
     firstRun = true;
+
+    checkFlag = false;
+    emergeTick = 0;
+    emergeTock = 1;
+    maxEmergeTock = 16;
+    miss = 0;
+    hit = 0;
+    slopeTick = 2;
+    maxSlopeTick = uint32_t(std::exp2(uint32_t(std::log(maxGap) / std::log(2)) - 1));
 }
 
 Args::~Args() {

@@ -66,9 +66,24 @@ namespace LycorisUtils {
 
     // Return the version information.
     inline std::string version() {
-        return "Lycoris core 1.8.8";
+        return "Lycoris core 1.9-Dev";
     }
-    
+
+    // Linear regression.
+    inline float slope(std::vector<float> &y) {
+        auto length = y.size();
+        std::vector<float> x(length);
+        for (uint32_t i = 0; i < length; ++i) {
+            x[i] = i;
+        }
+        auto temp1 = std::accumulate(x.begin(), x.end(), 0.0);
+        auto temp2 = std::accumulate(y.begin(), y.end(), 0.0);
+        auto temp3 = std::inner_product(x.begin(), x.end(), x.begin(), 0.0);
+        auto temp4 = std::inner_product(x.begin(), x.end(), y.begin(), 0.0);
+        auto ret = float((length * temp4 - temp1 * temp2) / (length * temp3 - temp1 * temp1));
+        return ret;
+    }
+
 }
 
 inline std::vector<std::string> split(const std::string &subject) {

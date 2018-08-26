@@ -70,12 +70,8 @@ public:
     // Active function.
     float (*activateFunc)(float);
 
-    // Used in autoParameter().
-    uint32_t tock;
     // The role is to automatically change some of the parameters.
     std::vector<float> *gapList;
-    // The maximum tock.
-    uint32_t maxTock;
     // The length of gapList.
     uint32_t maxGap;
     // When memory exceeds the limit, this changes to true.
@@ -102,20 +98,22 @@ public:
     float mutateOddsB;
     // The backup of mutateTime.
     uint32_t mutateTimeB;
-    // Assist in autoParameter().
-    bool checkFlag;
-    // Used in autoParameter().
-    uint32_t miss;
-    // Used in autoParameter().
-    uint32_t hit;
-    // Used in autoParameter().
-    uint32_t tick;
     // The size of maximum memory.
     uint32_t limitSize;
     // Assist in chooseElite().
     bool gapListFlag;
     // To fixed a potential bug.
     bool firstRun;
+
+
+    uint32_t slopeTick;
+    uint32_t maxSlopeTick;
+    uint32_t emergeTick;
+    uint32_t emergeTock;
+    uint32_t maxEmergeTock;
+    uint32_t miss;
+    uint32_t hit;
+    bool checkFlag;
 };
 
 #endif //LYCORIS_ARGS_H
