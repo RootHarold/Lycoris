@@ -69,7 +69,7 @@ namespace LycorisUtils {
         return "Lycoris core 1.9-Dev";
     }
 
-    // Linear regression.
+    // Linear regression. Return the slope.
     inline float slope(std::vector<float> &y) {
         auto length = y.size();
         std::vector<float> x(length);

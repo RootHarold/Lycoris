@@ -105,7 +105,7 @@ public:
     // To fixed a potential bug.
     bool firstRun;
 
-
+    // The following parameters are used in autoParameter().
     uint32_t slopeTick;
     uint32_t maxSlopeTick;
     uint32_t emergeTick;
