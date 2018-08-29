@@ -125,9 +125,9 @@ Individual *mateIndividual(Individual &in1, Individual &in2);
 Individual *mutateIndividual(Individual &in);
 
 // Used in "distance(...)".
-uint32_t sort1(Individual &in, float *ret1, int *ret2);
+uint32_t sort1(Individual &in, std::vector<float> &ret1, std::vector<uint32_t> &ret2);
 
 // Used in "mateIndividual(...)".
-uint32_t sort2(Individual &in, Gen *ret1, Ome *ret2);
+uint32_t sort2(Individual &in, std::vector<Gen> &ret1, std::vector<Ome> &ret2);
 
 #endif //LYCORIS_FACTORY_H
