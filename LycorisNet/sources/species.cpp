@@ -8,14 +8,18 @@
 
 #include "species.h"
 
-Species::Species() {
-    individualList = new std::vector<Individual *>();
-}
+namespace LycorisNet {
 
-Species::~Species() {
-    for (auto iter = individualList->begin(); iter != individualList->end(); ++iter) {
-        delete *iter;
+    Species::Species() {
+        individualList = new std::vector<Individual *>();
     }
 
-    delete individualList;
+    Species::~Species() {
+        for (auto iter = individualList->begin(); iter != individualList->end(); ++iter) {
+            delete *iter;
+        }
+
+        delete individualList;
+    }
+
 }

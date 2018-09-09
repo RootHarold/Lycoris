@@ -11,43 +11,61 @@
 
 #include <cstdint>
 
-/*
+namespace LycorisNet {
+
+    /*
     The class "Gen" and the class "Ome" form connectionsc between nodes.
     The former contains the numbers of input and output.
     The latter consists of weight, usability and the cumulative number of
     connections ("innovationNum").
  */
 
-class Gen {
-public:
-    uint32_t in;
-    uint32_t out;
+    class Gen {
+    public:
+        Gen();
 
-    Gen();
+        Gen(uint32_t in, uint32_t out);
 
-    Gen(uint32_t in, uint32_t out);
-
-    // Overloading operator.
-    inline bool operator<(const Gen &gen) const {
-        if (in < gen.in) {
-            return true;
-        } else if (in == gen.in) {
-            return out < gen.out;
-        } else {
-            return false;
+        // Overloading operator.
+        inline bool operator<(const Gen &gen) const {
+            if (in < gen.in) {
+                return true;
+            } else if (in == gen.in) {
+                return out < gen.out;
+            } else {
+                return false;
+            }
         }
-    }
-};
 
-class Ome {
-public:
-    float weight;
-    bool isEnable;
-    uint32_t innovationNum;
+        friend class LycorisUtils;
 
-    Ome();
+        friend class Lycoris;
 
-    Ome(float weight, bool isEnable, uint32_t innovationNum);
-};
+        friend class Individual;
+
+    private:
+        uint32_t in;
+        uint32_t out;
+    };
+
+    class Ome {
+    public:
+        Ome();
+
+        Ome(float weight, bool isEnable, uint32_t innovationNum);
+
+        friend class LycorisUtils;
+
+        friend class Lycoris;
+
+        friend class Individual;
+
+    private:
+        float weight;
+        bool isEnable;
+        uint32_t innovationNum;
+    };
+
+}
 
 #endif //LYCORIS_GENOME_H

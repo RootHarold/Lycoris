@@ -12,17 +12,24 @@
 #include <vector>
 #include "individual.h"
 
-/*
+namespace LycorisNet {
+
+    /*
     This class just contains a individual slice.
  */
 
-class Species {
-public:
-    std::vector<Individual *> *individualList;
+    class Species {
+    public:
+        Species();
 
-    Species();
+        ~Species();
 
-    ~Species();
-};
+        friend class Lycoris;
+
+    private:
+        std::vector<Individual *> *individualList;
+    };
+
+}
 
 #endif //LYCORIS_SPECIES_H

@@ -12,29 +12,40 @@
 #include <map>
 #include "genome.h"
 
-/*
+namespace LycorisNet {
+
+    /*
     Every node contains its number, type and the value calculated
     during "forward" function. When it comes to the "nodeType", "0"
     means "input" while "1" means "hidden" and "2" means "output".
     Each node is the basic unit of the gene.
  */
 
-class Node {
-public:
-    uint32_t nodeNum;
-    uint32_t nodeType;
-    float value;
-    float bias;
-    std::map<Gen, Ome> *genomeMap;
+    class Node {
+    public:
+        Node(uint32_t nodeNum, uint32_t nodeType);
 
-    Node(uint32_t nodeNum, uint32_t nodeType);
+        ~Node();
 
-    ~Node();
+        friend class Lycoris;
 
-    void initializeBias(float f);
+        friend class LycorisUtils;
 
-    // Deep clone of node.
-    Node *clone();
-};
+        friend class Individual;
+
+    private:
+        uint32_t nodeNum;
+        uint32_t nodeType;
+        float value;
+        float bias;
+        std::map<Gen, Ome> *genomeMap;
+
+        void initializeBias(float f);
+
+        // Deep clone of node.
+        Node *clone();
+    };
+
+}
 
 #endif //LYCORIS_NODE_H
