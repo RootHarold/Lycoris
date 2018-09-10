@@ -469,7 +469,12 @@ namespace LycorisNet {
         for (uint32_t i = 0; i < specieLength; ++i) {
             (*newSpecieList)[i] = new Species();
         }
+
         auto newLength = uint32_t(float(capacity) / ((1 + args->mateOdds) * (1 + args->mutateOdds)));
+        if (newLength == 0) {
+            newLength = 1;
+        }
+
         uint32_t memSum = 0;
         auto z = totalLength;
         for (; z > totalLength - newLength; --z) {
@@ -545,10 +550,15 @@ namespace LycorisNet {
 
             auto specie = new Species();
             auto initialCapacity = uint32_t(float(capacity) / ((1 + args->mateOdds) * (1 + args->mutateOdds)));
+            if (initialCapacity == 0) {
+                initialCapacity = 1;
+            }
             specie->individualList->resize(initialCapacity);
+
             for (uint32_t i = 0; i < initialCapacity; ++i) {
                 (*(specie->individualList))[i] = new Individual(inputNum, outputNum, args);
             }
+            
             speciesList = new std::vector<Species *>();
             speciesList->push_back(specie);
             best = (*(*speciesList)[0]->individualList)[0];
