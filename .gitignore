@@ -25,3 +25,6 @@ Lycoris.cbp
 cmake-build-debug/
 cmake-build-release/
 install_manifest.txt
+
+# Examples
+Cocoon

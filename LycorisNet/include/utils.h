@@ -45,12 +45,12 @@ namespace LycorisNet {
 
         // Sigmoid.
         inline static float sigmoid(float f) {
-            return float(1 / (1 + exp(double(-f))));
+            return 1 / (1 + expf(-f));
         }
 
         // Tanh.
         inline static float tanh(float f) {
-            return float((exp(double(f)) - exp(double(-f))) / (exp(double(f)) + exp(double(-f))));
+            return (expf(f) - expf(-f)) / (expf(f) + expf(-f));
         }
 
         // ReLU (with leak = 0.01).
@@ -63,7 +63,7 @@ namespace LycorisNet {
             float sum = 0;
 
             for (uint32_t i = 0; i < length; ++i) {
-                auto temp = float(exp(double(input[i])));
+                auto temp = expf(input[i]);
                 output[i] = temp;
                 sum += temp;
             }
@@ -71,6 +71,17 @@ namespace LycorisNet {
             for (uint32_t i = 0; i < length; ++i) {
                 output[i] /= sum;
             }
+        }
+
+        // The euclidean distance.
+        inline static float euclidean_distance(float *target, float *desire, uint32_t length) {
+            float ret = 0;
+
+            for (uint32_t i = 0; i < length; ++i) {
+                ret += exp2f(target[i] - desire[i]);
+            }
+
+            return sqrtf(ret);
         }
 
         // Return the version information.
