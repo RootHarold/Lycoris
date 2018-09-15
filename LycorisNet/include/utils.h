@@ -78,7 +78,7 @@ namespace LycorisNet {
             float ret = 0;
 
             for (uint32_t i = 0; i < length; ++i) {
-                ret += exp2f(target[i] - desire[i]);
+                ret += powf(target[i] - desire[i]);
             }
 
             return sqrtf(ret);
