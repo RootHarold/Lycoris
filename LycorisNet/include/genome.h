@@ -12,13 +12,13 @@
 #include <cstdint>
 
 namespace LycorisNet {
-
+    
     /*
-    The class "Gen" and the class "Ome" form connectionsc between nodes.
-    The former contains the numbers of input and output.
-    The latter consists of weight, usability and the cumulative number of
-    connections ("innovationNum").
- */
+     * The class "Gen" and the class "Ome" form connectionsc between nodes.
+     * The former contains the numbers of input and output.
+     * The latter consists of weight, usability and the cumulative number of
+     * connections ("innovationNum").
+     */
 
     class Gen {
     public:

@@ -62,17 +62,6 @@ namespace LycorisNet {
         }
     }
 
-    void Individual::forward(float *input) {
-        setInput(input);
-        forward();
-    }
-
-    void Individual::forward(float *input, float *output) {
-        setInput(input);
-        forward();
-        getOutput(output);
-    }
-
     void Individual::getOutput(float *output) {
         uint32_t pointer = 0;
         for (uint32_t i = inputNum; i < nodeSlice->size(); ++i) {
@@ -128,6 +117,17 @@ namespace LycorisNet {
                 }
             }
         }
+    }
+
+    void Individual::forward(float *input) {
+        setInput(input);
+        forward();
+    }
+
+    void Individual::forward(float *input, float *output) {
+        setInput(input);
+        forward();
+        getOutput(output);
     }
 
     Individual *Individual::clone() {

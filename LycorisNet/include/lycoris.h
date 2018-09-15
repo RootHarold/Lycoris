@@ -17,8 +17,8 @@
 namespace LycorisNet {
 
     /*
-    The class Lycoris is the highest level module of LycorisNet.
- */
+     * The class Lycoris is the highest level module of LycorisNet.
+     */
 
     class Lycoris {
     public:
@@ -83,6 +83,7 @@ namespace LycorisNet {
         void exportLycoris(std::string path);
 
     private:
+        // An object of Args is integrated into this.
         Args *args;
         // The slice of species.
         std::vector<Species *> *speciesList;

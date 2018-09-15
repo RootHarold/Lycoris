@@ -558,7 +558,7 @@ namespace LycorisNet {
             for (uint32_t i = 0; i < initialCapacity; ++i) {
                 (*(specie->individualList))[i] = new Individual(inputNum, outputNum, args);
             }
-            
+
             speciesList = new std::vector<Species *>();
             speciesList->push_back(specie);
             best = (*(*speciesList)[0]->individualList)[0];

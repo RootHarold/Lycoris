@@ -15,8 +15,8 @@
 namespace LycorisNet {
 
     /*
-    This class just contains a individual slice.
- */
+     * This class just contains a individual slice.
+     */
 
     class Species {
     public:

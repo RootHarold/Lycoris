@@ -17,12 +17,11 @@
 
 namespace LycorisNet {
 
-    /*
-    Store most of the parameters.
- */
-
     class LycorisUtils;
 
+    /*
+     * Store most of the parameters.
+     */
     class Args {
     public:
         Args();
@@ -36,6 +35,7 @@ namespace LycorisNet {
         friend class Individual;
 
     private:
+        // An object of LycorisUtils is integrated into this.
         LycorisUtils *utils;
 
         // Arguments in distance(...).
@@ -119,7 +119,9 @@ namespace LycorisNet {
         // To fixed a potential bug.
         bool firstRun;
 
-        // The following parameters are used in autoParameter().
+        /*
+         * The following parameters are used in autoParameter().
+         */
         uint32_t slopeTick;
         uint32_t maxSlopeTick;
         uint32_t emergeTick;

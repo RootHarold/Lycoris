@@ -15,11 +15,11 @@
 namespace LycorisNet {
 
     /*
-    Every node contains its number, type and the value calculated
-    during "forward" function. When it comes to the "nodeType", "0"
-    means "input" while "1" means "hidden" and "2" means "output".
-    Each node is the basic unit of the gene.
- */
+     * Every node contains its number, type and the value calculated
+     * during "forward" function. When it comes to the "nodeType", "0"
+     * means "input" while "1" means "hidden" and "2" means "output".
+     * Each node is the basic unit of the gene.
+     */
 
     class Node {
     public:
@@ -42,7 +42,7 @@ namespace LycorisNet {
 
         void initializeBias(float f);
 
-        // Deep clone of node.
+        // Deep clone of Node.
         Node *clone();
     };
 

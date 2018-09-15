@@ -36,6 +36,7 @@ namespace LycorisNet {
 
     class Individual;
 
+    // Including some tools.
     class LycorisUtils {
     public:
         LycorisUtils();
@@ -74,7 +75,7 @@ namespace LycorisNet {
 
         // Return the version information.
         inline static std::string version() {
-            return "Lycoris core 1.9-Dev";
+            return "Lycoris Core 1.9 (CPU Mode)";
         }
 
         friend class Lycoris;
@@ -123,6 +124,7 @@ namespace LycorisNet {
             return container;
         }
 
+        // Used with the "SortFitness" when sorting individuals.
         inline static bool compareFitness(const SortFitness &a, const SortFitness &b) {
             return a.fitness < b.fitness;
         }

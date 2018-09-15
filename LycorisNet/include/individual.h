@@ -15,13 +15,13 @@
 #include "args.h"
 
 namespace LycorisNet {
-
+    
     /*
-    The "innovationNum" is the cumulative number of connections
-    and the "nodeSum" is that of nodes. High fitness means the
-    individual is well adapted to the environment. The "nodeMap"
-    and the "nodeSlice" store nodes.
- */
+     * The "innovationNum" is the cumulative number of connections
+     * and the "nodeSum" is that of nodes. High fitness means the
+     * ndividual is well adapted to the environment. The "nodeMap"
+     * and the "nodeSlice" store nodes.
+     */
 
     class Args;
 
