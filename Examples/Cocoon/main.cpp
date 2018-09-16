@@ -56,10 +56,11 @@ void func(Individual &in) {
 
 int main() {
     std::cout << "Powered by: " << LycorisUtils::version() << std::endl;
-    auto lie = new Lycoris(480, 2, 331);
+    // auto lie = new Lycoris(1200, 2, 331);
+    auto lie = Lycoris::importLycoris("poetry.model", 1200);
     lie->setForwardFunc(func);
-    lie->openMemLimit(2048);
-    for (int i = 0; i < 10000; ++i) {
+    lie->openMemLimit(4096);
+    for (int i = 0; i < 30000; ++i) {
         lie->runLycoris();
         std::cout << "Epoch " << (i + 1) << " : " << lie->best->fitness << std::endl;
     }
@@ -71,9 +72,9 @@ int main() {
     for (int i = 0; i < 331; ++i) {
         float temp = output[i] < 0 ? 0 : temp = output[i];
         ret[i] = char(int(roundf(temp * 128)));
+        std::cout << int(roundf(temp * 128)) << std::endl;
     }
-    std::cout << std::string(ret) << std::endl;
-    lie->exportLycoris("poetry.model");
+    std::cout << ret << std::endl;
     delete lie;
     return 0;
 }
