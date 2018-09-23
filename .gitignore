@@ -27,3 +27,4 @@ cmake-build-release/
 install_manifest.txt
 
 # Examples
+HelloWorld
