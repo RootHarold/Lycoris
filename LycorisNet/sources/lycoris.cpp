@@ -26,116 +26,37 @@ namespace LycorisNet {
         this->outputNum = outputNum;
         args = new Args();
 
-        this->speciesList = nullptr;
         this->forwardFunc = nullHandle;
     }
 
     Lycoris::~Lycoris() {
         delete args;
 
-        if (speciesList != nullptr) {
-            for (auto iter = speciesList->begin(); iter != speciesList->end(); ++iter) {
-                delete *iter;
-            }
-
-            delete speciesList;
+        for (auto iter = individualList->begin(); iter != individualList->end(); ++iter) {
+            delete *iter;
         }
+
+        delete individualList;
     }
 
     void Lycoris::setForwardFunc(void (*forwardFunc)(Individual &)) {
         this->forwardFunc = forwardFunc;
     }
 
-    void Lycoris::setMaxTock(uint32_t num) {
-        args->maxEmergeTock = num;
-    }
-
-    void Lycoris::setGapLength(uint32_t num) {
-        args->maxGap = num - 1;
-    }
-
-    void Lycoris::setDistanceThreshold(float threshold) {
-        args->distanceThreshold = threshold;
-    }
-
-    void Lycoris::mate() {
-        specieLength = uint32_t(speciesList->size());
-        tempList1.resize(specieLength);
-        oldLength.resize(specieLength);
-        auto start = new uint32_t *[args->cpuNum];
-        auto end = new uint32_t *[args->cpuNum];
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            start[i] = new uint32_t[specieLength];
-            end[i] = new uint32_t[specieLength];
-        }
-
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            auto individualLength = uint32_t((*speciesList)[i]->individualList->size());
-            oldLength[i] = individualLength;
-            auto mateLength = uint32_t(float(individualLength) * args->mateOdds);
-            tempList1[i].resize(mateLength);
-            auto part = mateLength / args->cpuNum;
-            auto temp = args->cpuNum - 1;
-            for (uint32_t j = 0; j < temp; ++j) {
-                start[j][i] = j * part;
-                end[j][i] = (j + 1) * part;
-            }
-            start[temp][i] = temp * part;
-            end[temp][i] = mateLength;
-        }
-
-        std::vector<std::thread> threads;
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Lycoris::mateCore, this, start[i], end[i]));
-        }
-        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-            (*iter).join();
-        }
-
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            delete[] start[i];
-            delete[] end[i];
-        }
-        delete[] start;
-        delete[] end;
-    }
-
-    void Lycoris::mateCore(uint32_t *start, uint32_t *end) {
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            auto l = (*speciesList)[i]->individualList;
-            for (uint32_t j = start[i]; j < end[i]; ++j) {
-                tempList1[i][j] = args->utils->mateIndividual(*((*l)[args->utils->LycorisRandomUint32_t(oldLength[i])]),
-                                                              *((*l)[args->utils->LycorisRandomUint32_t(
-                                                                      oldLength[i])]));
-            }
-        }
-    }
-
     void Lycoris::mutate() {
-        specieLength = uint32_t(speciesList->size());
-        tempList1.resize(specieLength);
-        oldLength.resize(specieLength);
-        auto start = new uint32_t *[args->cpuNum];
-        auto end = new uint32_t *[args->cpuNum];
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            start[i] = new uint32_t[specieLength];
-            end[i] = new uint32_t[specieLength];
+        auto start = new uint32_t[args->cpuNum];
+        auto end = new uint32_t[args->cpuNum];
+        oldLength = uint32_t(individualList->size());
+        auto mutateLength = uint32_t(float(oldLength) * args->mutateOdds);
+        tempList.resize(mutateLength);
+        auto part = mutateLength / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t i = 0; i < temp; ++i) {
+            start[i] = i * part;
+            end[i] = (i + 1) * part;
         }
-
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            auto individualLength = uint32_t((*speciesList)[i]->individualList->size());
-            oldLength[i] = individualLength;
-            auto mutateLength = uint32_t(float(individualLength) * args->mutateOdds);
-            tempList1[i].resize(mutateLength);
-            auto part = mutateLength / args->cpuNum;
-            auto temp = args->cpuNum - 1;
-            for (uint32_t j = 0; j < temp; ++j) {
-                start[j][i] = j * part;
-                end[j][i] = (j + 1) * part;
-            }
-            start[temp][i] = temp * part;
-            end[temp][i] = mutateLength;
-        }
+        start[temp] = temp * part;
+        end[temp] = mutateLength;
 
         std::vector<std::thread> threads;
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
@@ -145,116 +66,33 @@ namespace LycorisNet {
             (*iter).join();
         }
 
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            delete[] start[i];
-            delete[] end[i];
+        for (uint32_t i = 0; i < mutateLength; ++i) {
+            individualList->push_back(tempList[i]);
         }
+
         delete[] start;
         delete[] end;
     }
 
-    void Lycoris::mutateCore(uint32_t *start, uint32_t *end) {
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            auto l = (*speciesList)[i]->individualList;
-            for (uint32_t j = start[i]; j < end[i]; ++j) {
-                tempList1[i][j] = args->utils->mutateIndividual(
-                        *((*l)[args->utils->LycorisRandomUint32_t(oldLength[i])]));
-            }
-        }
-    }
-
-    void Lycoris::classify() {
-        tempList2.resize(specieLength);
-        auto start = new uint32_t *[args->cpuNum];
-        auto end = new uint32_t *[args->cpuNum];
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            start[i] = new uint32_t[specieLength];
-            end[i] = new uint32_t[specieLength];
-        }
-
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            auto tempList1Length = uint32_t(tempList1[i].size());
-            tempList2[i].resize(tempList1Length);
-            auto part = tempList1Length / args->cpuNum;
-            auto temp = args->cpuNum - 1;
-            for (uint32_t j = 0; j < temp; ++j) {
-                start[j][i] = j * part;
-                end[j][i] = (j + 1) * part;
-            }
-            start[temp][i] = temp * part;
-            end[temp][i] = tempList1Length;
-        }
-
-        std::vector<std::thread> threads;
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Lycoris::classifyCore, this, start[i], end[i]));
-        }
-        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-            (*iter).join();
-        }
-
-        speciesList->push_back(new Species());
-        for (uint32_t i = 0; i < tempList2.size(); ++i) {
-            for (uint32_t j = 0; j < tempList2[i].size(); ++j) {
-                (*speciesList)[tempList2[i][j]]->individualList->push_back(tempList1[i][j]);
-            }
-        }
-
-        for (auto iter = speciesList->begin(); iter != speciesList->end();) {
-            if ((*iter)->individualList->empty()) {
-                delete *iter;
-                iter = speciesList->erase(iter);
-            } else {
-                ++iter;
-            }
-        }
-
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            delete[] start[i];
-            delete[] end[i];
-        }
-        delete[] start;
-        delete[] end;
-    }
-
-    void Lycoris::classifyCore(uint32_t *start, uint32_t *end) {
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            for (uint32_t j = start[i]; j < end[i]; ++j) {
-                auto temp = tempList1[i][j];
-                for (uint32_t k = 0; k < specieLength; ++k) {
-                    auto l = (*speciesList)[k]->individualList;
-                    auto dis = LycorisUtils::distance(*temp, *((*l)[args->utils->LycorisRandomUint32_t(oldLength[k])]));
-                    if (dis <= args->distanceThreshold) {
-                        tempList2[i][j] = k;
-                        break;
-                    } else {
-                        tempList2[i][j] = specieLength;
-                    }
-                }
-            }
+    void Lycoris::mutateCore(uint32_t start, uint32_t end) {
+        for (uint32_t i = start; i < end; ++i) {
+            tempList[i] = args->utils->mutateIndividual(
+                    *((*individualList)[args->utils->LycorisRandomUint32_t(oldLength)]));
         }
     }
 
     void Lycoris::forward() {
-        specieLength = uint32_t(speciesList->size());
-        auto start = new uint32_t *[args->cpuNum];
-        auto end = new uint32_t *[args->cpuNum];
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            start[i] = new uint32_t[specieLength];
-            end[i] = new uint32_t[specieLength];
+        auto start = new uint32_t[args->cpuNum];
+        auto end = new uint32_t[args->cpuNum];
+        auto individualLength = uint32_t(individualList->size());
+        auto part = individualLength / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t i = 0; i < temp; ++i) {
+            start[i] = i * part;
+            end[i] = (i + 1) * part;
         }
-
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            auto individualLength = uint32_t((*speciesList)[i]->individualList->size());
-            auto part = individualLength / args->cpuNum;
-            auto temp = args->cpuNum - 1;
-            for (uint32_t j = 0; j < temp; ++j) {
-                start[j][i] = j * part;
-                end[j][i] = (j + 1) * part;
-            }
-            start[temp][i] = temp * part;
-            end[temp][i] = individualLength;
-        }
+        start[temp] = temp * part;
+        end[temp] = individualLength;
 
         std::vector<std::thread> threads;
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
@@ -264,213 +102,38 @@ namespace LycorisNet {
             (*iter).join();
         }
 
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            delete[] start[i];
-            delete[] end[i];
-        }
         delete[] start;
         delete[] end;
     }
 
-    void Lycoris::forwardCore(uint32_t *start, uint32_t *end) {
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            for (uint32_t j = start[i]; j < end[i]; ++j) {
-                forwardFunc(*((*(*speciesList)[i]->individualList)[j]));
-            }
-        }
-    }
-
-    void Lycoris::emergeArgs() {
-        if (args->memOverFlag) { // Memory exceeds the limit.
-            auto mutateTimeE = args->utils->LycorisRandomUint32_t(args->maxMutateTime) + 1;
-            auto mateOddsE = args->utils->LycorisRandomFloat(1, 2);
-            auto mutateOddsE = args->utils->LycorisRandomFloat(1, 2);
-            float remain = 1;
-            float p1E = 0;
-            remain -= p1E;
-            auto p2E = args->utils->LycorisRandomFloat(0, 1) * remain;
-            remain -= p2E;
-            float p3E = 0;
-            remain -= p3E;
-            auto p4E = args->utils->LycorisRandomFloat(0, 1) * remain;
-            remain -= p4E;
-            float p5E = 0;
-            remain -= p5E;
-            auto p6E = remain;
-
-            if (args->firstOver) {
-                args->firstOver = false;
-                args->p1B = 0;
-                args->p2B = p2E;
-                args->p3B = 0;
-                args->p4B = p4E;
-                args->p5B = 0;
-                args->p6B = p6E;
-                args->mateOddsB = args->mateOdds;
-                args->mutateOddsB = args->mutateOdds;
-                args->mutateTimeB = args->mutateTime;
-                args->p1 = p1E;
-                args->p2 = p2E;
-                args->p3 = p3E;
-                args->p4 = p4E;
-                args->p5 = p5E;
-                args->p6 = p6E;
-                args->mateOdds = mateOddsE;
-                args->mutateOdds = mutateOddsE;
-                args->mutateTime = mutateTimeE;
-            } else {
-                args->p1B = args->p1;
-                args->p2B = args->p2;
-                args->p3B = args->p3;
-                args->p4B = args->p4;
-                args->p5B = args->p5;
-                args->p6B = args->p6;
-                args->mateOddsB = args->mateOdds;
-                args->mutateOddsB = args->mutateOdds;
-                args->mutateTimeB = args->mutateTime;
-                args->p1 = p1E;
-                args->p2 = p2E;
-                args->p3 = p3E;
-                args->p4 = p4E;
-                args->p5 = p5E;
-                args->p6 = p6E;
-                args->mateOdds = mateOddsE;
-                args->mutateOdds = mutateOddsE;
-                args->mutateTime = mutateTimeE;
-            }
-        } else {
-            auto mutateTimeE = args->utils->LycorisRandomUint32_t(args->maxMutateTime) + 1;
-            auto mateOddsE = args->utils->LycorisRandomFloat(1, 2);
-            auto mutateOddsE = args->utils->LycorisRandomFloat(1, 2);
-            float remain = 1;
-            auto p1E = args->utils->LycorisRandomFloat(0, 1);
-            remain -= p1E;
-            auto p2E = args->utils->LycorisRandomFloat(0, 1) * remain;
-            remain -= p2E;
-            auto p3E = args->utils->LycorisRandomFloat(0, 1) * remain;
-            remain -= p3E;
-            auto p4E = args->utils->LycorisRandomFloat(0, 1) * remain;
-            remain -= p4E;
-            auto p5E = args->utils->LycorisRandomFloat(0, 1) * remain;
-            remain -= p5E;
-            auto p6E = remain;
-
-            args->p1B = args->p1;
-            args->p2B = args->p2;
-            args->p3B = args->p3;
-            args->p4B = args->p4;
-            args->p5B = args->p5;
-            args->p6B = args->p6;
-            args->mateOddsB = args->mateOdds;
-            args->mutateOddsB = args->mutateOdds;
-            args->mutateTimeB = args->mutateTime;
-            args->p1 = p1E;
-            args->p2 = p2E;
-            args->p3 = p3E;
-            args->p4 = p4E;
-            args->p5 = p5E;
-            args->p6 = p6E;
-            args->mateOdds = mateOddsE;
-            args->mutateOdds = mutateOddsE;
-            args->mutateTime = mutateTimeE;
-        }
-    }
-
-    void Lycoris::autoParameter() {
-        if (args->checkFlag) {
-            if (!args->gapListFlag) {
-                auto temp1 = LycorisUtils::slope(*args->gapList);
-                std::vector<float> tempList(args->slopeTick);
-                tempList.assign(args->gapList->end() - args->slopeTick, args->gapList->end());
-                auto temp2 = LycorisUtils::slope(tempList);
-
-                if (temp1 >= temp2) {
-                    args->miss++;
-                    args->hit = 0;
-                    if (args->miss == 2) {
-                        if (args->emergeTock > 1) {
-                            args->emergeTock /= 2;
-                        }
-
-                        if (args->slopeTick < args->maxSlopeTick) {
-                            args->slopeTick *= 2;
-                        }
-
-                        args->miss = 1;
-                    }
-
-                    args->p1 = args->p1B;
-                    args->p2 = args->p2B;
-                    args->p3 = args->p3B;
-                    args->p4 = args->p4B;
-                    args->p5 = args->p5B;
-                    args->p6 = args->p6B;
-                    args->mateOdds = args->mateOddsB;
-                    args->mutateOdds = args->mutateOddsB;
-                    args->mutateTime = args->mutateTimeB;
-                } else {
-                    args->hit++;
-                    args->miss = 0;
-                    if (args->hit == 2) {
-                        if (args->emergeTock < args->maxEmergeTock) {
-                            args->emergeTock *= 2;
-                        }
-
-                        if (args->slopeTick > 2) {
-                            args->slopeTick /= 2;
-                        }
-
-                        args->hit = 1;
-                    }
-                }
-            }
-            args->checkFlag = false;
-        }
-
-        if (args->emergeTick == args->emergeTock) {
-            emergeArgs();
-            args->checkFlag = true;
-            args->emergeTick = 0;
-        } else {
-            args->emergeTick += 1;
+    void Lycoris::forwardCore(uint32_t start, uint32_t end) {
+        for (uint32_t i = start; i < end; ++i) {
+            forwardFunc(*((*individualList)[i]));
         }
     }
 
     void Lycoris::chooseElite() {
-        uint32_t totalLength = 0;
-        for (auto iter = speciesList->begin(); iter != speciesList->end(); ++iter) {
-            totalLength += (*iter)->individualList->size();
-        }
-
+        uint32_t totalLength = individualList->size();
         if (totalLength == 0) {
             std::cout << "All died." << std::endl;
             exit(1);
         }
 
         std::vector<SortFitness> sortList(totalLength);
-        uint32_t pointer = 0;
-        for (uint32_t i = 0; i < speciesList->size(); ++i) {
-            auto temp = (*speciesList)[i]->individualList;
-            for (uint32_t j = 0; j < temp->size(); ++j) {
-                // To fix the NaN & Inf problems.
-                if (std::isnan((*temp)[j]->fitness) || std::isinf((*temp)[j]->fitness)) {
-                    (*temp)[j]->fitness = -FLT_MAX;
-                }
-
-                sortList[pointer] = SortFitness((*temp)[j]->fitness, i, j);
-                pointer++;
+        for (uint32_t i = 0; i < totalLength; ++i) {
+            // To fix the NaN & Inf problems.
+            if (std::isnan((*individualList)[i]->fitness) || std::isinf((*individualList)[i]->fitness)) {
+                (*individualList)[i]->fitness = -FLT_MAX;
             }
+
+            sortList[i] = SortFitness((*individualList)[i]->fitness, i);
         }
         std::sort(sortList.begin(), sortList.end(), LycorisUtils::compareFitness);
         auto last = sortList[totalLength - 1];
-        best = (*(*speciesList)[last.specieNum]->individualList)[last.individualNum];
+        best = (*individualList)[last.individualNum];
 
-        auto newSpecieList = new std::vector<Species *>(specieLength);
-        for (uint32_t i = 0; i < specieLength; ++i) {
-            (*newSpecieList)[i] = new Species();
-        }
-
-        auto newLength = uint32_t(float(capacity) / ((1 + args->mateOdds) * (1 + args->mutateOdds)));
+        auto newIndividualList = new std::vector<Individual *>();
+        auto newLength = uint32_t(float(capacity) / (1 + args->mutateOdds));
         if (newLength == 0) {
             newLength = 1;
         }
@@ -482,11 +145,11 @@ namespace LycorisNet {
                 break;
             }
             auto temp = sortList[z - 1];
-            auto tempIndividual = (*(*speciesList)[temp.specieNum]->individualList)[temp.individualNum];
+            auto tempIndividual = (*individualList)[temp.individualNum];
             if (args->memLimitFlag) {
                 memSum += tempIndividual->getSize();
             }
-            (*newSpecieList)[temp.specieNum]->individualList->push_back(tempIndividual);
+            newIndividualList->push_back(tempIndividual);
         }
         if (args->memLimitFlag) {
             if (memSum > (totalLength - z) * args->limitSize) { // Memory exceeds the limit.
@@ -499,85 +162,60 @@ namespace LycorisNet {
             }
         }
 
-        for (auto iter = newSpecieList->begin(); iter != newSpecieList->end();) {
-            if ((*iter)->individualList->empty()) {
-                delete *iter;
-                iter = newSpecieList->erase(iter);
-            } else {
-                ++iter;
-            }
-        }
-
         if (totalLength - newLength > 0) {
             for (uint32_t i = 0; i < totalLength - newLength; ++i) {
                 if (i == totalLength) {
                     break;
                 }
                 auto temp = sortList[i];
-                auto tempIndividual = (*(*speciesList)[temp.specieNum]->individualList)[temp.individualNum];
+                auto tempIndividual = (*individualList)[temp.individualNum];
                 delete tempIndividual;
             }
         }
-        for (auto iter = speciesList->begin(); iter != speciesList->end(); ++iter) {
-            (*iter)->individualList->clear();
-            delete *iter;
-        }
-        delete speciesList;
-        speciesList = newSpecieList;
-
-        if (args->gapListFlag) { // len < gapLength
-            auto length = args->gapList->size();
-            if (length == args->maxGap) {
-                args->gapListFlag = false;
-            }
-            args->gapList->push_back(best->fitness);
-        } else {
-            args->gapList->erase(args->gapList->begin());
-            args->gapList->push_back(best->fitness);
-        }
+        delete individualList;
+        individualList = newIndividualList;
     }
 
     void Lycoris::runLycoris() {
         if (args->firstRun) {
             args->firstRun = false;
-            float weightDiff;
-            if (args->weightB > args->weightA) {
-                weightDiff = args->weightB - args->weightA;
-            } else {
-                weightDiff = args->weightA - args->weightB;
-            }
-            args->distanceThreshold = args->c1 * 0.2f + args->c2 * 0.2f * weightDiff;
 
-            auto specie = new Species();
-            auto initialCapacity = uint32_t(float(capacity) / ((1 + args->mateOdds) * (1 + args->mutateOdds)));
+            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
             if (initialCapacity == 0) {
                 initialCapacity = 1;
             }
-            specie->individualList->resize(initialCapacity);
 
+            individualList = new std::vector<Individual *>(initialCapacity);
             for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*(specie->individualList))[i] = new Individual(inputNum, outputNum, args);
+                (*individualList)[i] = new Individual(inputNum, outputNum, args);
             }
-
-            speciesList = new std::vector<Species *>();
-            speciesList->push_back(specie);
-            best = (*(*speciesList)[0]->individualList)[0];
+            best = (*individualList)[0];
         }
 
-        // Mating.
-        mate();
-        // Computing distances of new individuals.
-        classify();
         // Mutating.
         mutate();
-        // Computing distances of new individuals.
-        classify();
         // Forward calculation.
         forward();
-        // Changing some parameters automatically.
-        autoParameter();
         // Sorting and choosing some individuals with higher fitness.
         chooseElite();
+
+        // Memory exceeds the limit.
+        if (args->memOverFlag) {
+            args->p1 = 0;
+            args->p3 = 0;
+            auto temp = args->p2 + args->p4 + args->p5 + args->p6;
+            args->p2 /= temp;
+            args->p4 /= temp;
+            args->p5 /= temp;
+            args->p6 /= temp;
+        } else {
+            args->p1 = args->p1B;
+            args->p2 = args->p2B;
+            args->p3 = args->p3B;
+            args->p4 = args->p4B;
+            args->p5 = args->p5B;
+            args->p6 = args->p6B;
+        }
     }
 
     void Lycoris::runLycoris(uint32_t n) {
@@ -595,15 +233,6 @@ namespace LycorisNet {
         args->memLimitFlag = false;
         args->memOverFlag = false;
         args->firstOver = false;
-    }
-
-    void Lycoris::setDistanceArgs(float a, float b) {
-        args->c1 = a;
-        args->c2 = b;
-    }
-
-    void Lycoris::setMaxMutateTime(uint32_t num) {
-        args->maxMutateTime = num;
     }
 
     void Lycoris::setWeigthRandom(float a, float b) {
@@ -696,20 +325,19 @@ namespace LycorisNet {
         auto activateFuncName = data[pointer];
 
         auto radiata = new Lycoris(capacity, source->inputNum, source->outputNum);
+        radiata->args->firstRun = false;
         source->args = radiata->args;
         radiata->setActivateFunc(activateFuncName);
 
-        auto specie = new Species();
-        auto initialCapacity = uint32_t(
-                float(capacity) / ((1 + radiata->args->mateOdds) * (1 + radiata->args->mutateOdds)));
-        specie->individualList->resize(initialCapacity);
-        for (uint32_t i = 0; i < initialCapacity; ++i) {
-            (*(specie->individualList))[i] = source->clone();
+        auto initialCapacity = uint32_t(float(capacity) / (1 + radiata->args->mutateOdds));
+        if (initialCapacity == 0) {
+            initialCapacity = 1;
         }
-        radiata->speciesList = new std::vector<Species *>();
-        radiata->speciesList->push_back(specie);
-        radiata->best = (*(*(radiata->speciesList))[0]->individualList)[0];
-        radiata->args->firstRun = false;
+        radiata->individualList = new std::vector<Individual *>(initialCapacity);
+        for (uint32_t i = 0; i < initialCapacity; ++i) {
+            (*radiata->individualList)[i] = source->clone();
+        }
+        radiata->best = (*radiata->individualList)[0];
 
         delete source;
         return radiata;
@@ -755,6 +383,26 @@ namespace LycorisNet {
         outfile << args->activateFuncName;
 
         outfile.close();
+    }
+
+
+    void Lycoris::setMutateArgs(float *p) {
+        args->p1 = p[0];
+        args->p2 = p[1];
+        args->p3 = p[2];
+        args->p4 = p[3];
+        args->p5 = p[4];
+        args->p6 = p[5];
+        args->p1B = p[0];
+        args->p2B = p[1];
+        args->p3B = p[2];
+        args->p4B = p[3];
+        args->p5B = p[4];
+        args->p6B = p[5];
+    }
+
+    void Lycoris::setCpuCores(uint32_t num) {
+        args->cpuNum = num;
     }
 
 }

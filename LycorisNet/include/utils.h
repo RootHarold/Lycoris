@@ -20,7 +20,7 @@ namespace LycorisNet {
     public:
         SortFitness();
 
-        SortFitness(float fitness, uint32_t specieNum, uint32_t individualNum);
+        SortFitness(float fitness, uint32_t individualNum);
 
         ~SortFitness();
 
@@ -30,7 +30,6 @@ namespace LycorisNet {
 
     private:
         float fitness;
-        uint32_t specieNum;
         uint32_t individualNum;
     };
 
@@ -84,9 +83,20 @@ namespace LycorisNet {
             return sqrtf(ret);
         }
 
+        // Cross-Entropy.
+        inline static float cross_entropy(float *p, float *q, uint32_t length) {
+            float ret = 0;
+
+            for (uint32_t i = 0; i < length; ++i) {
+                ret -= p[i] * log2f(1 / (q[i] > 0.000001 ? q[i] : 0.000001));
+            }
+
+            return ret;
+        }
+
         // Return the version information.
         inline static std::string version() {
-            return "Lycoris Core 1.9 (CPU Mode)";
+            return "Lycoris Core 1.10 (CPU Mode)";
         }
 
         friend class Lycoris;
@@ -109,21 +119,6 @@ namespace LycorisNet {
             return uint32_t(rd() % N);
         };
 
-        // Linear regression. Return the slope.
-        inline static float slope(std::vector<float> &y) {
-            auto length = y.size();
-            std::vector<float> x(length);
-            for (uint32_t i = 0; i < length; ++i) {
-                x[i] = i;
-            }
-            auto temp1 = std::accumulate(x.begin(), x.end(), 0.0);
-            auto temp2 = std::accumulate(y.begin(), y.end(), 0.0);
-            auto temp3 = std::inner_product(x.begin(), x.end(), x.begin(), 0.0);
-            auto temp4 = std::inner_product(x.begin(), x.end(), y.begin(), 0.0);
-            auto ret = float((length * temp4 - temp1 * temp2) / (length * temp3 - temp1 * temp1));
-            return ret;
-        }
-
         inline static std::vector<std::string> split(const std::string &subject) {
             static const std::regex re{"\\s+"};
 
@@ -140,20 +135,8 @@ namespace LycorisNet {
             return a.fitness < b.fitness;
         }
 
-        // The distance between two different individuals.
-        static float distance(Individual &in1, Individual &in2);
-
-        // Mating two different individuals.
-        Individual *mateIndividual(Individual &in1, Individual &in2);
-
         // Mutating the individual.
         Individual *mutateIndividual(Individual &in);
-
-        // Used in "distance(...)".
-        static uint32_t sort1(Individual &in, std::vector<float> &ret1, std::vector<uint32_t> &ret2);
-
-        // Used in "mateIndividual(...)".
-        static uint32_t sort2(Individual &in, std::vector<Gen> &ret1, std::vector<Ome> &ret2);
     };
 
 }

@@ -18,8 +18,6 @@ SET(SOURCE_FILES
         LycorisNet/sources/utils.cpp
         LycorisNet/include/individual.h
         LycorisNet/sources/individual.cpp
-        LycorisNet/include/species.h
-        LycorisNet/sources/species.cpp
         LycorisNet/include/lycoris.h
         LycorisNet/sources/lycoris.cpp
         LycorisNet/include/args.h
@@ -37,5 +35,4 @@ INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/genome.h DESTINATION incl
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/individual.h DESTINATION include)
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/lycoris.h DESTINATION include)
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/node.h DESTINATION include)
-INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/species.h DESTINATION include)
 INSTALL(FILES ${PROJECT_SOURCE_DIR}/LycorisNet/include/utils.h DESTINATION include)

@@ -14,20 +14,21 @@ namespace LycorisNet {
     Args::Args() {
         utils = new LycorisUtils();
 
-        c1 = 1.0;
-        c2 = 0.4;
         p1 = 0.1;
         p2 = 0.2;
-        p3 = 0.2;
+        p3 = 0.1;
         p4 = 0.2;
-        p5 = 0.1;
+        p5 = 0.2;
         p6 = 0.2;
+        p1B = p1;
+        p2B = p2;
+        p3B = p3;
+        p4B = p4;
+        p5B = p5;
+        p6B = p6;
         activateFuncName = "sigmoid";
 
-        mutateTime = 1;
-        mateOdds = 1;
-        mutateOdds = 1;
-        maxMutateTime = 10;
+        mutateOdds = 1.08;
         weightA = -1;
         weightB = 1;
         biasA = -1;
@@ -37,27 +38,13 @@ namespace LycorisNet {
 
         cleanOdds = 0.01;
         activateFunc = LycorisUtils::sigmoid;
-        gapList = new std::vector<float>();
-        maxGap = 64;
         memOverFlag = false;
         memLimitFlag = false;
-        firstOver = false;
-        gapListFlag = true;
         firstRun = true;
-
-        checkFlag = false;
-        emergeTick = 0;
-        emergeTock = 1;
-        maxEmergeTock = 16;
-        miss = 0;
-        hit = 0;
-        slopeTick = 2;
-        maxSlopeTick = uint32_t(std::exp2(uint32_t(std::log(maxGap) / std::log(2)) - 1));
     }
 
     Args::~Args() {
         delete utils;
-        delete gapList;
     }
 
 }
