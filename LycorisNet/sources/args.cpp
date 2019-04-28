@@ -18,8 +18,8 @@ namespace LycorisNet {
         p2 = 0.1;
         p3 = 0.2;
         p4 = 0.1;
-        p5 = 0.2;
-        p6 = 0.2;
+        p5 = 0.24;
+        p6 = 0.16;
         p1B = p1;
         p2B = p2;
         p3B = p3;
