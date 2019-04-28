@@ -6,6 +6,6 @@ SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 SET(SOURCE_FILES main.cpp)
-
+link_directories("/usr/local/lib/")
 ADD_EXECUTABLE(HelloWorld ${SOURCE_FILES})
 TARGET_LINK_LIBRARIES(HelloWorld -llycoris)
