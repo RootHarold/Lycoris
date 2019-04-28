@@ -14,10 +14,10 @@ namespace LycorisNet {
     Args::Args() {
         utils = new LycorisUtils();
 
-        p1 = 0.1;
-        p2 = 0.2;
-        p3 = 0.1;
-        p4 = 0.2;
+        p1 = 0.2;
+        p2 = 0.1;
+        p3 = 0.2;
+        p4 = 0.1;
         p5 = 0.2;
         p6 = 0.2;
         p1B = p1;
