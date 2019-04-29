@@ -96,7 +96,7 @@ namespace LycorisNet {
 
         // Return the version information.
         inline static std::string version() {
-            return "Lycoris Core 1.10.3 (CPU Mode)";
+            return "Lycoris Core 1.10.2 (CPU Mode)";
         }
 
         friend class Lycoris;

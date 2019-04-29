@@ -54,17 +54,6 @@ namespace LycorisNet {
             (*nodeSlice)[temp] = temp;
             nodeSum++;
         }
-
-        for (uint32_t j = inputNum; j < inputNum + outputNum; ++j) {
-            auto outputNode = (*nodeMap)[j];
-            for (uint32_t i = 0; i < inputNum; ++i) {
-                Gen g(i, j);
-                Ome o(args->utils->LycorisRandomFloat(0, 1) * (args->weightB - args->weightA) + args->weightA, true,
-                      innovationNum);
-                innovationNum++;
-                outputNode->genomeMap->insert(std::make_pair(g, o));
-            }
-        }
     }
 
     void Individual::setInput(float *input) {
