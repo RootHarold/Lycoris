@@ -405,4 +405,8 @@ namespace LycorisNet {
         args->cpuNum = num;
     }
 
+    void Lycoris::setMutateOdds(float odds) {
+        args->mutateOdds = odds;
+    }
+
 }

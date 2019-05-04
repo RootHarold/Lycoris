@@ -72,6 +72,9 @@ namespace LycorisNet {
         // Set the numbers of CPU used in project.
         void setCpuCores(uint32_t num);
 
+        // Set the odds of mutating.
+        void setMutateOdds(float odds);
+
     private:
         // An object of Args is integrated into this.
         Args *args;

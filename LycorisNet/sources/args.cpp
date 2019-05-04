@@ -28,7 +28,7 @@ namespace LycorisNet {
         p6B = p6;
         activateFuncName = "sigmoid";
 
-        mutateOdds = 1.08;
+        mutateOdds = 9;
         weightA = -1;
         weightB = 1;
         biasA = -1;
