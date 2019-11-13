@@ -19,4 +19,4 @@ sudo make install
 ```
 
 # Documents
-**Detailed tutorials and manuals will be updated within a few days**.
+**Lycoris 2.0 will be released soon**.
