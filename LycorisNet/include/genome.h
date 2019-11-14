@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2018, RootHarold
+    Copyright (c) 2019, RootHarold
     All rights reserved.
 
     Use of this source code is governed by an Apache license that can be found
