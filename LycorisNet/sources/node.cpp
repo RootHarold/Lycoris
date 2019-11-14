@@ -14,6 +14,7 @@ namespace LycorisNet {
         this->nodeNum = nodeNum;
         this->nodeType = nodeType;
         value = 0;
+        delta = 0;
         genomeMap = new std::map<Gen, Ome>();
     }
 
@@ -24,6 +25,7 @@ namespace LycorisNet {
     Node *Node::clone() {
         auto duplicate = new Node(nodeNum, nodeType);
         duplicate->bias = bias;
+        duplicate->delta = delta;
 
         for (auto iter = genomeMap->begin(); iter != genomeMap->end(); ++iter) {
             duplicate->genomeMap->insert(std::make_pair(iter->first, iter->second));

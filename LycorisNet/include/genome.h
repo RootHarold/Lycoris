@@ -12,9 +12,9 @@
 #include <cstdint>
 
 namespace LycorisNet {
-    
+
     /*
-     * The class "Gen" and the class "Ome" form connectionsc between nodes.
+     * The class "Gen" and the class "Ome" form connections between nodes.
      * The former contains the numbers of input and output.
      * The latter consists of weight, usability and the cumulative number of
      * connections ("innovationNum").
@@ -52,7 +52,7 @@ namespace LycorisNet {
     public:
         Ome();
 
-        Ome(float weight, bool isEnable, uint32_t innovationNum);
+        Ome(float weight, uint32_t innovationNum);
 
         friend class LycorisUtils;
 
@@ -62,7 +62,8 @@ namespace LycorisNet {
 
     private:
         float weight;
-        bool isEnable;
+        float delta;
+        float delta_back;
         uint32_t innovationNum;
     };
 

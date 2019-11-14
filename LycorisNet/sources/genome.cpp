@@ -20,13 +20,13 @@ namespace LycorisNet {
     }
 
     Ome::Ome() {
-
+        delta = 0;
     }
 
-    Ome::Ome(float weight, bool isEnable, uint32_t innovationNum) {
+    Ome::Ome(float weight, uint32_t innovationNum) {
         this->weight = weight;
-        this->isEnable = isEnable;
         this->innovationNum = innovationNum;
+        delta = 0;
     }
 
 }

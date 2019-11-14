@@ -38,6 +38,8 @@ namespace LycorisNet {
         uint32_t nodeType;
         float value;
         float bias;
+        float delta;
+        float delta_back;
         std::map<Gen, Ome> *genomeMap;
 
         void initializeBias(float f);
