@@ -16,7 +16,7 @@ namespace LycorisNet {
     /*
      * The class "Gen" and the class "Ome" form connections between nodes.
      * The former contains the numbers of input and output.
-     * The latter consists of weight, usability and the cumulative number of
+     * The latter consists of weight and the cumulative number of
      * connections ("innovationNum").
      */
 
@@ -63,7 +63,7 @@ namespace LycorisNet {
     private:
         float weight;
         float delta;
-        float delta_back;
+        float delta_backup;
         uint32_t innovationNum;
     };
 

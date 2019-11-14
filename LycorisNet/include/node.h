@@ -39,7 +39,7 @@ namespace LycorisNet {
         float value;
         float bias;
         float delta;
-        float delta_back;
+        float delta_backup;
         std::map<Gen, Ome> *genomeMap;
 
         void initializeBias(float f);
