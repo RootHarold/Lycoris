@@ -282,22 +282,22 @@ namespace LycorisNet {
                                     gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
                         }
 
-                        (*(n->genomeMap))[iter->first].delta_back = ((*(n->genomeMap))[iter->first].delta_back * z -
+                        (*(n->genomeMap))[iter->first].delta_backup = ((*(n->genomeMap))[iter->first].delta_backup * z -
                                                                      args->lr * gradient[index] *
                                                                      (n->value > 0 ? 1.0f : 0.2f) *
                                                                      (*nodeMap)[iter->first.in]->value) / float(z + 1);
 
                         if (z == args->batchSize - 1) {
                             (*(n->genomeMap))[iter->first].delta = (*(n->genomeMap))[iter->first].delta * 0.9f +
-                                                                   (*(n->genomeMap))[iter->first].delta_back;
+                                                                   (*(n->genomeMap))[iter->first].delta_backup;
                             (*(n->genomeMap))[iter->first].weight += (*(n->genomeMap))[iter->first].delta;
                         }
                     }
 
-                    n->delta_back = (n->delta_back * z - args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f)) /
+                    n->delta_backup = (n->delta_backup * z - args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f)) /
                                     float(z + 1);
                     if (z == args->batchSize - 1) {
-                        n->delta = n->delta * 0.9f + n->delta_back;
+                        n->delta = n->delta * 0.9f + n->delta_backup;
                         n->bias += n->delta;
                     }
                 }
@@ -323,22 +323,22 @@ namespace LycorisNet {
                                     gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
                         }
 
-                        (*(n->genomeMap))[iter->first].delta_back = ((*(n->genomeMap))[iter->first].delta_back * z -
+                        (*(n->genomeMap))[iter->first].delta_backup = ((*(n->genomeMap))[iter->first].delta_backup * z -
                                                                      args->lr * gradient[index] *
                                                                      (n->value > 0 ? 1.0f : 0.2f) *
                                                                      (*nodeMap)[iter->first.in]->value) / float(z + 1);
 
                         if (z == args->batchSize - 1) {
                             (*(n->genomeMap))[iter->first].delta = (*(n->genomeMap))[iter->first].delta * 0.9f +
-                                                                   (*(n->genomeMap))[iter->first].delta_back;
+                                                                   (*(n->genomeMap))[iter->first].delta_backup;
                             (*(n->genomeMap))[iter->first].weight += (*(n->genomeMap))[iter->first].delta;
                         }
                     }
 
-                    n->delta_back = (n->delta_back * z - args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f)) /
+                    n->delta_backup = (n->delta_backup * z - args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f)) /
                                     float(z + 1);
                     if (z == args->batchSize - 1) {
-                        n->delta = n->delta * 0.9f + n->delta_back;
+                        n->delta = n->delta * 0.9f + n->delta_backup;
                         n->bias += n->delta;
                     }
                 }
