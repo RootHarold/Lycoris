@@ -208,7 +208,7 @@ namespace LycorisNet {
         runLycoris(1);
     }
 
-    void Lycoris::fitX(float **input, float **desire, uint32_t batchSize) {
+    void Lycoris::fitAll(float **input, float **desire, uint32_t batchSize) {
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = batchSize;
@@ -232,7 +232,7 @@ namespace LycorisNet {
         forward();
     }
 
-    void Lycoris::chooseX() {
+    void Lycoris::enrich() {
         uint32_t totalLength = individualList->size();
         if (totalLength == 0) {
             std::cout << "All died." << std::endl;
@@ -249,7 +249,7 @@ namespace LycorisNet {
 
         auto newIndividualList = new std::vector<Individual *>();
         uint32_t newLength = 1;
-        
+
         auto z = totalLength;
         for (; z > totalLength - newLength; --z) {
             if (z == 0) { // This needs elegant repairs.
@@ -274,7 +274,7 @@ namespace LycorisNet {
         individualList = newIndividualList;
     }
 
-    void Lycoris::accelerate(float **input, float **desire, uint32_t batchSize) {
+    void Lycoris::fit(float **input, float **desire, uint32_t batchSize) {
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = batchSize;
@@ -282,7 +282,7 @@ namespace LycorisNet {
         best->BP_P();
     }
 
-    void Lycoris::accelerate(float **input, float **desire, uint32_t batchSize, uint32_t n) {
+    void Lycoris::fit(float **input, float **desire, uint32_t batchSize, uint32_t n) {
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = batchSize;

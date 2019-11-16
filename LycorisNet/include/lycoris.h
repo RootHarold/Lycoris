@@ -48,13 +48,13 @@ namespace LycorisNet {
         // Set the input array and the desire array. And run forward n times.
         void evolve(float **input, float **desire, uint32_t batchSize, uint32_t n);
 
-        void fitX(float **input, float **desire, uint32_t batchSize);
+        void fitAll(float **input, float **desire, uint32_t batchSize);
 
-        void chooseX();
+        void enrich();
 
-        void accelerate(float **input, float **desire, uint32_t batchSize);
+        void fit(float **input, float **desire, uint32_t batchSize);
 
-        void accelerate(float **input, float **desire, uint32_t batchSize, uint32_t n);
+        void fit(float **input, float **desire, uint32_t batchSize, uint32_t n);
 
         // Forward Computing of the best individual;
         void compute(float *input, float *output);
