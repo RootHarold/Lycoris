@@ -227,32 +227,6 @@ namespace LycorisNet {
         }
     }
 
-    void LycorisUtils::addHiddenLayer(Individual &in, uint32_t num) {
-        auto offspring = &in;
-        for (uint32_t i = 0; i < num; ++i) {
-            auto n = new Node(offspring->nodeSum, 1);
-            n->initializeBias(LycorisRandomFloat(in.args->biasA, in.args->biasB));
-            offspring->nodeSum++;
-
-            for (uint32_t j = 0; j < offspring->inputNum; ++j) {
-                Gen g(j, n->nodeNum);
-                Ome o(LycorisRandomFloat(in.args->weightA, in.args->weightB), offspring->innovationNum);
-                offspring->innovationNum++;
-                n->genomeMap->insert(std::make_pair(g, o));
-            }
-
-            for (uint32_t j = offspring->inputNum; j < offspring->inputNum + offspring->outputNum; ++j) {
-                Gen g(n->nodeNum, j);
-                Ome o(LycorisRandomFloat(in.args->weightA, in.args->weightB), offspring->innovationNum);
-                offspring->innovationNum++;
-                (*(offspring->nodeMap))[j]->genomeMap->insert(std::make_pair(g, o));
-            }
-
-            offspring->nodeMap->insert(std::make_pair(n->nodeNum, n));
-            offspring->nodeSlice->insert(offspring->nodeSlice->begin() + (offspring->inputNum + i), n->nodeNum);
-        }
-    }
-
     void LycorisUtils::addHiddenNodes(LycorisNet::Individual &in, uint32_t num) {
         auto offspring = &in;
         for (uint32_t i = 0; i < num; ++i) {

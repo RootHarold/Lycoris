@@ -130,8 +130,6 @@ namespace LycorisNet {
 
         void mutateIndividual_built_in(Individual &in);
 
-        void addHiddenLayer(Individual &in, uint32_t num);
-
         void addHiddenNodes(Individual &in, uint32_t num);
 
         void addConnections(Individual &in, uint32_t num);
