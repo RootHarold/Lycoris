@@ -45,71 +45,9 @@ namespace LycorisNet {
         return capacity;
     }
 
-    void Lycoris::preheat(uint32_t n) {
-        if (args->firstRun) {
-            args->firstRun = false;
-
-            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-            if (initialCapacity == 0) {
-                initialCapacity = 1;
-            }
-
-            individualList = new std::vector<Individual *>(initialCapacity);
-            for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*individualList)[i] = new Individual(inputNum, outputNum, args);
-            }
-            best = (*individualList)[0];
-        }
-
-        auto start = new uint32_t[args->cpuNum];
-        auto end = new uint32_t[args->cpuNum];
-        auto individualLength = uint32_t(individualList->size());
-        auto part = individualLength / args->cpuNum;
-        auto temp = args->cpuNum - 1;
-        for (uint32_t i = 0; i < temp; ++i) {
-            start[i] = i * part;
-            end[i] = (i + 1) * part;
-        }
-        start[temp] = temp * part;
-        end[temp] = individualLength;
-
-        std::vector<std::thread> threads;
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Lycoris::preheatCore, this, start[i], end[i], n));
-        }
-        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-            (*iter).join();
-        }
-
-        delete[] start;
-        delete[] end;
-    }
-
-    void Lycoris::preheatCore(uint32_t start, uint32_t end, uint32_t n) {
-        for (uint32_t i = start; i < end; ++i) {
-            for (uint32_t j = 0; j < n; ++j) {
-                args->utils->mutateIndividual_built_in(*((*individualList)[i]));
-            }
-        }
-    }
-
-    void Lycoris::addHiddenLayer(uint32_t num) {
-        if (args->firstRun) {
-            args->firstRun = false;
-
-            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-            if (initialCapacity == 0) {
-                initialCapacity = 1;
-            }
-
-            individualList = new std::vector<Individual *>(initialCapacity);
-            for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*individualList)[i] = new Individual(inputNum, outputNum, args);
-            }
-            best = (*individualList)[0];
-        }
-
-        args->utils->addHiddenLayer(*best, num);
+    void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections) {
+        addHiddenNodes(num_of_nodes);
+        evolveConnections(num_of_connections);
     }
 
     void Lycoris::addHiddenNodes(uint32_t num) {

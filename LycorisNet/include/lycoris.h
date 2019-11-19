@@ -31,7 +31,7 @@ namespace LycorisNet {
 
         uint32_t getCapacity();
 
-        void preheat(uint32_t n);
+        void preheat(uint32_t num_of_nodes, uint32_t num_of_connections);
 
         // Set the input array and the desire array. And then run forward.
         void evolve(float **input, float **desire, uint32_t batchSize);
@@ -46,14 +46,6 @@ namespace LycorisNet {
         void fitAll(float **input, float **desire, uint32_t batchSize);
 
         void fitAll(float **input, float **desire, uint32_t batchSize, uint32_t n);
-
-        void addHiddenLayer(uint32_t num);
-
-        void addHiddenNodes(uint32_t num);
-
-        void evolveConnections(uint32_t num);
-
-
 
         void enrich();
 
@@ -76,11 +68,11 @@ namespace LycorisNet {
         // Set p1 to p6 in Args.
         void setMutateArgs(float *p);
 
-        // Set the numbers of CPU used in project.
-        void setCpuCores(uint32_t num);
-
         // Set the odds of mutating.
         void setMutateOdds(float odds);
+
+        // Set the numbers of CPU used in project.
+        void setCpuCores(uint32_t num);
 
         // Set the learning rate.
         void setLR(float lr);
@@ -106,8 +98,6 @@ namespace LycorisNet {
         // Store the length of individualList in speciesList.
         uint32_t oldLength;
 
-        void preheatCore(uint32_t start, uint32_t end, uint32_t n);
-
         void addHiddenNodesCore(uint32_t start, uint32_t end, uint32_t num);
 
         void evolveConnectionsCore(uint32_t start, uint32_t end, uint32_t num);
@@ -129,6 +119,10 @@ namespace LycorisNet {
 
         // Each time this function is called, the network runs forward one time.
         void runLycoris(uint32_t n);
+
+        void addHiddenNodes(uint32_t num);
+
+        void evolveConnections(uint32_t num);
     };
 
 }
