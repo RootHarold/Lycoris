@@ -21,14 +21,11 @@ namespace LycorisNet {
 
     class Lycoris {
     public:
-        // The dimension of input.
-        uint32_t inputNum;
-        // The dimension of output.
-        uint32_t outputNum;
-        // The capacity of Lycoris.
-        uint32_t capacity;
-        // The best individual.
-        Individual *best;
+        uint32_t getInputNum();
+
+        uint32_t getOutputNum();
+
+        uint32_t getCapacity();
 
         Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, std::string mode);
 
@@ -88,6 +85,15 @@ namespace LycorisNet {
         uint32_t getSize();
 
     private:
+        // The dimension of input.
+        uint32_t inputNum;
+        // The dimension of output.
+        uint32_t outputNum;
+        // The capacity of Lycoris.
+        uint32_t capacity;
+        // The best individual.
+        Individual *best;
+
         // An object of Args is integrated into this.
         Args *args;
 

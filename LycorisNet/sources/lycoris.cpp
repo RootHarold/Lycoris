@@ -33,6 +33,18 @@ namespace LycorisNet {
         delete individualList;
     }
 
+    uint32_t Lycoris::getInputNum() {
+        return inputNum;
+    }
+
+    uint32_t Lycoris::getOutputNum() {
+        return outputNum;
+    }
+
+    uint32_t Lycoris::getCapacity() {
+        return capacity;
+    }
+
     void Lycoris::preheat(uint32_t n) {
         if (args->firstRun) {
             args->firstRun = false;
