@@ -47,7 +47,7 @@ namespace LycorisNet {
 
     void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections) {
         addHiddenNodes(num_of_nodes);
-        evolveConnections(num_of_connections);
+        addConnections(num_of_connections);
     }
 
     void Lycoris::evolve(float **input, float **desire, uint32_t batchSize) {
@@ -428,7 +428,7 @@ namespace LycorisNet {
 
     void Lycoris::addConnectionsCore(uint32_t start, uint32_t end, uint32_t num) {
         for (uint32_t i = start; i < end; ++i) {
-            args->utils->evolveConnections(*((*individualList)[i]), num);
+            args->utils->addConnections(*((*individualList)[i]), num);
         }
     }
 
