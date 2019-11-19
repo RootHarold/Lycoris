@@ -134,7 +134,7 @@ namespace LycorisNet {
 
         void addHiddenNodes(Individual &in, uint32_t num);
 
-        void evolveConnections(Individual &in, uint32_t num);
+        void addConnections(Individual &in, uint32_t num);
     };
 
 }

@@ -386,7 +386,7 @@ namespace LycorisNet {
         }
     }
 
-    void Lycoris::evolveConnections(uint32_t num) {
+    void Lycoris::addConnections(uint32_t num) {
         if (args->firstRun) {
             args->firstRun = false;
 
@@ -416,7 +416,7 @@ namespace LycorisNet {
 
         std::vector<std::thread> threads;
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Lycoris::evolveConnectionsCore, this, start[i], end[i], num));
+            threads.emplace_back(std::thread(&Lycoris::addConnectionsCore, this, start[i], end[i], num));
         }
         for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
             (*iter).join();
@@ -426,7 +426,7 @@ namespace LycorisNet {
         delete[] end;
     }
 
-    void Lycoris::evolveConnectionsCore(uint32_t start, uint32_t end, uint32_t num) {
+    void Lycoris::addConnectionsCore(uint32_t start, uint32_t end, uint32_t num) {
         for (uint32_t i = start; i < end; ++i) {
             args->utils->evolveConnections(*((*individualList)[i]), num);
         }

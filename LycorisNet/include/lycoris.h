@@ -98,10 +98,6 @@ namespace LycorisNet {
         // Store the length of individualList in speciesList.
         uint32_t oldLength;
 
-        void addHiddenNodesCore(uint32_t start, uint32_t end, uint32_t num);
-
-        void evolveConnectionsCore(uint32_t start, uint32_t end, uint32_t num);
-
         // Mutating.
         void mutate();
 
@@ -122,7 +118,11 @@ namespace LycorisNet {
 
         void addHiddenNodes(uint32_t num);
 
-        void evolveConnections(uint32_t num);
+        void addHiddenNodesCore(uint32_t start, uint32_t end, uint32_t num);
+
+        void addConnections(uint32_t num);
+
+        void addConnectionsCore(uint32_t start, uint32_t end, uint32_t num);
     };
 
 }

@@ -264,7 +264,7 @@ namespace LycorisNet {
         }
     }
 
-    void LycorisUtils::evolveConnections(LycorisNet::Individual &in, uint32_t num) {
+    void LycorisUtils::addConnections(LycorisNet::Individual &in, uint32_t num) {
         auto offspring = &in;
         for (uint32_t i = 0; i < num; ++i) {
             // Add a new connection between two nodes.
