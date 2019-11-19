@@ -244,6 +244,32 @@ namespace LycorisNet {
         forward();
     }
 
+    void Lycoris::fitAll(float **input, float **desire, uint32_t batchSize, uint32_t n) {
+        args->inputArray = input;
+        args->desireArray = desire;
+        args->batchSize = batchSize;
+
+        // It may be redundant. Need to be reviewed.
+        if (args->firstRun) {
+            args->firstRun = false;
+
+            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
+            if (initialCapacity == 0) {
+                initialCapacity = 1;
+            }
+
+            individualList = new std::vector<Individual *>(initialCapacity);
+            for (uint32_t i = 0; i < initialCapacity; ++i) {
+                (*individualList)[i] = new Individual(inputNum, outputNum, args);
+            }
+            best = (*individualList)[0];
+        }
+
+        for (uint32_t i = 0; i < n; ++i) {
+            forward();
+        }
+    }
+
     void Lycoris::enrich() {
         uint32_t totalLength = individualList->size();
         if (totalLength == 0) {

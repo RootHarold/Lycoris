@@ -39,19 +39,23 @@ namespace LycorisNet {
         // Set the input array and the desire array. And run forward n times.
         void evolve(float **input, float **desire, uint32_t batchSize, uint32_t n);
 
+        void fit(float **input, float **desire, uint32_t batchSize);
+
+        void fit(float **input, float **desire, uint32_t batchSize, uint32_t n);
+
+        void fitAll(float **input, float **desire, uint32_t batchSize);
+
+        void fitAll(float **input, float **desire, uint32_t batchSize, uint32_t n);
+
         void addHiddenLayer(uint32_t num);
 
         void addHiddenNodes(uint32_t num);
 
         void evolveConnections(uint32_t num);
 
-        void fitAll(float **input, float **desire, uint32_t batchSize);
+
 
         void enrich();
-
-        void fit(float **input, float **desire, uint32_t batchSize);
-
-        void fit(float **input, float **desire, uint32_t batchSize, uint32_t n);
 
         // Forward Computing of the best individual;
         void compute(float *input, float *output);
