@@ -21,15 +21,15 @@ namespace LycorisNet {
 
     class Lycoris {
     public:
+        Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, std::string mode);
+
+        ~Lycoris();
+
         uint32_t getInputNum();
 
         uint32_t getOutputNum();
 
         uint32_t getCapacity();
-
-        Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, std::string mode);
-
-        ~Lycoris();
 
         void preheat(uint32_t n);
 
