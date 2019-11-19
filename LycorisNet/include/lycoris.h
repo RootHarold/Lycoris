@@ -33,17 +33,17 @@ namespace LycorisNet {
 
         void preheat(uint32_t n);
 
-        void addHiddenLayer(uint32_t num);
-
-        void addHiddenNodes(uint32_t num);
-
-        void evolveConnections(uint32_t num);
-
         // Set the input array and the desire array. And then run forward.
         void evolve(float **input, float **desire, uint32_t batchSize);
 
         // Set the input array and the desire array. And run forward n times.
         void evolve(float **input, float **desire, uint32_t batchSize, uint32_t n);
+
+        void addHiddenLayer(uint32_t num);
+
+        void addHiddenNodes(uint32_t num);
+
+        void evolveConnections(uint32_t num);
 
         void fitAll(float **input, float **desire, uint32_t batchSize);
 
