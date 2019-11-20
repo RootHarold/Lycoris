@@ -109,7 +109,7 @@ namespace LycorisNet {
         // Generate a random number of 0-N (uint32_t).
         inline uint32_t LycorisRandomUint32_t(uint32_t N) {
             return uint32_t(rd() % N);
-        };
+        }
 
         inline static std::vector<std::string> split(const std::string &subject) {
             static const std::regex re{"\\s+"};
@@ -129,8 +129,6 @@ namespace LycorisNet {
 
         // Mutating the individual.
         Individual *mutateIndividual(Individual &in);
-
-        void mutateIndividual_built_in(Individual &in);
 
         void addHiddenNodes(Individual &in, uint32_t num);
 
