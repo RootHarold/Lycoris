@@ -105,10 +105,10 @@ namespace LycorisNet {
         void mutateCore(uint32_t start, uint32_t end);
 
         // All individuals are calculated forward.
-        void forward();
+        void backPropagation();
 
         // The parallel kernel of forward().
-        void forwardCore(uint32_t start, uint32_t end);
+        void backPropagationCore(uint32_t start, uint32_t end);
 
         // Choose elites and manipulate gapList.
         void chooseElite();

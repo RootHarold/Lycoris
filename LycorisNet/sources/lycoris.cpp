@@ -105,7 +105,7 @@ namespace LycorisNet {
             best = (*individualList)[0];
         }
 
-        forward();
+        backPropagation();
     }
 
     void Lycoris::fitAll(float **input, float **desire, uint32_t batchSize, uint32_t n) {
@@ -130,7 +130,7 @@ namespace LycorisNet {
         }
 
         for (uint32_t i = 0; i < n; ++i) {
-            forward();
+            backPropagation();
         }
     }
 
@@ -470,7 +470,7 @@ namespace LycorisNet {
         }
     }
 
-    void Lycoris::forward() {
+    void Lycoris::backPropagation() {
         auto start = new uint32_t[args->cpuNum];
         auto end = new uint32_t[args->cpuNum];
         auto individualLength = uint32_t(individualList->size());
@@ -485,7 +485,7 @@ namespace LycorisNet {
 
         std::vector<std::thread> threads;
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Lycoris::forwardCore, this, start[i], end[i]));
+            threads.emplace_back(std::thread(&Lycoris::backPropagationCore, this, start[i], end[i]));
         }
         for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
             (*iter).join();
@@ -495,7 +495,7 @@ namespace LycorisNet {
         delete[] end;
     }
 
-    void Lycoris::forwardCore(uint32_t start, uint32_t end) {
+    void Lycoris::backPropagationCore(uint32_t start, uint32_t end) {
         // TODO: To fix the NaN & Inf problems. Remove that part from chooseElite().
         for (uint32_t i = start; i < end; ++i) {
             (*individualList)[i]->BP();
@@ -581,7 +581,7 @@ namespace LycorisNet {
             // Mutating.
             mutate();
             // Forward calculation.
-            forward();
+            backPropagation();
             // Sorting and choosing some individuals with higher fitness.
             chooseElite();
 
