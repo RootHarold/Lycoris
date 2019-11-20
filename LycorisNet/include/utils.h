@@ -42,6 +42,21 @@ namespace LycorisNet {
 
         ~LycorisUtils();
 
+        // Return the version information.
+        inline static std::string version() {
+            return "Lycoris Core 2.0-Developing (CPU Mode)";
+        }
+
+        friend class Lycoris;
+
+        friend class Individual;
+
+        friend class Args;
+
+    private:
+        // The engine to emerge random numbers.
+        std::random_device rd;
+
         // ReLU (with huge leak = 0.2).
         inline static float relu(float f) {
             return f > 0 ? f : f * 0.2f;
@@ -83,19 +98,6 @@ namespace LycorisNet {
 
             return ret;
         }
-
-        // Return the version information.
-        inline static std::string version() {
-            return "Lycoris Core 2.0-Developing (CPU Mode)";
-        }
-
-        friend class Lycoris;
-
-        friend class Individual;
-
-    private:
-        // The engine to emerge random numbers.
-        std::random_device rd;
 
         // Generate a random number of min-max (float).
         inline float LycorisRandomFloat(float min, float max) {

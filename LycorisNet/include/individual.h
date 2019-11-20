@@ -28,35 +28,20 @@ namespace LycorisNet {
 
     class Individual {
     public:
-        uint32_t inputNum;
-        uint32_t outputNum;
-        float fitness;
-
         Individual();
 
         Individual(uint32_t inputNum, uint32_t outputNum, Args *args);
 
         ~Individual();
 
-        // Set input array => Forward calculation of the individual => Get output array.
-        void forward(float *input, float *output);
-
-        // Back Propagation.
-        void BP();
-
-        void BP_P();
-
-        void BP_P_Core(uint32_t start, uint32_t end);
-
-        void BP_Compute(uint32_t start, uint32_t end, float *midData);
-
-        //void BP_built_in_core();
-
         friend class LycorisUtils;
 
         friend class Lycoris;
 
     private:
+        uint32_t inputNum;
+        uint32_t outputNum;
+        float fitness;
         uint32_t innovationNum;
         uint32_t nodeSum;
         std::vector<uint32_t> *nodeSlice;
@@ -71,6 +56,18 @@ namespace LycorisNet {
 
         // Return the size of the individual.
         uint32_t getSize();
+
+        // Set input array => Forward calculation of the individual => Get output array.
+        void forward(float *input, float *output);
+
+        // Back Propagation.
+        void BP();
+
+        void BP_P();
+
+        void BP_P_Core(uint32_t start, uint32_t end);
+
+        void BP_Compute(uint32_t start, uint32_t end, float *midData);
     };
 
 }

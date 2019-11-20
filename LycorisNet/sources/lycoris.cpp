@@ -17,6 +17,7 @@ namespace LycorisNet {
         this->capacity = capacity;
         this->inputNum = inputNum;
         this->outputNum = outputNum;
+
         args = new Args();
         if (mode != "predict" && mode != "classify") {
             std::cout << R"(The mode is invalid. (Please input "predict" or "classify"))" << std::endl;
