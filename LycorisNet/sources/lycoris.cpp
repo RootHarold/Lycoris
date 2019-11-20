@@ -18,6 +18,10 @@ namespace LycorisNet {
         this->inputNum = inputNum;
         this->outputNum = outputNum;
         args = new Args();
+        if (mode != "predict" && mode != "classify") {
+            std::cout << R"(The mode is invalid. (Please input "predict" or "classify"))" << std::endl;
+            exit(1);
+        }
         args->mode = mode;
         args->weightB = sqrtf(6 / float(inputNum + outputNum));
         args->weightA = 0 - args->weightB;
@@ -414,7 +418,7 @@ namespace LycorisNet {
         uint32_t totalLength = individualList->size();
         if (totalLength == 0) {
             std::cout << "All died." << std::endl;
-            exit(1);
+            exit(2);
         }
 
         std::vector<SortFitness> sortList(totalLength);
