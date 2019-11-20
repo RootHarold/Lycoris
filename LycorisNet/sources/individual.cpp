@@ -57,6 +57,35 @@ namespace LycorisNet {
         }
     }
 
+    Individual *Individual::clone() {
+        auto duplicate = new Individual();
+        duplicate->inputNum = inputNum;
+        duplicate->outputNum = outputNum;
+        duplicate->args = args;
+        duplicate->innovationNum = innovationNum;
+        duplicate->nodeSum = nodeSum;
+        duplicate->fitness = fitness;
+
+        duplicate->nodeMap = new std::map<uint32_t, Node *>();
+        for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
+            duplicate->nodeMap->insert(std::make_pair(iter->first, iter->second->clone()));
+        }
+
+        duplicate->nodeSlice = new std::vector<uint32_t>();
+        duplicate->nodeSlice->assign(nodeSlice->begin(), nodeSlice->end());
+
+        return duplicate;
+    }
+
+    uint32_t Individual::getSize() {
+        uint32_t size = 0;
+        size += nodeSlice->size();
+        for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
+            size += iter->second->genomeMap->size();
+        }
+        return size;
+    }
+
     void Individual::forward(float *input, float *output) {
         for (uint32_t i = 0; i < inputNum; ++i) {
             (*nodeMap)[i]->value = input[i];
@@ -86,174 +115,6 @@ namespace LycorisNet {
                 pointer++;
             }
         }
-    }
-
-    void Individual::BP_Multi_Thread() {
-        auto individualSize = getSize() + 1;
-        if (args->batchFlag) {
-            args->batchData = new float *[args->batchSize];
-
-            for (uint32_t i = 0; i < args->batchSize; ++i) {
-                args->batchData[i] = new float[individualSize];
-            }
-
-            args->midData = new float[individualSize];
-
-            args->batchFlag = false;
-        }
-
-        auto start = new uint32_t[args->cpuNum];
-        auto end = new uint32_t[args->cpuNum];
-        auto part = args->batchSize / args->cpuNum;
-        auto temp = args->cpuNum - 1;
-        for (uint32_t i = 0; i < temp; ++i) {
-            start[i] = i * part;
-            end[i] = (i + 1) * part;
-        }
-        start[temp] = temp * part;
-        end[temp] = args->batchSize;
-
-        std::vector<std::thread> threads;
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Individual::BP_Multi_Thread_Core, this, start[i], end[i]));
-        }
-        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-            (*iter).join();
-        }
-
-        part = (individualSize) / args->cpuNum;
-        for (uint32_t i = 0; i < temp; ++i) {
-            start[i] = i * part;
-            end[i] = (i + 1) * part;
-        }
-        start[temp] = temp * part;
-        end[temp] = individualSize;
-
-        std::vector<std::thread> threads2;
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads2.emplace_back(
-                    std::thread(&Individual::BP_Multi_Thread_Forward, this, start[i], end[i], args->midData));
-        }
-        for (auto iter = threads2.begin(); iter != threads2.end(); ++iter) {
-            (*iter).join();
-        }
-
-        uint32_t data_p = 0;
-
-        for (uint32_t j = 0; j < nodeSlice->size(); ++j) {
-            auto index = (*nodeSlice)[nodeSlice->size() - 1 - j];
-            auto n = (*nodeMap)[index];
-
-            for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
-                (*(n->genomeMap))[iter->first].delta =
-                        (*(n->genomeMap))[iter->first].delta * 0.9f + args->midData[data_p++];
-                (*(n->genomeMap))[iter->first].weight += (*(n->genomeMap))[iter->first].delta;
-            }
-
-            n->delta = n->delta * 0.9f + args->midData[data_p++];
-            n->bias += n->delta;
-        }
-
-        this->fitness = args->midData[data_p];
-
-        if (std::isnan(this->fitness) || std::isinf(this->fitness)) {
-            this->fitness = -FLT_MAX;
-        }
-
-        delete[] start;
-        delete[] end;
-    }
-
-    void Individual::BP_Multi_Thread_Forward(uint32_t start, uint32_t end, float *midData) {
-        for (uint32_t i = start; i < end; ++i) {
-            float temp_data = 0.0f;
-
-            for (uint32_t j = 0; j < args->batchSize; ++j) {
-                temp_data += args->batchData[j][i];
-            }
-
-            temp_data /= args->batchSize;
-            midData[i] = temp_data;
-        }
-    }
-
-    void Individual::BP_Multi_Thread_Core(uint32_t start, uint32_t end) {
-        auto ci = this->clone();
-
-        float output[outputNum];
-        std::map<uint32_t, float> gradient; // Store the gradient of all nodes.
-        for (uint32_t z = start; z < end; ++z) {
-            uint32_t data_p = 0;
-            ci->forward(ci->args->inputArray[z], output);
-
-            gradient.clear();
-            if (ci->args->mode == "predict") { // Predict.
-                for (uint32_t j = 0; j < ci->nodeSlice->size(); ++j) {
-                    auto index = (*ci->nodeSlice)[ci->nodeSlice->size() - 1 - j];
-                    auto n = (*ci->nodeMap)[index];
-
-                    // The output nodes.
-                    if (index >= inputNum && index < (inputNum + outputNum)) {
-                        gradient[index] = n->value - ci->args->desireArray[z][index - inputNum];
-                    }
-
-                    for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
-                        auto p = gradient.find(iter->first.in);
-                        if (p != gradient.end()) {
-                            gradient[iter->first.in] +=
-                                    gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
-                        } else {
-                            gradient[iter->first.in] =
-                                    gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
-                        }
-
-                        args->batchData[z][data_p++] = 0 -
-                                                       ci->args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f) *
-                                                       (*ci->nodeMap)[iter->first.in]->value;
-                    }
-
-                    args->batchData[z][data_p++] = 0 - ci->args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f);
-                }
-            } else { // Classify.
-                LycorisUtils::softmax(output, outputNum);
-
-                for (uint32_t j = 0; j < ci->nodeSlice->size(); ++j) {
-                    auto index = (*ci->nodeSlice)[ci->nodeSlice->size() - 1 - j];
-                    auto n = (*ci->nodeMap)[index];
-
-                    // The output nodes.
-                    if (index >= inputNum && index < (inputNum + outputNum)) {
-                        gradient[index] = output[index - inputNum] - ci->args->desireArray[z][index - inputNum];
-                    }
-
-                    for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
-                        auto p = gradient.find(iter->first.in);
-                        if (p != gradient.end()) {
-                            gradient[iter->first.in] +=
-                                    gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
-                        } else {
-                            gradient[iter->first.in] =
-                                    gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
-                        }
-
-                        args->batchData[z][data_p++] =
-                                0 - ci->args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f) *
-                                    (*ci->nodeMap)[iter->first.in]->value;
-                    }
-
-                    args->batchData[z][data_p++] = 0 - ci->args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f);
-                }
-            }
-
-            if (args->mode == "classify") {
-                args->batchData[z][data_p] = LycorisUtils::cross_entropy(ci->args->desireArray[z], output, outputNum);
-            } else {
-                args->batchData[z][data_p] =
-                        0 - LycorisUtils::euclidean_distance(output, ci->args->desireArray[z], outputNum);
-            }
-        }
-
-        delete ci;
     }
 
     void Individual::BP_Single_Thread() {
@@ -365,33 +226,172 @@ namespace LycorisNet {
         }
     }
 
-    Individual *Individual::clone() {
-        auto duplicate = new Individual();
-        duplicate->inputNum = inputNum;
-        duplicate->outputNum = outputNum;
-        duplicate->args = args;
-        duplicate->innovationNum = innovationNum;
-        duplicate->nodeSum = nodeSum;
-        duplicate->fitness = fitness;
+    void Individual::BP_Multi_Thread() {
+        auto individualSize = getSize() + 1;
+        if (args->batchFlag) {
+            args->batchData = new float *[args->batchSize];
 
-        duplicate->nodeMap = new std::map<uint32_t, Node *>();
-        for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
-            duplicate->nodeMap->insert(std::make_pair(iter->first, iter->second->clone()));
+            for (uint32_t i = 0; i < args->batchSize; ++i) {
+                args->batchData[i] = new float[individualSize];
+            }
+
+            args->midData = new float[individualSize];
+
+            args->batchFlag = false;
         }
 
-        duplicate->nodeSlice = new std::vector<uint32_t>();
-        duplicate->nodeSlice->assign(nodeSlice->begin(), nodeSlice->end());
+        auto start = new uint32_t[args->cpuNum];
+        auto end = new uint32_t[args->cpuNum];
+        auto part = args->batchSize / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t i = 0; i < temp; ++i) {
+            start[i] = i * part;
+            end[i] = (i + 1) * part;
+        }
+        start[temp] = temp * part;
+        end[temp] = args->batchSize;
 
-        return duplicate;
+        std::vector<std::thread> threads;
+        for (uint32_t i = 0; i < args->cpuNum; ++i) {
+            threads.emplace_back(std::thread(&Individual::BP_Multi_Thread_Core, this, start[i], end[i]));
+        }
+        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+            (*iter).join();
+        }
+
+        part = (individualSize) / args->cpuNum;
+        for (uint32_t i = 0; i < temp; ++i) {
+            start[i] = i * part;
+            end[i] = (i + 1) * part;
+        }
+        start[temp] = temp * part;
+        end[temp] = individualSize;
+
+        std::vector<std::thread> threads2;
+        for (uint32_t i = 0; i < args->cpuNum; ++i) {
+            threads2.emplace_back(
+                    std::thread(&Individual::BP_Multi_Thread_Forward, this, start[i], end[i], args->midData));
+        }
+        for (auto iter = threads2.begin(); iter != threads2.end(); ++iter) {
+            (*iter).join();
+        }
+
+        uint32_t data_p = 0;
+
+        for (uint32_t j = 0; j < nodeSlice->size(); ++j) {
+            auto index = (*nodeSlice)[nodeSlice->size() - 1 - j];
+            auto n = (*nodeMap)[index];
+
+            for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
+                (*(n->genomeMap))[iter->first].delta =
+                        (*(n->genomeMap))[iter->first].delta * 0.9f + args->midData[data_p++];
+                (*(n->genomeMap))[iter->first].weight += (*(n->genomeMap))[iter->first].delta;
+            }
+
+            n->delta = n->delta * 0.9f + args->midData[data_p++];
+            n->bias += n->delta;
+        }
+
+        this->fitness = args->midData[data_p];
+
+        if (std::isnan(this->fitness) || std::isinf(this->fitness)) {
+            this->fitness = -FLT_MAX;
+        }
+
+        delete[] start;
+        delete[] end;
     }
 
-    uint32_t Individual::getSize() {
-        uint32_t size = 0;
-        size += nodeSlice->size();
-        for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
-            size += iter->second->genomeMap->size();
+    void Individual::BP_Multi_Thread_Core(uint32_t start, uint32_t end) {
+        auto ci = this->clone();
+
+        float output[outputNum];
+        std::map<uint32_t, float> gradient; // Store the gradient of all nodes.
+        for (uint32_t z = start; z < end; ++z) {
+            uint32_t data_p = 0;
+            ci->forward(ci->args->inputArray[z], output);
+
+            gradient.clear();
+            if (ci->args->mode == "predict") { // Predict.
+                for (uint32_t j = 0; j < ci->nodeSlice->size(); ++j) {
+                    auto index = (*ci->nodeSlice)[ci->nodeSlice->size() - 1 - j];
+                    auto n = (*ci->nodeMap)[index];
+
+                    // The output nodes.
+                    if (index >= inputNum && index < (inputNum + outputNum)) {
+                        gradient[index] = n->value - ci->args->desireArray[z][index - inputNum];
+                    }
+
+                    for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
+                        auto p = gradient.find(iter->first.in);
+                        if (p != gradient.end()) {
+                            gradient[iter->first.in] +=
+                                    gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
+                        } else {
+                            gradient[iter->first.in] =
+                                    gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
+                        }
+
+                        args->batchData[z][data_p++] = 0 -
+                                                       ci->args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f) *
+                                                       (*ci->nodeMap)[iter->first.in]->value;
+                    }
+
+                    args->batchData[z][data_p++] = 0 - ci->args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f);
+                }
+            } else { // Classify.
+                LycorisUtils::softmax(output, outputNum);
+
+                for (uint32_t j = 0; j < ci->nodeSlice->size(); ++j) {
+                    auto index = (*ci->nodeSlice)[ci->nodeSlice->size() - 1 - j];
+                    auto n = (*ci->nodeMap)[index];
+
+                    // The output nodes.
+                    if (index >= inputNum && index < (inputNum + outputNum)) {
+                        gradient[index] = output[index - inputNum] - ci->args->desireArray[z][index - inputNum];
+                    }
+
+                    for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
+                        auto p = gradient.find(iter->first.in);
+                        if (p != gradient.end()) {
+                            gradient[iter->first.in] +=
+                                    gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
+                        } else {
+                            gradient[iter->first.in] =
+                                    gradient[index] * iter->second.weight * (n->value > 0 ? 1.0f : 0.2f);
+                        }
+
+                        args->batchData[z][data_p++] =
+                                0 - ci->args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f) *
+                                    (*ci->nodeMap)[iter->first.in]->value;
+                    }
+
+                    args->batchData[z][data_p++] = 0 - ci->args->lr * gradient[index] * (n->value > 0 ? 1.0f : 0.2f);
+                }
+            }
+
+            if (args->mode == "classify") {
+                args->batchData[z][data_p] = LycorisUtils::cross_entropy(ci->args->desireArray[z], output, outputNum);
+            } else {
+                args->batchData[z][data_p] =
+                        0 - LycorisUtils::euclidean_distance(output, ci->args->desireArray[z], outputNum);
+            }
         }
-        return size;
+
+        delete ci;
+    }
+
+    void Individual::BP_Multi_Thread_Forward(uint32_t start, uint32_t end, float *midData) {
+        for (uint32_t i = start; i < end; ++i) {
+            float temp_data = 0.0f;
+
+            for (uint32_t j = 0; j < args->batchSize; ++j) {
+                temp_data += args->batchData[j][i];
+            }
+
+            temp_data /= args->batchSize;
+            midData[i] = temp_data;
+        }
     }
 
 }
