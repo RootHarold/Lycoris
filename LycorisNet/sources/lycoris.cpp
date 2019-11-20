@@ -340,98 +340,6 @@ namespace LycorisNet {
         return best->getSize();
     }
 
-    void Lycoris::addHiddenNodes(uint32_t num) {
-        if (args->firstRun) {
-            args->firstRun = false;
-
-            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-            if (initialCapacity == 0) {
-                initialCapacity = 1;
-            }
-
-            individualList = new std::vector<Individual *>(initialCapacity);
-            for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*individualList)[i] = new Individual(inputNum, outputNum, args);
-            }
-            best = (*individualList)[0];
-        }
-
-        auto start = new uint32_t[args->cpuNum];
-        auto end = new uint32_t[args->cpuNum];
-        auto individualLength = uint32_t(individualList->size());
-        auto part = individualLength / args->cpuNum;
-        auto temp = args->cpuNum - 1;
-        for (uint32_t i = 0; i < temp; ++i) {
-            start[i] = i * part;
-            end[i] = (i + 1) * part;
-        }
-        start[temp] = temp * part;
-        end[temp] = individualLength;
-
-        std::vector<std::thread> threads;
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Lycoris::addHiddenNodesCore, this, start[i], end[i], num));
-        }
-        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-            (*iter).join();
-        }
-
-        delete[] start;
-        delete[] end;
-    }
-
-    void Lycoris::addHiddenNodesCore(uint32_t start, uint32_t end, uint32_t num) {
-        for (uint32_t i = start; i < end; ++i) {
-            args->utils->addHiddenNodes(*((*individualList)[i]), num);
-        }
-    }
-
-    void Lycoris::addConnections(uint32_t num) {
-        if (args->firstRun) {
-            args->firstRun = false;
-
-            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-            if (initialCapacity == 0) {
-                initialCapacity = 1;
-            }
-
-            individualList = new std::vector<Individual *>(initialCapacity);
-            for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*individualList)[i] = new Individual(inputNum, outputNum, args);
-            }
-            best = (*individualList)[0];
-        }
-
-        auto start = new uint32_t[args->cpuNum];
-        auto end = new uint32_t[args->cpuNum];
-        auto individualLength = uint32_t(individualList->size());
-        auto part = individualLength / args->cpuNum;
-        auto temp = args->cpuNum - 1;
-        for (uint32_t i = 0; i < temp; ++i) {
-            start[i] = i * part;
-            end[i] = (i + 1) * part;
-        }
-        start[temp] = temp * part;
-        end[temp] = individualLength;
-
-        std::vector<std::thread> threads;
-        for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Lycoris::addConnectionsCore, this, start[i], end[i], num));
-        }
-        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-            (*iter).join();
-        }
-
-        delete[] start;
-        delete[] end;
-    }
-
-    void Lycoris::addConnectionsCore(uint32_t start, uint32_t end, uint32_t num) {
-        for (uint32_t i = start; i < end; ++i) {
-            args->utils->addConnections(*((*individualList)[i]), num);
-        }
-    }
-
     void Lycoris::mutate() {
         auto start = new uint32_t[args->cpuNum];
         auto end = new uint32_t[args->cpuNum];
@@ -598,6 +506,98 @@ namespace LycorisNet {
                 args->p3 = args->p3B;
                 args->p4 = args->p4B;
             }
+        }
+    }
+
+    void Lycoris::addHiddenNodes(uint32_t num) {
+        if (args->firstRun) {
+            args->firstRun = false;
+
+            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
+            if (initialCapacity == 0) {
+                initialCapacity = 1;
+            }
+
+            individualList = new std::vector<Individual *>(initialCapacity);
+            for (uint32_t i = 0; i < initialCapacity; ++i) {
+                (*individualList)[i] = new Individual(inputNum, outputNum, args);
+            }
+            best = (*individualList)[0];
+        }
+
+        auto start = new uint32_t[args->cpuNum];
+        auto end = new uint32_t[args->cpuNum];
+        auto individualLength = uint32_t(individualList->size());
+        auto part = individualLength / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t i = 0; i < temp; ++i) {
+            start[i] = i * part;
+            end[i] = (i + 1) * part;
+        }
+        start[temp] = temp * part;
+        end[temp] = individualLength;
+
+        std::vector<std::thread> threads;
+        for (uint32_t i = 0; i < args->cpuNum; ++i) {
+            threads.emplace_back(std::thread(&Lycoris::addHiddenNodesCore, this, start[i], end[i], num));
+        }
+        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+            (*iter).join();
+        }
+
+        delete[] start;
+        delete[] end;
+    }
+
+    void Lycoris::addHiddenNodesCore(uint32_t start, uint32_t end, uint32_t num) {
+        for (uint32_t i = start; i < end; ++i) {
+            args->utils->addHiddenNodes(*((*individualList)[i]), num);
+        }
+    }
+
+    void Lycoris::addConnections(uint32_t num) {
+        if (args->firstRun) {
+            args->firstRun = false;
+
+            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
+            if (initialCapacity == 0) {
+                initialCapacity = 1;
+            }
+
+            individualList = new std::vector<Individual *>(initialCapacity);
+            for (uint32_t i = 0; i < initialCapacity; ++i) {
+                (*individualList)[i] = new Individual(inputNum, outputNum, args);
+            }
+            best = (*individualList)[0];
+        }
+
+        auto start = new uint32_t[args->cpuNum];
+        auto end = new uint32_t[args->cpuNum];
+        auto individualLength = uint32_t(individualList->size());
+        auto part = individualLength / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t i = 0; i < temp; ++i) {
+            start[i] = i * part;
+            end[i] = (i + 1) * part;
+        }
+        start[temp] = temp * part;
+        end[temp] = individualLength;
+
+        std::vector<std::thread> threads;
+        for (uint32_t i = 0; i < args->cpuNum; ++i) {
+            threads.emplace_back(std::thread(&Lycoris::addConnectionsCore, this, start[i], end[i], num));
+        }
+        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
+            (*iter).join();
+        }
+
+        delete[] start;
+        delete[] end;
+    }
+
+    void Lycoris::addConnectionsCore(uint32_t start, uint32_t end, uint32_t num) {
+        for (uint32_t i = start; i < end; ++i) {
+            args->utils->addConnections(*((*individualList)[i]), num);
         }
     }
 
