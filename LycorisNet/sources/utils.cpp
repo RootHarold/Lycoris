@@ -95,8 +95,7 @@ namespace LycorisNet {
                 if (!((inputNode->nodeType == 0 && outputNode->nodeType == 0) || inputNode->nodeType == 2)) {
                     Gen g(inputNum, outputNum);
                     if (outputNode->genomeMap->find(g) == outputNode->genomeMap->end()) {
-                        Ome o(LycorisRandomFloat(0, 1) * (in.args->weightB - in.args->weightA) + in.args->weightA,
-                              offspring->innovationNum);
+                        Ome o(LycorisRandomFloat(in.args->weightA, in.args->weightB), offspring->innovationNum);
                         offspring->innovationNum++;
                         outputNode->genomeMap->insert(std::make_pair(g, o));
                     }
@@ -153,8 +152,7 @@ namespace LycorisNet {
                 if (!((inputNode->nodeType == 0 && outputNode->nodeType == 0) || inputNode->nodeType == 2)) {
                     Gen g(inputNum, outputNum);
                     if (outputNode->genomeMap->find(g) == outputNode->genomeMap->end()) {
-                        Ome o(LycorisRandomFloat(0, 1) * (in.args->weightB - in.args->weightA) + in.args->weightA,
-                              offspring->innovationNum);
+                        Ome o(LycorisRandomFloat(in.args->weightA, in.args->weightB), offspring->innovationNum);
                         offspring->innovationNum++;
                         outputNode->genomeMap->insert(std::make_pair(g, o));
                     }
