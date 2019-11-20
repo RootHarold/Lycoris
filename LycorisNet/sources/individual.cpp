@@ -88,7 +88,7 @@ namespace LycorisNet {
         }
     }
 
-    void Individual::BP_P() {
+    void Individual::BP_Multi_Thread() {
         auto individualSize = getSize() + 1;
         if (args->batchFlag) {
             args->batchData = new float *[args->batchSize];
@@ -115,7 +115,7 @@ namespace LycorisNet {
 
         std::vector<std::thread> threads;
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads.emplace_back(std::thread(&Individual::BP_P_Core, this, start[i], end[i]));
+            threads.emplace_back(std::thread(&Individual::BP_Multi_Thread_Core, this, start[i], end[i]));
         }
         for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
             (*iter).join();
@@ -131,7 +131,8 @@ namespace LycorisNet {
 
         std::vector<std::thread> threads2;
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
-            threads2.emplace_back(std::thread(&Individual::BP_Compute, this, start[i], end[i], args->midData));
+            threads2.emplace_back(
+                    std::thread(&Individual::BP_Multi_Thread_Forward, this, start[i], end[i], args->midData));
         }
         for (auto iter = threads2.begin(); iter != threads2.end(); ++iter) {
             (*iter).join();
@@ -163,7 +164,7 @@ namespace LycorisNet {
         delete[] end;
     }
 
-    void Individual::BP_Compute(uint32_t start, uint32_t end, float *midData) {
+    void Individual::BP_Multi_Thread_Forward(uint32_t start, uint32_t end, float *midData) {
         for (uint32_t i = start; i < end; ++i) {
             float temp_data = 0.0f;
 
@@ -176,7 +177,7 @@ namespace LycorisNet {
         }
     }
 
-    void Individual::BP_P_Core(uint32_t start, uint32_t end) {
+    void Individual::BP_Multi_Thread_Core(uint32_t start, uint32_t end) {
         auto ci = this->clone();
 
         float output[outputNum];

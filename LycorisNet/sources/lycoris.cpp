@@ -76,7 +76,7 @@ namespace LycorisNet {
         args->desireArray = desire;
         args->batchSize = batchSize;
 
-        best->BP_P();
+        best->BP_Multi_Thread();
     }
 
     void Lycoris::fit(float **input, float **desire, uint32_t batchSize, uint32_t n) {
@@ -85,7 +85,7 @@ namespace LycorisNet {
         args->batchSize = batchSize;
 
         for (uint32_t i = 0; i < n; ++i) {
-            best->BP_P();
+            best->BP_Multi_Thread();
         }
     }
 

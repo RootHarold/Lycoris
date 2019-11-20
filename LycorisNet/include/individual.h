@@ -63,11 +63,11 @@ namespace LycorisNet {
         // Back Propagation.
         void BP_Single_Thread();
 
-        void BP_P();
+        void BP_Multi_Thread();
 
-        void BP_P_Core(uint32_t start, uint32_t end);
+        void BP_Multi_Thread_Core(uint32_t start, uint32_t end);
 
-        void BP_Compute(uint32_t start, uint32_t end, float *midData);
+        void BP_Multi_Thread_Forward(uint32_t start, uint32_t end, float *midData);
     };
 
 }
