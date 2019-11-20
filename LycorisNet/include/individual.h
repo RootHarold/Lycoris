@@ -61,7 +61,7 @@ namespace LycorisNet {
         void forward(float *input, float *output);
 
         // Back Propagation.
-        void BP();
+        void BP_Single_Thread();
 
         void BP_P();
 

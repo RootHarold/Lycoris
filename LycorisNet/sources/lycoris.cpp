@@ -411,7 +411,7 @@ namespace LycorisNet {
     void Lycoris::backPropagationCore(uint32_t start, uint32_t end) {
         // TODO: To fix the NaN & Inf problems. Remove that part from chooseElite().
         for (uint32_t i = start; i < end; ++i) {
-            (*individualList)[i]->BP();
+            (*individualList)[i]->BP_Single_Thread();
         }
     }
 
