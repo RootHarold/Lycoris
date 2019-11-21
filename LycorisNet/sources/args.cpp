@@ -25,8 +25,6 @@ namespace LycorisNet {
         p4B = p4;
 
         mutateOdds = 31;
-        biasA = 0;
-        biasB = 0;
 
         cpuNum = std::thread::hardware_concurrency();
 

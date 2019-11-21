@@ -62,9 +62,6 @@ namespace LycorisNet {
         // For SetWeightRandom(...).
         float weightA;
         float weightB;
-        // For SetBiasRandom(...).
-        float biasA;
-        float biasB;
 
         // The learning rate.
         float lr;

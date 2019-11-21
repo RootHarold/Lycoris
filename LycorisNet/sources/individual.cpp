@@ -41,7 +41,7 @@ namespace LycorisNet {
         for (uint32_t i = 0; i < inputNum; ++i) {
             auto temp = nodeSum;
             auto newNode = new Node(temp, 0);
-            newNode->initializeBias(args->utils->LycorisRandomFloat(args->biasA, args->biasB));
+            newNode->initializeBias(0);
             nodeMap->insert(std::make_pair(temp, newNode));
             (*nodeSlice)[temp] = temp;
             nodeSum++;
@@ -50,7 +50,7 @@ namespace LycorisNet {
         for (uint32_t i = 0; i < outputNum; ++i) {
             auto temp = nodeSum;
             auto newNode = new Node(temp, 2);
-            newNode->initializeBias(args->utils->LycorisRandomFloat(args->biasA, args->biasB));
+            newNode->initializeBias(0);
             nodeMap->insert(std::make_pair(temp, newNode));
             (*nodeSlice)[temp] = temp;
             nodeSum++;
