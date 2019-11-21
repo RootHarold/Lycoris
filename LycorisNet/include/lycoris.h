@@ -21,7 +21,7 @@ namespace LycorisNet {
 
     class Lycoris {
     public:
-        Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, std::string mode);
+        Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, const std::string& mode);
 
         ~Lycoris();
 
