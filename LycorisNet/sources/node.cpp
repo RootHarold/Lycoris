@@ -15,6 +15,7 @@ namespace LycorisNet {
         this->nodeType = nodeType;
         value = 0;
         delta = 0;
+        bias = 0;
         genomeMap = new std::map<Gen, Ome>();
     }
 
@@ -32,10 +33,6 @@ namespace LycorisNet {
         }
 
         return duplicate;
-    }
-
-    void Node::initializeBias(float f) {
-        this->bias = f;
     }
 
 }

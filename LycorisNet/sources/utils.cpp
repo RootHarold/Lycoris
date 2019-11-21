@@ -48,7 +48,6 @@ namespace LycorisNet {
                 }
 
                 auto n = new Node(offspring->nodeSum, 1);
-                n->initializeBias(0);
                 offspring->nodeSum++;
                 Gen g1(genOld.in, n->nodeNum);
                 Ome o1(1.0, offspring->innovationNum);
@@ -128,7 +127,6 @@ namespace LycorisNet {
         auto offspring = &in;
         for (uint32_t i = 0; i < num; ++i) {
             auto n = new Node(offspring->nodeSum, 1);
-            n->initializeBias(0);
             offspring->nodeSum++;
             offspring->nodeMap->insert(std::make_pair(n->nodeNum, n));
             offspring->nodeSlice->insert(offspring->nodeSlice->begin() + (offspring->inputNum + i), n->nodeNum);

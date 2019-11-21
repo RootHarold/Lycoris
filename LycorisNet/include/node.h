@@ -42,8 +42,6 @@ namespace LycorisNet {
         float delta_backup;
         std::map<Gen, Ome> *genomeMap;
 
-        void initializeBias(float f);
-
         // Deep clone of Node.
         Node *clone();
     };
