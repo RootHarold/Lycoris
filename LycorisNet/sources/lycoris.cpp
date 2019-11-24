@@ -62,11 +62,7 @@ namespace LycorisNet {
     }
 
     void Lycoris::evolve(float **input, float **desire, uint32_t batchSize) {
-        args->inputArray = input;
-        args->desireArray = desire;
-        args->batchSize = batchSize;
-
-        runLycoris(1);
+        evolve(input, desire, batchSize, 1);
     }
 
     void Lycoris::evolve(float **input, float **desire, uint32_t batchSize, uint32_t n) {
@@ -78,13 +74,7 @@ namespace LycorisNet {
     }
 
     void Lycoris::fit(float **input, float **desire, uint32_t batchSize) {
-        args->inputArray = input;
-        args->desireArray = desire;
-        args->batchSize = batchSize;
-
-        checkFirstRun();
-
-        best->BP_Multi_Thread();
+        fit(input, desire, batchSize, 1);
     }
 
     void Lycoris::fit(float **input, float **desire, uint32_t batchSize, uint32_t n) {
@@ -100,13 +90,7 @@ namespace LycorisNet {
     }
 
     void Lycoris::fitAll(float **input, float **desire, uint32_t batchSize) {
-        args->inputArray = input;
-        args->desireArray = desire;
-        args->batchSize = batchSize;
-
-        checkFirstRun();
-
-        backPropagation();
+        fitAll(input, desire, batchSize, 1);
     }
 
     void Lycoris::fitAll(float **input, float **desire, uint32_t batchSize, uint32_t n) {
