@@ -52,6 +52,10 @@ namespace LycorisNet {
         return capacity;
     }
 
+    std::string Lycoris::getMode() {
+        return args->mode;
+    }
+
     void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections) {
         addHiddenNodes(num_of_nodes);
         addConnections(num_of_connections);

@@ -31,6 +31,8 @@ namespace LycorisNet {
 
         uint32_t getCapacity();
 
+        std::string getMode();
+
         void preheat(uint32_t num_of_nodes, uint32_t num_of_connections);
 
         // Set the input array and the desire array. And then run forward.
