@@ -30,7 +30,7 @@ namespace LycorisNet {
 
     Lycoris::~Lycoris() {
         checkFirstRun();
-        
+
         delete args;
 
         for (auto iter = individualList->begin(); iter != individualList->end(); ++iter) {
@@ -264,6 +264,8 @@ namespace LycorisNet {
     }
 
     void Lycoris::exportLycoris(std::string path) {
+        checkFirstRun();
+
         std::ofstream outfile;
         outfile.open(path);
 
