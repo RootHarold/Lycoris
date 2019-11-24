@@ -21,7 +21,7 @@ namespace LycorisNet {
 
     class Lycoris {
     public:
-        Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, const std::string& mode);
+        Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, const std::string &mode);
 
         ~Lycoris();
 
@@ -123,6 +123,8 @@ namespace LycorisNet {
         void addConnections(uint32_t num);
 
         void addConnectionsCore(uint32_t start, uint32_t end, uint32_t num);
+
+        void checkFirstRun();
     };
 
 }

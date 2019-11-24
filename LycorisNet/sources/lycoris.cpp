@@ -13,7 +13,7 @@
 
 namespace LycorisNet {
 
-    Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, const std::string& mode) {
+    Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, const std::string &mode) {
         this->capacity = capacity;
         this->inputNum = inputNum;
         this->outputNum = outputNum;
@@ -515,20 +515,7 @@ namespace LycorisNet {
     }
 
     void Lycoris::addHiddenNodes(uint32_t num) {
-        if (args->firstRun) {
-            args->firstRun = false;
-
-            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-            if (initialCapacity == 0) {
-                initialCapacity = 1;
-            }
-
-            individualList = new std::vector<Individual *>(initialCapacity);
-            for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*individualList)[i] = new Individual(inputNum, outputNum, args);
-            }
-            best = (*individualList)[0];
-        }
+        checkFirstRun();
 
         auto start = new uint32_t[args->cpuNum];
         auto end = new uint32_t[args->cpuNum];
@@ -561,21 +548,6 @@ namespace LycorisNet {
     }
 
     void Lycoris::addConnections(uint32_t num) {
-        if (args->firstRun) {
-            args->firstRun = false;
-
-            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-            if (initialCapacity == 0) {
-                initialCapacity = 1;
-            }
-
-            individualList = new std::vector<Individual *>(initialCapacity);
-            for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*individualList)[i] = new Individual(inputNum, outputNum, args);
-            }
-            best = (*individualList)[0];
-        }
-
         auto start = new uint32_t[args->cpuNum];
         auto end = new uint32_t[args->cpuNum];
         auto individualLength = uint32_t(individualList->size());
@@ -603,6 +575,23 @@ namespace LycorisNet {
     void Lycoris::addConnectionsCore(uint32_t start, uint32_t end, uint32_t num) {
         for (uint32_t i = start; i < end; ++i) {
             args->utils->addConnections(*((*individualList)[i]), num);
+        }
+    }
+
+    void Lycoris::checkFirstRun() {
+        if (args->firstRun) {
+            args->firstRun = false;
+
+            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
+            if (initialCapacity == 0) {
+                initialCapacity = 1;
+            }
+
+            individualList = new std::vector<Individual *>(initialCapacity);
+            for (uint32_t i = 0; i < initialCapacity; ++i) {
+                (*individualList)[i] = new Individual(inputNum, outputNum, args);
+            }
+            best = (*individualList)[0];
         }
     }
 
