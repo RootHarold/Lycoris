@@ -29,6 +29,8 @@ namespace LycorisNet {
     }
 
     Lycoris::~Lycoris() {
+        checkFirstRun();
+        
         delete args;
 
         for (auto iter = individualList->begin(); iter != individualList->end(); ++iter) {
@@ -76,6 +78,8 @@ namespace LycorisNet {
         args->desireArray = desire;
         args->batchSize = batchSize;
 
+        checkFirstRun();
+
         best->BP_Multi_Thread();
     }
 
@@ -83,6 +87,8 @@ namespace LycorisNet {
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = batchSize;
+
+        checkFirstRun();
 
         for (uint32_t i = 0; i < n; ++i) {
             best->BP_Multi_Thread();
@@ -94,21 +100,7 @@ namespace LycorisNet {
         args->desireArray = desire;
         args->batchSize = batchSize;
 
-        // It may be redundant. Need to be reviewed.
-        if (args->firstRun) {
-            args->firstRun = false;
-
-            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-            if (initialCapacity == 0) {
-                initialCapacity = 1;
-            }
-
-            individualList = new std::vector<Individual *>(initialCapacity);
-            for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*individualList)[i] = new Individual(inputNum, outputNum, args);
-            }
-            best = (*individualList)[0];
-        }
+        checkFirstRun();
 
         backPropagation();
     }
@@ -118,21 +110,7 @@ namespace LycorisNet {
         args->desireArray = desire;
         args->batchSize = batchSize;
 
-        // It may be redundant. Need to be reviewed.
-        if (args->firstRun) {
-            args->firstRun = false;
-
-            auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-            if (initialCapacity == 0) {
-                initialCapacity = 1;
-            }
-
-            individualList = new std::vector<Individual *>(initialCapacity);
-            for (uint32_t i = 0; i < initialCapacity; ++i) {
-                (*individualList)[i] = new Individual(inputNum, outputNum, args);
-            }
-            best = (*individualList)[0];
-        }
+        checkFirstRun();
 
         for (uint32_t i = 0; i < n; ++i) {
             backPropagation();
@@ -140,6 +118,8 @@ namespace LycorisNet {
     }
 
     void Lycoris::enrich() {
+        checkFirstRun();
+
         uint32_t totalLength = individualList->size();
         if (totalLength == 0) {
             std::cout << "All died." << std::endl;
@@ -182,6 +162,8 @@ namespace LycorisNet {
     }
 
     void Lycoris::compute(float *input, float *output) {
+        checkFirstRun();
+
         best->forward(input, output);
 
         if (args->mode == "classify") {
@@ -342,6 +324,8 @@ namespace LycorisNet {
     }
 
     uint32_t Lycoris::getSize() {
+        checkFirstRun();
+
         return best->getSize();
     }
 
@@ -475,22 +459,9 @@ namespace LycorisNet {
     }
 
     void Lycoris::runLycoris(uint32_t n) {
+        checkFirstRun();
+
         for (uint32_t j = 0; j < n; ++j) {
-            if (args->firstRun) {
-                args->firstRun = false;
-
-                auto initialCapacity = uint32_t(float(capacity) / (1 + args->mutateOdds));
-                if (initialCapacity == 0) {
-                    initialCapacity = 1;
-                }
-
-                individualList = new std::vector<Individual *>(initialCapacity);
-                for (uint32_t i = 0; i < initialCapacity; ++i) {
-                    (*individualList)[i] = new Individual(inputNum, outputNum, args);
-                }
-                best = (*individualList)[0];
-            }
-
             // Mutating.
             mutate();
             // Forward calculation.
