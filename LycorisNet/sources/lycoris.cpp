@@ -40,22 +40,6 @@ namespace LycorisNet {
         delete individualList;
     }
 
-    uint32_t Lycoris::getInputNum() {
-        return inputNum;
-    }
-
-    uint32_t Lycoris::getOutputNum() {
-        return outputNum;
-    }
-
-    uint32_t Lycoris::getCapacity() {
-        return capacity;
-    }
-
-    std::string Lycoris::getMode() {
-        return args->mode;
-    }
-
     void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections) {
         addHiddenNodes(num_of_nodes);
         addConnections(num_of_connections);
@@ -317,6 +301,22 @@ namespace LycorisNet {
         checkFirstRun();
 
         return best->getSize();
+    }
+
+    uint32_t Lycoris::getInputNum() {
+        return inputNum;
+    }
+
+    uint32_t Lycoris::getOutputNum() {
+        return outputNum;
+    }
+
+    uint32_t Lycoris::getCapacity() {
+        return capacity;
+    }
+
+    std::string Lycoris::getMode() {
+        return args->mode;
     }
 
     void Lycoris::mutate() {

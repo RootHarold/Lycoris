@@ -25,14 +25,6 @@ namespace LycorisNet {
 
         ~Lycoris();
 
-        uint32_t getInputNum();
-
-        uint32_t getOutputNum();
-
-        uint32_t getCapacity();
-
-        std::string getMode();
-
         void preheat(uint32_t num_of_nodes, uint32_t num_of_connections);
 
         // Set the input array and the desire array. And then run forward.
@@ -81,6 +73,14 @@ namespace LycorisNet {
 
         // Get the size of the best individual.
         uint32_t getSize();
+
+        uint32_t getInputNum();
+
+        uint32_t getOutputNum();
+
+        uint32_t getCapacity();
+
+        std::string getMode();
 
     private:
         // The dimension of input.
