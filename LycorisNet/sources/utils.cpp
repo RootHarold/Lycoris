@@ -124,34 +124,32 @@ namespace LycorisNet {
     }
 
     void LycorisUtils::addHiddenNodes(LycorisNet::Individual &in, uint32_t num) {
-        auto offspring = &in;
         for (uint32_t i = 0; i < num; ++i) {
-            auto n = new Node(offspring->nodeSum, 1);
-            offspring->nodeSum++;
-            offspring->nodeMap->insert(std::make_pair(n->nodeNum, n));
-            offspring->nodeSlice->insert(offspring->nodeSlice->begin() + (offspring->inputNum + i), n->nodeNum);
+            auto n = new Node(in.nodeSum, 1);
+            in.nodeSum++;
+            in.nodeMap->insert(std::make_pair(n->nodeNum, n));
+            in.nodeSlice->insert(in.nodeSlice->begin() + (in.inputNum + i), n->nodeNum);
         }
     }
 
     void LycorisUtils::addConnections(LycorisNet::Individual &in, uint32_t num) {
-        auto offspring = &in;
         for (uint32_t i = 0; i < num; ++i) {
             // Add a new connection between two nodes.
-            auto length = uint32_t(offspring->nodeSlice->size());
+            auto length = uint32_t(in.nodeSlice->size());
             auto index1 = LycorisRandomUint32_t(length);
             auto index2 = index1 + LycorisRandomUint32_t(length - index1);
 
             if (index1 != index2) {
-                auto inputNum = (*(offspring->nodeSlice))[index1];
-                auto outputNum = (*(offspring->nodeSlice))[index2];
-                auto inputNode = (*(offspring->nodeMap))[inputNum];
-                auto outputNode = (*(offspring->nodeMap))[outputNum];
+                auto inputNum = (*(in.nodeSlice))[index1];
+                auto outputNum = (*(in.nodeSlice))[index2];
+                auto inputNode = (*(in.nodeMap))[inputNum];
+                auto outputNode = (*(in.nodeMap))[outputNum];
 
                 if (!((inputNode->nodeType == 0 && outputNode->nodeType == 0) || inputNode->nodeType == 2)) {
                     Gen g(inputNum, outputNum);
                     if (outputNode->genomeMap->find(g) == outputNode->genomeMap->end()) {
-                        Ome o(LycorisRandomFloat(in.args->weightA, in.args->weightB), offspring->innovationNum);
-                        offspring->innovationNum++;
+                        Ome o(LycorisRandomFloat(in.args->weightA, in.args->weightB), in.innovationNum);
+                        in.innovationNum++;
                         outputNode->genomeMap->insert(std::make_pair(g, o));
                     }
                 }

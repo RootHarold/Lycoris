@@ -130,7 +130,7 @@ namespace LycorisNet {
         // Mutating the individual.
         Individual *mutateIndividual(Individual &in);
 
-        void addHiddenNodes(Individual &in, uint32_t num);
+        static void addHiddenNodes(Individual &in, uint32_t num);
 
         void addConnections(Individual &in, uint32_t num);
     };
