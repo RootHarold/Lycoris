@@ -67,9 +67,8 @@ namespace LycorisNet {
             float sum = 0;
 
             for (uint32_t i = 0; i < length; ++i) {
-                auto temp = expf(array[i]);
-                array[i] = temp;
-                sum += temp;
+                array[i] = expf(array[i]);
+                sum += array[i];
             }
 
             for (uint32_t i = 0; i < length; ++i) {
