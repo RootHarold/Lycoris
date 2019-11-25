@@ -120,14 +120,6 @@ namespace LycorisNet {
 
         void preheatCore(uint32_t start, uint32_t end, uint32_t num_of_nodes, uint32_t num_of_connections);
 
-        void addHiddenNodes(uint32_t num);
-
-        void addHiddenNodesCore(uint32_t start, uint32_t end, uint32_t num);
-
-        void addConnections(uint32_t num);
-
-        void addConnectionsCore(uint32_t start, uint32_t end, uint32_t num);
-
         void checkFirstRun();
     };
 
