@@ -41,8 +41,31 @@ namespace LycorisNet {
     }
 
     void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections) {
-        addHiddenNodes(num_of_nodes);
-        addConnections(num_of_connections);
+        checkFirstRun();
+
+        auto start = new uint32_t[args->cpuNum];
+        auto end = new uint32_t[args->cpuNum];
+        auto individualLength = uint32_t(individualList->size());
+        auto part = individualLength / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t i = 0; i < temp; ++i) {
+            start[i] = i * part;
+            end[i] = (i + 1) * part;
+        }
+        start[temp] = temp * part;
+        end[temp] = individualLength;
+
+        std::vector<std::thread> threads;
+        for (uint32_t i = 0; i < args->cpuNum; ++i) {
+            threads.emplace_back(
+                    std::thread(&Lycoris::preheatCore, this, start[i], end[i], num_of_nodes, num_of_connections));
+        }
+        for (auto &thread : threads) {
+            thread.join();
+        }
+
+        delete[] start;
+        delete[] end;
     }
 
     void Lycoris::evolve(float **input, float **desire, uint32_t batchSize) {
@@ -475,6 +498,13 @@ namespace LycorisNet {
         }
     }
 
+    void Lycoris::preheatCore(uint32_t start, uint32_t end, uint32_t num_of_nodes, uint32_t num_of_connections) {
+        for (uint32_t i = start; i < end; ++i) {
+            args->utils->addHiddenNodes(*((*individualList)[i]), num_of_nodes);
+            args->utils->addConnections(*((*individualList)[i]), num_of_connections);
+        }
+    }
+
     void Lycoris::addHiddenNodes(uint32_t num) {
         checkFirstRun();
 
@@ -494,7 +524,7 @@ namespace LycorisNet {
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
             threads.emplace_back(std::thread(&Lycoris::addHiddenNodesCore, this, start[i], end[i], num));
         }
-        for (auto & thread : threads) {
+        for (auto &thread : threads) {
             thread.join();
         }
 
@@ -525,7 +555,7 @@ namespace LycorisNet {
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
             threads.emplace_back(std::thread(&Lycoris::addConnectionsCore, this, start[i], end[i], num));
         }
-        for (auto & thread : threads) {
+        for (auto &thread : threads) {
             thread.join();
         }
 

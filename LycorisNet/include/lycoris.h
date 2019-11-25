@@ -118,6 +118,8 @@ namespace LycorisNet {
         // Each time this function is called, the network runs forward one time.
         void runLycoris(uint32_t n);
 
+        void preheatCore(uint32_t start, uint32_t end, uint32_t num_of_nodes, uint32_t num_of_connections);
+
         void addHiddenNodes(uint32_t num);
 
         void addHiddenNodesCore(uint32_t start, uint32_t end, uint32_t num);
