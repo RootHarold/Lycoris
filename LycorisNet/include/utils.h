@@ -101,8 +101,8 @@ namespace LycorisNet {
 
         // Generate a random number of min-max (float).
         inline float LycorisRandomFloat(float min, float max) {
-            auto temp = (rd() - std::random_device::min()) /
-                        float(std::random_device::max() - std::random_device::min() + 1.0);
+            auto temp =
+                    (rd() - std::random_device::min()) / double(std::random_device::max() - std::random_device::min());
             return temp * (max - min) + min;
         };
 
