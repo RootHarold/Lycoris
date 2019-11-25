@@ -12,7 +12,6 @@
 namespace LycorisNet {
 
     Args::Args() {
-        activateFunc = LycorisUtils::relu;
         utils = new LycorisUtils();
 
         p1 = 0.05;

@@ -74,9 +74,6 @@ namespace LycorisNet {
         float **desireArray;
         uint32_t batchSize;
 
-        // Active function.
-        float (*activateFunc)(float);
-
         // When memory exceeds the limit, this changes to true.
         bool memOverFlag;
         // The flag of memory limit.

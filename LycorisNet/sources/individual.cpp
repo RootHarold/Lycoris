@@ -89,27 +89,24 @@ namespace LycorisNet {
             (*nodeMap)[i]->value = input[i];
         }
 
+        uint32_t pointer = 0;
+
         for (uint32_t i = inputNum; i < nodeSlice->size(); ++i) {
-            auto index = (*nodeSlice)[i];
-            auto n = (*nodeMap)[index];
+            auto n = (*nodeMap)[(*nodeSlice)[i]];
             float f = 0;
 
-            for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
-                auto g = iter->first;
-                auto o = iter->second;
+            for (auto &iter : *n->genomeMap) {
+                auto g = iter.first;
+                auto o = iter.second;
                 auto temp = nodeMap->find(g.in);
                 if (temp != nodeMap->end()) {
                     f += temp->second->value * o.weight;
                 }
             }
-            n->value = args->activateFunc(f + n->bias);
-        }
+            n->value = LycorisUtils::relu(f + n->bias);
 
-        uint32_t pointer = 0;
-        for (uint32_t i = inputNum; i < nodeSlice->size(); ++i) {
-            auto temp = (*nodeMap)[(*nodeSlice)[i]];
-            if (temp->nodeType == 2) {
-                output[pointer] = temp->value;
+            if (n->nodeType == 2) {
+                output[pointer] = n->value;
                 pointer++;
             }
         }
