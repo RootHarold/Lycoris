@@ -309,6 +309,10 @@ namespace LycorisNet {
     }
 
     void Lycoris::setMutateOdds(float odds) {
+        if (odds < 0) {
+            std::cout << "The parameter cannot be set to smaller than zero." << std::endl;
+            exit(3);
+        }
         args->mutateOdds = odds;
     }
 
@@ -397,7 +401,7 @@ namespace LycorisNet {
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
             threads.emplace_back(std::thread(&Lycoris::backPropagationCore, this, start[i], end[i]));
         }
-        for (auto & thread : threads) {
+        for (auto &thread : threads) {
             thread.join();
         }
 
@@ -500,7 +504,7 @@ namespace LycorisNet {
 
     void Lycoris::preheatCore(uint32_t start, uint32_t end, uint32_t num_of_nodes, uint32_t num_of_connections) {
         for (uint32_t i = start; i < end; ++i) {
-            args->utils->addHiddenNodes(*((*individualList)[i]), num_of_nodes);
+            LycorisNet::LycorisUtils::addHiddenNodes(*((*individualList)[i]), num_of_nodes);
             args->utils->addConnections(*((*individualList)[i]), num_of_connections);
         }
     }
