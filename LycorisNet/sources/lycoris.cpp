@@ -174,7 +174,6 @@ namespace LycorisNet {
     void Lycoris::closeMemLimit() {
         args->memLimitFlag = false;
         args->memOverFlag = false;
-        args->firstOver = false;
     }
 
     Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
