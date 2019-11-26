@@ -38,10 +38,10 @@ namespace LycorisNet {
 
                 auto ranPos = LycorisRandomUint32_t(uint32_t(nodeOld->genomeMap->size()));
                 uint32_t count = 0;
-                for (auto iter = nodeOld->genomeMap->begin(); iter != nodeOld->genomeMap->end(); ++iter) {
+                for (auto & iter : *nodeOld->genomeMap) {
                     if (count == ranPos) {
-                        genOld = iter->first;
-                        omeOld = iter->second;
+                        genOld = iter.first;
+                        omeOld = iter.second;
                         break;
                     }
                     count++;
@@ -109,9 +109,9 @@ namespace LycorisNet {
                 Gen g;
                 auto ranPos = LycorisRandomUint32_t(uint32_t(n->genomeMap->size()));
                 uint32_t count = 0;
-                for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
+                for (auto & iter : *n->genomeMap) {
                     if (count == ranPos) {
-                        g = iter->first;
+                        g = iter.first;
                         break;
                     }
                     count++;

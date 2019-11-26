@@ -361,8 +361,8 @@ namespace LycorisNet {
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
             threads.emplace_back(std::thread(&Lycoris::mutateCore, this, start[i], end[i]));
         }
-        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-            (*iter).join();
+        for (auto &thread : threads) {
+            thread.join();
         }
 
         for (uint32_t i = 0; i < mutateLength; ++i) {
