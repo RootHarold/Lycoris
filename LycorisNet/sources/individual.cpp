@@ -113,6 +113,7 @@ namespace LycorisNet {
     }
 
     void Individual::BP_Single_Thread() {
+        this->fitness = 0;
         float output[outputNum];
         std::map<uint32_t, float> gradient; // Store the gradient of all nodes.
         for (uint32_t z = 0; z < args->batchSize; ++z) {
@@ -206,13 +207,13 @@ namespace LycorisNet {
             }
 
             if (args->mode == "classify") {
-                this->fitness =
-                        (this->fitness * z + LycorisUtils::cross_entropy(args->desireArray[z], output, outputNum)) /
-                        float(z + 1);
+                this->fitness += LycorisUtils::cross_entropy(args->desireArray[z], output, outputNum);
             } else {
-                this->fitness = (this->fitness * z -
-                                 LycorisUtils::euclidean_distance(output, args->desireArray[z], outputNum)) /
-                                float(z + 1);
+                this->fitness -= LycorisUtils::euclidean_distance(output, args->desireArray[z], outputNum);
+            }
+
+            if (z == args->batchSize - 1) {
+                this->fitness /= args->batchSize;
             }
         }
 
