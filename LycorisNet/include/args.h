@@ -78,8 +78,6 @@ namespace LycorisNet {
         bool memOverFlag;
         // The flag of memory limit.
         bool memLimitFlag;
-        // To fixed a potential bug.
-        bool firstOver;
         // The size of maximum memory.
         uint32_t limitSize;
         // To fixed a potential bug.

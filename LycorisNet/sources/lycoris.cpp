@@ -453,7 +453,6 @@ namespace LycorisNet {
         if (args->memLimitFlag) {
             if (memSum > (totalLength - z) * args->limitSize) { // Memory exceeds the limit.
                 if (!args->memOverFlag) {
-                    args->firstOver = true;
                     args->memOverFlag = true;
                 }
             } else {
