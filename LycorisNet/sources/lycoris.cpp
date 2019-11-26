@@ -130,10 +130,9 @@ namespace LycorisNet {
         best = (*individualList)[last.individualNum];
 
         auto newIndividualList = new std::vector<Individual *>();
-        uint32_t newLength = 1;
 
         auto z = totalLength;
-        for (; z > totalLength - newLength; --z) {
+        for (; z > totalLength - 1; --z) {
             if (z == 0) { // This needs elegant repairs.
                 break;
             }
@@ -142,8 +141,8 @@ namespace LycorisNet {
             newIndividualList->push_back(tempIndividual);
         }
 
-        if (totalLength - newLength > 0) {
-            for (uint32_t i = 0; i < totalLength - newLength; ++i) {
+        if (totalLength > 1) {
+            for (uint32_t i = 0; i < totalLength - 1; ++i) {
                 if (i == totalLength) {
                     break;
                 }
