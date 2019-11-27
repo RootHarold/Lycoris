@@ -185,6 +185,43 @@ namespace LycorisNet {
         }
     }
 
+    void Lycoris::resize(uint32_t capacity) {
+        if (capacity < this->capacity) {
+
+        } else if (capacity > this->capacity) {
+            auto start = new uint32_t[args->cpuNum];
+            auto end = new uint32_t[args->cpuNum];
+            oldLength = uint32_t(individualList->size());
+            auto mutateLength = capacity - this->capacity;
+            tempList.resize(mutateLength);
+            auto part = mutateLength / args->cpuNum;
+            auto temp = args->cpuNum - 1;
+            for (uint32_t i = 0; i < temp; ++i) {
+                start[i] = i * part;
+                end[i] = (i + 1) * part;
+            }
+            start[temp] = temp * part;
+            end[temp] = mutateLength;
+
+            std::vector<std::thread> threads;
+            for (uint32_t i = 0; i < args->cpuNum; ++i) {
+                threads.emplace_back(std::thread(&Lycoris::mutateCore, this, start[i], end[i]));
+            }
+            for (auto &thread : threads) {
+                thread.join();
+            }
+
+            for (uint32_t i = 0; i < mutateLength; ++i) {
+                individualList->push_back(tempList[i]);
+            }
+
+            delete[] start;
+            delete[] end;
+        }
+
+        this->capacity = capacity;
+    }
+
     void Lycoris::openMemLimit(uint32_t size) {
         args->limitSize = size * 9 / 10;
         args->memLimitFlag = true;

@@ -46,6 +46,8 @@ namespace LycorisNet {
         // Forward Computing of the best individual;
         void compute(float *input, float *output);
 
+        void resize(uint32_t capacity);
+
         // Turn on memory-limit.
         void openMemLimit(uint32_t size);
 
