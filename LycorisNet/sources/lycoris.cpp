@@ -209,7 +209,6 @@ namespace LycorisNet {
             auto newIndividualList = new std::vector<Individual *>();
             auto newLength = (temp1 == 0 ? 1 : temp1);
 
-            uint32_t memSum = 0;
             auto z = totalLength;
             for (; z > totalLength - newLength; --z) {
                 if (z == 0) { // This needs elegant repairs.
@@ -217,21 +216,9 @@ namespace LycorisNet {
                 }
                 auto temp = sortList[z - 1];
                 auto tempIndividual = (*individualList)[temp.individualNum];
-                if (args->memLimitFlag) {
-                    memSum += tempIndividual->getSize();
-                }
                 newIndividualList->push_back(tempIndividual);
             }
-            if (args->memLimitFlag) {
-                if (memSum > (totalLength - z) * args->limitSize) { // Memory exceeds the limit.
-                    if (!args->memOverFlag) {
-                        args->memOverFlag = true;
-                    }
-                } else {
-                    args->memOverFlag = false;
-                }
-            }
-
+            
             if (totalLength - newLength > 0) {
                 for (uint32_t i = 0; i < totalLength - newLength; ++i) {
                     if (i == totalLength) {
@@ -275,7 +262,7 @@ namespace LycorisNet {
             delete[] end;
         }
 
-        this->capacity = capacity;
+        this->capacity = num;
     }
 
     void Lycoris::openMemLimit(uint32_t size) {
