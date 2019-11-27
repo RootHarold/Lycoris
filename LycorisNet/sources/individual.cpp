@@ -251,8 +251,8 @@ namespace LycorisNet {
         for (uint32_t i = 0; i < args->cpuNum; ++i) {
             threads.emplace_back(std::thread(&Individual::BP_Multi_Thread_Core, this, start[i], end[i]));
         }
-        for (auto iter = threads.begin(); iter != threads.end(); ++iter) {
-            (*iter).join();
+        for (auto & thread : threads) {
+            thread.join();
         }
 
         part = (individualSize) / args->cpuNum;
@@ -268,8 +268,8 @@ namespace LycorisNet {
             threads2.emplace_back(
                     std::thread(&Individual::BP_Multi_Thread_Forward, this, start[i], end[i], args->midData));
         }
-        for (auto iter = threads2.begin(); iter != threads2.end(); ++iter) {
-            (*iter).join();
+        for (auto & iter : threads2) {
+            iter.join();
         }
 
         uint32_t data_p = 0;

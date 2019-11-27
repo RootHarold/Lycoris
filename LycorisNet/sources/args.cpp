@@ -38,12 +38,14 @@ namespace LycorisNet {
     Args::~Args() {
         delete utils;
 
-        for (uint32_t i = 0; i < batchSize; ++i) {
-            delete[] batchData[i];
-        }
-        delete[] batchData;
+        if (!batchFlag) {
+            for (uint32_t i = 0; i < batchSize; ++i) {
+                delete[] batchData[i];
+            }
+            delete[] batchData;
 
-        delete[] midData;
+            delete[] midData;
+        }
     }
 
 }
