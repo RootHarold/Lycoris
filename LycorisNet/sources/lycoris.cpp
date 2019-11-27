@@ -87,6 +87,26 @@ namespace LycorisNet {
     void Lycoris::fit(float **input, float **desire, uint32_t batchSize, uint32_t n) {
         args->inputArray = input;
         args->desireArray = desire;
+
+        if (!args->batchFlag) {
+            if (batchSize != args->batchSize) {
+                for (uint32_t i = 0; i < args->batchSize; ++i) {
+                    delete[] args->batchData[i];
+                }
+                delete[] args->batchData;
+
+                delete[] args->midData;
+
+                auto individualSize = best->getSize() + 1;
+                args->batchData = new float *[batchSize];
+
+                for (uint32_t i = 0; i < batchSize; ++i) {
+                    args->batchData[i] = new float[individualSize];
+                }
+
+                args->midData = new float[individualSize];
+            }
+        }
         args->batchSize = batchSize;
 
         checkFirstRun();
