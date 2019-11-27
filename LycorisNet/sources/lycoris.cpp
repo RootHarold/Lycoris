@@ -185,14 +185,70 @@ namespace LycorisNet {
         }
     }
 
-    void Lycoris::resize(uint32_t capacity) {
-        if (capacity < this->capacity) {
+    void Lycoris::resize(uint32_t num) {
+        checkFirstRun();
 
-        } else if (capacity > this->capacity) {
+        auto temp1 = uint32_t(float(num) / (1 + args->mutateOdds));
+        auto temp2 = uint32_t(individualList->size());
+
+        if (temp1 < temp2) {
+            uint32_t totalLength = temp2;
+            if (totalLength == 0) {
+                std::cout << "All died." << std::endl;
+                exit(2);
+            }
+
+            std::vector<SortFitness> sortList(totalLength);
+            for (uint32_t i = 0; i < totalLength; ++i) {
+                sortList[i] = SortFitness((*individualList)[i]->fitness, i);
+            }
+            std::sort(sortList.begin(), sortList.end(), LycorisUtils::compareFitness);
+            auto last = sortList[totalLength - 1];
+            best = (*individualList)[last.individualNum];
+
+            auto newIndividualList = new std::vector<Individual *>();
+            auto newLength = (temp1 == 0 ? 1 : temp1);
+
+            uint32_t memSum = 0;
+            auto z = totalLength;
+            for (; z > totalLength - newLength; --z) {
+                if (z == 0) { // This needs elegant repairs.
+                    break;
+                }
+                auto temp = sortList[z - 1];
+                auto tempIndividual = (*individualList)[temp.individualNum];
+                if (args->memLimitFlag) {
+                    memSum += tempIndividual->getSize();
+                }
+                newIndividualList->push_back(tempIndividual);
+            }
+            if (args->memLimitFlag) {
+                if (memSum > (totalLength - z) * args->limitSize) { // Memory exceeds the limit.
+                    if (!args->memOverFlag) {
+                        args->memOverFlag = true;
+                    }
+                } else {
+                    args->memOverFlag = false;
+                }
+            }
+
+            if (totalLength - newLength > 0) {
+                for (uint32_t i = 0; i < totalLength - newLength; ++i) {
+                    if (i == totalLength) {
+                        break;
+                    }
+                    auto temp = sortList[i];
+                    auto tempIndividual = (*individualList)[temp.individualNum];
+                    delete tempIndividual;
+                }
+            }
+            delete individualList;
+            individualList = newIndividualList;
+        } else if (temp1 > temp2) {
             auto start = new uint32_t[args->cpuNum];
             auto end = new uint32_t[args->cpuNum];
-            oldLength = uint32_t(individualList->size());
-            auto mutateLength = capacity - this->capacity;
+            oldLength = temp2;
+            auto mutateLength = temp1 - temp2;
             tempList.resize(mutateLength);
             auto part = mutateLength / args->cpuNum;
             auto temp = args->cpuNum - 1;
