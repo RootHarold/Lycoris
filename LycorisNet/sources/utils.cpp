@@ -136,19 +136,21 @@ namespace LycorisNet {
         auto length = uint32_t(in.nodeSlice->size());
         std::vector<uint32_t> arr[in.args->depth];
         uint32_t pointer = 0;
+
         std::vector<uint32_t> input_arr(in.inputNum);
         for (uint32_t i = 0; i < in.inputNum; ++i) {
             input_arr[i] = (*(in.nodeSlice))[pointer];
             ++pointer;
         }
         arr[0] = input_arr;
+
         auto left = length - in.inputNum - in.outputNum;
         for (uint32_t i = 1; i < in.args->depth - 1; ++i) {
             uint32_t temp_length;
             if (i == in.args->depth - 2) {
                 temp_length = left;
             } else {
-                temp_length = LycorisRandomUint32_t(left);
+                temp_length = LycorisRandomUint32_t(left - in.args->depth + 2 + i) + 1;
                 left -= temp_length;
             }
             std::vector<uint32_t> temp_arr(temp_length);
@@ -160,6 +162,7 @@ namespace LycorisNet {
 
             arr[i] = temp_arr;
         }
+
         std::vector<uint32_t> output_arr(in.outputNum);
         for (uint32_t i = 0; i < in.outputNum; ++i) {
             output_arr[i] = (*(in.nodeSlice))[pointer];
@@ -176,16 +179,13 @@ namespace LycorisNet {
                 auto inputNum = arr[index1][LycorisRandomUint32_t(arr[index1].size())];
                 auto outputNum = arr[index2][LycorisRandomUint32_t(arr[index2].size())];
 
-                auto inputNode = (*(in.nodeMap))[inputNum];
                 auto outputNode = (*(in.nodeMap))[outputNum];
 
-                if (!((inputNode->nodeType == 0 && outputNode->nodeType == 0) || inputNode->nodeType == 2)) {
-                    Gen g(inputNum, outputNum);
-                    if (outputNode->genomeMap->find(g) == outputNode->genomeMap->end()) {
-                        Ome o(LycorisRandomFloat(in.args->weightA, in.args->weightB), in.innovationNum);
-                        in.innovationNum++;
-                        outputNode->genomeMap->insert(std::make_pair(g, o));
-                    }
+                Gen g(inputNum, outputNum);
+                if (outputNode->genomeMap->find(g) == outputNode->genomeMap->end()) {
+                    Ome o(LycorisRandomFloat(in.args->weightA, in.args->weightB), in.innovationNum);
+                    in.innovationNum++;
+                    outputNode->genomeMap->insert(std::make_pair(g, o));
                 }
             }
         }

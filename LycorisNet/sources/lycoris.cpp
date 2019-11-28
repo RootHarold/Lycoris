@@ -41,7 +41,7 @@ namespace LycorisNet {
     }
 
     void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth) {
-        if (depth < 2 || (depth == 2 && num_of_nodes != 0)) {
+        if (depth < 2 || depth > num_of_nodes + 2) {
             std::cout << R"(The parameter "depth" is invalid.)" << std::endl;
             exit(4);
         }
