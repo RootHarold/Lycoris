@@ -25,7 +25,7 @@ namespace LycorisNet {
 
         ~Lycoris();
 
-        void preheat(uint32_t num_of_nodes, uint32_t num_of_connections);
+        void preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth);
 
         // Set the input array and the desire array. And then run forward.
         void evolve(float **input, float **desire, uint32_t batchSize);

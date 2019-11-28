@@ -38,7 +38,7 @@ namespace LycorisNet {
 
                 auto ranPos = LycorisRandomUint32_t(uint32_t(nodeOld->genomeMap->size()));
                 uint32_t count = 0;
-                for (auto & iter : *nodeOld->genomeMap) {
+                for (auto &iter : *nodeOld->genomeMap) {
                     if (count == ranPos) {
                         genOld = iter.first;
                         omeOld = iter.second;
@@ -109,7 +109,7 @@ namespace LycorisNet {
                 Gen g;
                 auto ranPos = LycorisRandomUint32_t(uint32_t(n->genomeMap->size()));
                 uint32_t count = 0;
-                for (auto & iter : *n->genomeMap) {
+                for (auto &iter : *n->genomeMap) {
                     if (count == ranPos) {
                         g = iter.first;
                         break;
@@ -133,15 +133,49 @@ namespace LycorisNet {
     }
 
     void LycorisUtils::addConnections(LycorisNet::Individual &in, uint32_t num) {
+        auto length = uint32_t(in.nodeSlice->size());
+        std::vector<uint32_t> arr[in.args->depth];
+        uint32_t pointer = 0;
+        std::vector<uint32_t> input_arr(in.inputNum);
+        for (uint32_t i = 0; i < in.inputNum; ++i) {
+            input_arr[i] = (*(in.nodeSlice))[pointer];
+            ++pointer;
+        }
+        arr[0] = input_arr;
+        auto left = length - in.inputNum - in.outputNum;
+        for (uint32_t i = 1; i < in.args->depth - 1; ++i) {
+            uint32_t temp_length;
+            if (i == in.args->depth - 2) {
+                temp_length = left;
+            } else {
+                temp_length = LycorisRandomUint32_t(left);
+                left -= temp_length;
+            }
+            std::vector<uint32_t> temp_arr(temp_length);
+
+            for (uint32_t j = 0; j < temp_length; ++j) {
+                temp_arr[i] = (*(in.nodeSlice))[pointer];
+                ++pointer;
+            }
+
+            arr[i] = temp_arr;
+        }
+        std::vector<uint32_t> output_arr(in.outputNum);
+        for (uint32_t i = 0; i < in.outputNum; ++i) {
+            output_arr[i] = (*(in.nodeSlice))[pointer];
+            ++pointer;
+        }
+        arr[in.args->depth - 1] = output_arr;
+
         for (uint32_t i = 0; i < num; ++i) {
             // Add a new connection between two nodes.
-            auto length = uint32_t(in.nodeSlice->size());
-            auto index1 = LycorisRandomUint32_t(length);
-            auto index2 = index1 + LycorisRandomUint32_t(length - index1);
+            auto index1 = LycorisRandomUint32_t(in.args->depth);
+            auto index2 = index1 + LycorisRandomUint32_t(in.args->depth - index1);
 
             if (index1 != index2) {
-                auto inputNum = (*(in.nodeSlice))[index1];
-                auto outputNum = (*(in.nodeSlice))[index2];
+                auto inputNum = arr[index1][LycorisRandomUint32_t(arr[index1].size())];
+                auto outputNum = arr[index2][LycorisRandomUint32_t(arr[index2].size())];
+
                 auto inputNode = (*(in.nodeMap))[inputNum];
                 auto outputNode = (*(in.nodeMap))[outputNum];
 

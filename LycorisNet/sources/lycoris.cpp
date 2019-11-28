@@ -40,7 +40,12 @@ namespace LycorisNet {
         delete individualList;
     }
 
-    void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections) {
+    void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth) {
+        if (depth < 2 || (depth == 2 && num_of_nodes != 0)) {
+            std::cout << R"(The parameter "depth" is invalid.)" << std::endl;
+            exit(4);
+        }
+        args->depth = depth;
         checkFirstRun();
 
         auto start = new uint32_t[args->cpuNum];
@@ -218,7 +223,7 @@ namespace LycorisNet {
                 auto tempIndividual = (*individualList)[temp.individualNum];
                 newIndividualList->push_back(tempIndividual);
             }
-            
+
             if (totalLength - newLength > 0) {
                 for (uint32_t i = 0; i < totalLength - newLength; ++i) {
                     if (i == totalLength) {

@@ -88,6 +88,7 @@ namespace LycorisNet {
         bool batchFlag;
         // Used in BP_P().
         float *midData;
+        uint32_t depth;
     };
 
 }
