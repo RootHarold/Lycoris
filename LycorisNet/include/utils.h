@@ -42,11 +42,6 @@ namespace LycorisNet {
 
         ~LycorisUtils();
 
-        // Return the version information.
-        inline static std::string version() {
-            return "Lycoris Core 2.0-Developing (CPU Mode)";
-        }
-
         friend class Lycoris;
 
         friend class Individual;

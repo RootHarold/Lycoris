@@ -84,6 +84,11 @@ namespace LycorisNet {
 
         std::string getMode();
 
+        // Return the version information.
+        inline static std::string version() {
+            return "Lycoris Core 2.0-Developing (CPU Mode)";
+        }
+
     private:
         // The dimension of input.
         uint32_t inputNum;
