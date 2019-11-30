@@ -6,8 +6,8 @@
     in the LICENSE file.
 */
 
-#ifndef LYCORIS_FACTORY_H
-#define LYCORIS_FACTORY_H
+#ifndef LYCORIS_UTILS_H
+#define LYCORIS_UTILS_H
 
 #include <random>
 #include <regex>
@@ -131,4 +131,4 @@ namespace LycorisNet {
 
 }
 
-#endif //LYCORIS_FACTORY_H
+#endif //LYCORIS_UTILS_H
