@@ -33,7 +33,7 @@ namespace LycorisNet {
 
         delete args;
 
-        for (auto & iter : *individualList) {
+        for (auto &iter : *individualList) {
             delete iter;
         }
 
@@ -400,7 +400,12 @@ namespace LycorisNet {
         outfile.close();
     }
 
-    void Lycoris::setMutateArgs(float *p) {
+    void Lycoris::setMutateArgs(std::vector<float> &p) {
+        if (p.size() != 4 || fabsf(p[0] + p[1] + p[2] + p[3] - 1.0f) > 0.001) {
+            std::cout << "The input is invalid!" << std::endl;
+            exit(5);
+        }
+
         args->p1 = p[0];
         args->p2 = p[1];
         args->p3 = p[2];

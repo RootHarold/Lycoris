@@ -62,7 +62,7 @@ namespace LycorisNet {
         void exportLycoris(std::string path);
 
         // Set p1 to p6 in Args.
-        void setMutateArgs(float *p);
+        void setMutateArgs(std::vector<float> &p);
 
         // Set the odds of mutating.
         void setMutateOdds(float odds);
