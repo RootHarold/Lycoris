@@ -33,8 +33,8 @@ namespace LycorisNet {
 
         delete args;
 
-        for (auto iter = individualList->begin(); iter != individualList->end(); ++iter) {
-            delete *iter;
+        for (auto & iter : *individualList) {
+            delete iter;
         }
 
         delete individualList;
