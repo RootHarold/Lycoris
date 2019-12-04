@@ -72,7 +72,7 @@ namespace LycorisNet {
         }
 
         // The euclidean distance.
-        inline static float euclidean_distance(float *target, float *desire, uint32_t length) {
+        inline static float euclidean_distance(float *target, std::vector<float> &desire, uint32_t length) {
             float ret = 0;
 
             for (uint32_t i = 0; i < length; ++i) {
@@ -83,7 +83,7 @@ namespace LycorisNet {
         }
 
         // Cross-Entropy.
-        inline static float cross_entropy(float *p, float *q, uint32_t length) {
+        inline static float cross_entropy(std::vector<float> &p, float *q, uint32_t length) {
             float ret = 0;
 
             for (uint32_t i = 0; i < length; ++i) {

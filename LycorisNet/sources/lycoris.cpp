@@ -73,11 +73,13 @@ namespace LycorisNet {
         delete[] end;
     }
 
-    void Lycoris::evolve(float **input, float **desire, uint32_t batchSize) {
+    void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
+                         uint32_t batchSize) {
         evolve(input, desire, batchSize, 1);
     }
 
-    void Lycoris::evolve(float **input, float **desire, uint32_t batchSize, uint32_t n) {
+    void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
+                         uint32_t batchSize, uint32_t n) {
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = batchSize;
@@ -85,11 +87,14 @@ namespace LycorisNet {
         runLycoris(n);
     }
 
-    void Lycoris::fit(float **input, float **desire, uint32_t batchSize) {
+    void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
+                      uint32_t batchSize) {
         fit(input, desire, batchSize, 1);
     }
 
-    void Lycoris::fit(float **input, float **desire, uint32_t batchSize, uint32_t n) {
+    void
+    Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t batchSize,
+                 uint32_t n) {
         args->inputArray = input;
         args->desireArray = desire;
 
@@ -121,11 +126,13 @@ namespace LycorisNet {
         }
     }
 
-    void Lycoris::fitAll(float **input, float **desire, uint32_t batchSize) {
+    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
+                         uint32_t batchSize) {
         fitAll(input, desire, batchSize, 1);
     }
 
-    void Lycoris::fitAll(float **input, float **desire, uint32_t batchSize, uint32_t n) {
+    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
+                         uint32_t batchSize, uint32_t n) {
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = batchSize;
@@ -180,18 +187,15 @@ namespace LycorisNet {
         individualList = newIndividualList;
     }
 
-    std::vector<float> Lycoris::compute(std::vector<float> &v) {
-        if (v.size() != inputNum) {
+    std::vector<float> Lycoris::compute(std::vector<float> &input) {
+        if (input.size() != inputNum) {
             std::cout << "The input data is not proper!" << std::endl;
             exit(6);
         }
 
         checkFirstRun();
 
-        float input[inputNum];
-        std::copy(v.begin(), v.end(), input);
         float output[outputNum];
-
         best->forward(input, output);
 
         if (args->mode == "classify") {

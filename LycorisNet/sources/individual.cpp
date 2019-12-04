@@ -84,7 +84,7 @@ namespace LycorisNet {
         return size;
     }
 
-    void Individual::forward(float *input, float *output) {
+    void Individual::forward(std::vector<float> &input, float *output) {
         for (uint32_t i = 0; i < inputNum; ++i) {
             (*nodeMap)[i]->value = input[i];
         }

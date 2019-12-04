@@ -58,7 +58,7 @@ namespace LycorisNet {
         uint32_t getSize();
 
         // Set input array => Forward calculation of the individual => Get output array.
-        void forward(float *input, float *output);
+        void forward(std::vector<float> &input, float *output);
 
         // Back Propagation.
         void BP_Single_Thread();

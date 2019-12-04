@@ -69,9 +69,9 @@ namespace LycorisNet {
         // The mode of Lycoris. (Classify & Predict)
         std::string mode;
         // Store the input array and the desire array.
-        float **inputArray;
+        std::vector<std::vector<float> > inputArray;
         // Store the batch size.
-        float **desireArray;
+        std::vector<std::vector<float> > desireArray;
         uint32_t batchSize;
 
         // When memory exceeds the limit, this changes to true.

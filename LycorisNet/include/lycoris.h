@@ -28,23 +28,30 @@ namespace LycorisNet {
         void preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth);
 
         // Set the input array and the desire array. And then run forward.
-        void evolve(float **input, float **desire, uint32_t batchSize);
+        void
+        evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t batchSize);
 
         // Set the input array and the desire array. And run forward n times.
-        void evolve(float **input, float **desire, uint32_t batchSize, uint32_t n);
+        void
+        evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t batchSize,
+               uint32_t n);
 
-        void fit(float **input, float **desire, uint32_t batchSize);
+        void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t batchSize);
 
-        void fit(float **input, float **desire, uint32_t batchSize, uint32_t n);
+        void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t batchSize,
+                 uint32_t n);
 
-        void fitAll(float **input, float **desire, uint32_t batchSize);
+        void
+        fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t batchSize);
 
-        void fitAll(float **input, float **desire, uint32_t batchSize, uint32_t n);
+        void
+        fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t batchSize,
+               uint32_t n);
 
         void enrich();
 
         // Forward Computing of the best individual;
-        std::vector<float> compute(std::vector<float> &v);
+        std::vector<float> compute(std::vector<float> &input);
 
         void resize(uint32_t capacity);
 
