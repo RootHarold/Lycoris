@@ -181,11 +181,16 @@ namespace LycorisNet {
     }
 
     std::vector<float> Lycoris::compute(std::vector<float> &v) {
+        if (v.size() != inputNum) {
+            std::cout << "The input data is not proper!" << std::endl;
+            exit(6);
+        }
+
         checkFirstRun();
 
-        float input[v.size()];
+        float input[inputNum];
         std::copy(v.begin(), v.end(), input);
-        float output[v.size()];
+        float output[outputNum];
 
         best->forward(input, output);
 
