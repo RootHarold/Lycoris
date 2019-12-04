@@ -180,14 +180,21 @@ namespace LycorisNet {
         individualList = newIndividualList;
     }
 
-    void Lycoris::compute(float *input, float *output) {
+    std::vector<float> Lycoris::compute(std::vector<float> &v) {
         checkFirstRun();
+
+        float input[v.size()];
+        std::copy(v.begin(), v.end(), input);
+        float output[v.size()];
 
         best->forward(input, output);
 
         if (args->mode == "classify") {
             LycorisUtils::softmax(output, outputNum);
         }
+
+        std::vector<float> ret(output, output + sizeof(output) / sizeof(float));
+        return ret;
     }
 
     void Lycoris::resize(uint32_t num) {

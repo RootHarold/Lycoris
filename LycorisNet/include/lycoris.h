@@ -44,7 +44,7 @@ namespace LycorisNet {
         void enrich();
 
         // Forward Computing of the best individual;
-        void compute(float *input, float *output);
+        std::vector<float> compute(std::vector<float> &v);
 
         void resize(uint32_t capacity);
 
