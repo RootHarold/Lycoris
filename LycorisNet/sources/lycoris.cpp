@@ -79,6 +79,11 @@ namespace LycorisNet {
 
     void
     Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n) {
+        if (input.size() != desire.size()) {
+            std::cout << "The input data and the desire data do not match!" << std::endl;
+            exit(7);
+        }
+
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = input.size();
@@ -91,6 +96,11 @@ namespace LycorisNet {
     }
 
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n) {
+        if (input.size() != desire.size()) {
+            std::cout << "The input data and the desire data do not match!" << std::endl;
+            exit(7);
+        }
+
         args->inputArray = input;
         args->desireArray = desire;
         auto batchSize = input.size();
@@ -129,6 +139,11 @@ namespace LycorisNet {
 
     void
     Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n) {
+        if (input.size() != desire.size()) {
+            std::cout << "The input data and the desire data do not match!" << std::endl;
+            exit(7);
+        }
+        
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = input.size();
