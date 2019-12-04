@@ -73,30 +73,27 @@ namespace LycorisNet {
         delete[] end;
     }
 
-    void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
-                         uint32_t batchSize) {
-        evolve(input, desire, batchSize, 1);
+    void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+        evolve(input, desire, 1);
     }
 
-    void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
-                         uint32_t batchSize, uint32_t n) {
+    void
+    Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n) {
         args->inputArray = input;
         args->desireArray = desire;
-        args->batchSize = batchSize;
+        args->batchSize = input.size();
 
         runLycoris(n);
     }
 
-    void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
-                      uint32_t batchSize) {
-        fit(input, desire, batchSize, 1);
+    void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+        fit(input, desire, 1);
     }
 
-    void
-    Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t batchSize,
-                 uint32_t n) {
+    void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n) {
         args->inputArray = input;
         args->desireArray = desire;
+        auto batchSize = input.size();
 
         if (!args->batchFlag) {
             if (batchSize != args->batchSize) {
@@ -126,16 +123,15 @@ namespace LycorisNet {
         }
     }
 
-    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
-                         uint32_t batchSize) {
-        fitAll(input, desire, batchSize, 1);
+    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+        fitAll(input, desire, 1);
     }
 
-    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire,
-                         uint32_t batchSize, uint32_t n) {
+    void
+    Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n) {
         args->inputArray = input;
         args->desireArray = desire;
-        args->batchSize = batchSize;
+        args->batchSize = input.size();
 
         checkFirstRun();
 
