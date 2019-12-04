@@ -143,7 +143,7 @@ namespace LycorisNet {
             std::cout << "The input data and the desire data do not match!" << std::endl;
             exit(7);
         }
-        
+
         args->inputArray = input;
         args->desireArray = desire;
         args->batchSize = input.size();
