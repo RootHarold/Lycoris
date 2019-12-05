@@ -32,8 +32,6 @@ namespace LycorisNet {
 
         void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
-        void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n);
-
         void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
         void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n);
