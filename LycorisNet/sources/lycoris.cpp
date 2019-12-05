@@ -74,11 +74,6 @@ namespace LycorisNet {
     }
 
     void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        evolve(input, desire, 1);
-    }
-
-    void
-    Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n) {
         if (input.size() != desire.size()) {
             std::cout << "The input data and the desire data do not match!" << std::endl;
             exit(7);
@@ -88,7 +83,7 @@ namespace LycorisNet {
         args->desireArray = desire;
         args->batchSize = input.size();
 
-        runLycoris(n);
+        runLycoris();
     }
 
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
@@ -609,30 +604,28 @@ namespace LycorisNet {
         individualList = newIndividualList;
     }
 
-    void Lycoris::runLycoris(uint32_t n) {
+    void Lycoris::runLycoris() {
         checkFirstRun();
 
-        for (uint32_t j = 0; j < n; ++j) {
-            // Mutating.
-            mutate();
-            // Forward calculation.
-            backPropagation();
-            // Sorting and choosing some individuals with higher fitness.
-            chooseElite();
+        // Mutating.
+        mutate();
+        // Forward calculation.
+        backPropagation();
+        // Sorting and choosing some individuals with higher fitness.
+        chooseElite();
 
-            // Memory exceeds the limit.
-            if (args->memOverFlag) {
-                args->p1 = 0;
-                args->p3 = 0;
-                auto temp = args->p2 + args->p4;
-                args->p2 /= temp;
-                args->p4 /= temp;
-            } else {
-                args->p1 = args->p1B;
-                args->p2 = args->p2B;
-                args->p3 = args->p3B;
-                args->p4 = args->p4B;
-            }
+        // Memory exceeds the limit.
+        if (args->memOverFlag) {
+            args->p1 = 0;
+            args->p3 = 0;
+            auto temp = args->p2 + args->p4;
+            args->p2 /= temp;
+            args->p4 /= temp;
+        } else {
+            args->p1 = args->p1B;
+            args->p2 = args->p2B;
+            args->p3 = args->p3B;
+            args->p4 = args->p4B;
         }
     }
 
