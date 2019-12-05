@@ -24,5 +24,10 @@ PYBIND11_MODULE(LycorisNet, m) {
             .def("setMutateOdds", &LycorisNet::Lycoris::setMutateOdds)
             .def("setCpuCores", &LycorisNet::Lycoris::setCpuCores)
             .def("setLR", &LycorisNet::Lycoris::setLR)
+            .def("getSize", &LycorisNet::Lycoris::getSize)
+            .def("getInputNum", &LycorisNet::Lycoris::getInputNum)
+            .def("getOutputNum", &LycorisNet::Lycoris::getOutputNum)
+            .def("getCapacity", &LycorisNet::Lycoris::getCapacity)
+            .def("getMode", &LycorisNet::Lycoris::getMode)
             .def("version", &LycorisNet::Lycoris::version);
 }
