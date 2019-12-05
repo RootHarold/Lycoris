@@ -289,7 +289,7 @@ namespace LycorisNet {
         args->memOverFlag = false;
     }
 
-    Lycoris *Lycoris::importLycoris(std::string path, uint32_t capacity) {
+    Lycoris *Lycoris::import(std::string path, uint32_t capacity) {
         std::ifstream infile(path);
         std::string str;
         std::getline(infile, str);
@@ -370,7 +370,7 @@ namespace LycorisNet {
         return radiata;
     }
 
-    void Lycoris::exportLycoris(std::string path) {
+    void Lycoris::save(std::string path) {
         checkFirstRun();
 
         std::ofstream outfile;
