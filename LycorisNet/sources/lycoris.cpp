@@ -289,7 +289,7 @@ namespace LycorisNet {
         args->memOverFlag = false;
     }
 
-    Lycoris *Lycoris::import(std::string path, uint32_t capacity) {
+    Lycoris *Lycoris::import(const std::string& path, uint32_t capacity) {
         std::ifstream infile(path);
         std::string str;
         std::getline(infile, str);
@@ -370,7 +370,7 @@ namespace LycorisNet {
         return radiata;
     }
 
-    void Lycoris::save(std::string path) {
+    void Lycoris::save(const std::string& path) {
         checkFirstRun();
 
         std::ofstream outfile;
@@ -383,24 +383,24 @@ namespace LycorisNet {
         outfile << std::to_string(best->fitness) << " ";
 
         outfile << std::to_string(best->nodeSlice->size()) << " ";
-        for (auto iter = best->nodeSlice->begin(); iter != best->nodeSlice->end(); ++iter) {
-            outfile << std::to_string(*iter) << " ";
+        for (unsigned int & iter : *best->nodeSlice) {
+            outfile << std::to_string(iter) << " ";
         }
 
         outfile << std::to_string(best->nodeMap->size()) << " ";
-        for (auto iter = best->nodeMap->begin(); iter != best->nodeMap->end(); ++iter) {
-            outfile << std::to_string(iter->first) << " ";
-            outfile << std::to_string(iter->second->nodeNum) << " ";
-            outfile << std::to_string(iter->second->nodeType) << " ";
-            outfile << std::to_string(iter->second->value) << " ";
-            outfile << std::to_string(iter->second->bias) << " ";
+        for (auto & iter : *best->nodeMap) {
+            outfile << std::to_string(iter.first) << " ";
+            outfile << std::to_string(iter.second->nodeNum) << " ";
+            outfile << std::to_string(iter.second->nodeType) << " ";
+            outfile << std::to_string(iter.second->value) << " ";
+            outfile << std::to_string(iter.second->bias) << " ";
 
-            outfile << std::to_string(iter->second->genomeMap->size()) << " ";
-            for (auto it = iter->second->genomeMap->begin(); it != iter->second->genomeMap->end(); ++it) {
-                outfile << std::to_string(it->first.in) << " ";
-                outfile << std::to_string(it->first.out) << " ";
-                outfile << std::to_string(it->second.weight) << " ";
-                outfile << std::to_string(it->second.innovationNum) << " ";
+            outfile << std::to_string(iter.second->genomeMap->size()) << " ";
+            for (auto & it : *iter.second->genomeMap) {
+                outfile << std::to_string(it.first.in) << " ";
+                outfile << std::to_string(it.first.out) << " ";
+                outfile << std::to_string(it.second.weight) << " ";
+                outfile << std::to_string(it.second.innovationNum) << " ";
             }
         }
 

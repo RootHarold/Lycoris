@@ -48,11 +48,11 @@ namespace LycorisNet {
         void closeMemLimit();
 
         // Import the individual.
-        static Lycoris *import(std::string path, uint32_t capacity);
+        static Lycoris *import(const std::string& path, uint32_t capacity);
 
         // Export the individual. The reason why using string to store
         // data is that I just don't wanna use binary.
-        void save(std::string path);
+        void save(const std::string& path);
 
         // Set p1 to p6 in Args.
         void setMutateArgs(std::vector<float> &p);
