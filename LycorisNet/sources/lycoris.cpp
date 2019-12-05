@@ -123,11 +123,6 @@ namespace LycorisNet {
     }
 
     void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        fitAll(input, desire, 1);
-    }
-
-    void
-    Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n) {
         if (input.size() != desire.size()) {
             std::cout << "The input data and the desire data do not match!" << std::endl;
             exit(7);
@@ -139,9 +134,7 @@ namespace LycorisNet {
 
         checkFirstRun();
 
-        for (uint32_t i = 0; i < n; ++i) {
-            backPropagation();
-        }
+        backPropagation();
     }
 
     void Lycoris::enrich() {

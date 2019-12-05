@@ -34,8 +34,6 @@ namespace LycorisNet {
 
         void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
-        void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire, uint32_t n);
-
         void enrich();
 
         // Forward Computing of the best individual;
