@@ -73,7 +73,7 @@ namespace LycorisNet {
         delete[] end;
     }
 
-    void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+    void Lycoris::evolve_(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
         evolve(input, desire, 1);
     }
 
