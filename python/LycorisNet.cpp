@@ -9,7 +9,7 @@ PYBIND11_MODULE(LycorisNet, m) {
 
     py::class_<LycorisNet::Lycoris>(m, "Lycoris")
             .def(py::init<uint32_t, uint32_t, uint32_t, const std::string &>())
-            .def("preheat", &LycorisNet::Lycoris::preheat)
+            .def("preheat", &LycorisNet::Lycoris::preheat, py::arg("nodes"), py::arg("connections"), py::arg("depths"))
             .def("evolve", &LycorisNet::Lycoris::evolve)
             .def("fit", &LycorisNet::Lycoris::fit)
             .def("fitAll", &LycorisNet::Lycoris::fitAll)
