@@ -13,10 +13,10 @@
 
 namespace LycorisNet {
 
-    Lycoris::Lycoris(uint32_t capacity, uint32_t inputNum, uint32_t outputNum, const std::string &mode) {
+    Lycoris::Lycoris(uint32_t capacity, uint32_t inputDim, uint32_t outputDim, const std::string &mode) {
         this->capacity = capacity;
-        this->inputNum = inputNum;
-        this->outputNum = outputNum;
+        this->inputNum = inputDim;
+        this->outputNum = outputDim;
 
         args = new Args();
         if (mode != "predict" && mode != "classify") {
