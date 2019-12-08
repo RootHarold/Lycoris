@@ -33,6 +33,7 @@ namespace LycorisNet {
         memLimitFlag = false;
         firstRun = true;
         batchFlag = true;
+        preheatFlag = true;
     }
 
     Args::~Args() {

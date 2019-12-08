@@ -41,10 +41,18 @@ namespace LycorisNet {
     }
 
     void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth) {
+        if (args->preheatFlag) {
+            args->preheatFlag = false;
+        } else {
+            std::cout << R"(The function "preheat" can only be executed once.)" << std::endl;
+            exit(8);
+        }
+
         if (depth < 2 || depth > num_of_nodes + 2) {
             std::cout << R"(The parameter "depth" is invalid.)" << std::endl;
             exit(4);
         }
+
         args->depth = depth;
         checkFirstRun();
 
