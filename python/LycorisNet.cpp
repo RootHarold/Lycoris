@@ -18,8 +18,7 @@ PYBIND11_MODULE(LycorisNet, m) {
             .def("resize", &LycorisNet::Lycoris::resize)
             .def("openMemLimit", &LycorisNet::Lycoris::openMemLimit)
             .def("closeMemLimit", &LycorisNet::Lycoris::closeMemLimit)
-            .def("load", &LycorisNet::load)
-            .def("save", &LycorisNet::Lycoris::save)
+            .def("saveModel", &LycorisNet::Lycoris::saveModel)
             .def("setMutateArgs", &LycorisNet::Lycoris::setMutateArgs)
             .def("setMutateOdds", &LycorisNet::Lycoris::setMutateOdds)
             .def("setCpuCores", &LycorisNet::Lycoris::setCpuCores)
@@ -30,4 +29,6 @@ PYBIND11_MODULE(LycorisNet, m) {
             .def("getCapacity", &LycorisNet::Lycoris::getCapacity)
             .def("getMode", &LycorisNet::Lycoris::getMode)
             .def("version", &LycorisNet::Lycoris::version);
+
+    m.def("loadModel", &LycorisNet::loadModel);
 }
