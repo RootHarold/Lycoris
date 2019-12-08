@@ -47,9 +47,6 @@ namespace LycorisNet {
         // Turn off memory-limit.
         void closeMemLimit();
 
-        // Import the individual.
-        static Lycoris *load(const std::string &path, uint32_t capacity);
-
         // Export the individual. The reason why using string to store
         // data is that I just don't wanna use binary.
         void save(const std::string &path);
@@ -81,6 +78,8 @@ namespace LycorisNet {
         inline static std::string version() {
             return "Lycoris Core 2.0-Developing (CPU Mode).\nCopyright (C) 2019 RootHarold. All rights reserved.";
         }
+
+        friend Lycoris *load(const std::string &path, uint32_t capacity);
 
     private:
         // The dimension of input.
@@ -122,6 +121,9 @@ namespace LycorisNet {
 
         void checkFirstRun();
     };
+
+    // Import the individual.
+    Lycoris *load(const std::string &path, uint32_t capacity);
 
 }
 

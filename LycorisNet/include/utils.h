@@ -48,6 +48,8 @@ namespace LycorisNet {
 
         friend class Args;
 
+        friend Lycoris *load(const std::string &path, uint32_t capacity);
+
     private:
         // The engine to emerge random numbers.
         std::random_device rd;

@@ -33,6 +33,8 @@ namespace LycorisNet {
 
         friend class Individual;
 
+        friend Lycoris *load(const std::string &path, uint32_t capacity);
+
     private:
         uint32_t nodeNum;
         uint32_t nodeType;

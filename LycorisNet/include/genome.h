@@ -10,8 +10,11 @@
 #define LYCORIS_GENOME_H
 
 #include <cstdint>
+#include <string>
 
 namespace LycorisNet {
+
+    class Lycoris;
 
     /*
      * The class "Gen" and the class "Ome" form connections between nodes.
@@ -43,6 +46,8 @@ namespace LycorisNet {
 
         friend class Individual;
 
+        friend Lycoris *load(const std::string &path, uint32_t capacity);
+
     private:
         uint32_t in;
         uint32_t out;
@@ -59,6 +64,8 @@ namespace LycorisNet {
         friend class Lycoris;
 
         friend class Individual;
+
+        friend Lycoris *load(const std::string &path, uint32_t capacity);
 
     private:
         float weight;
