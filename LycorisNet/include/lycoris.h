@@ -49,7 +49,7 @@ namespace LycorisNet {
 
         // Export the individual. The reason why using string to store
         // data is that I just don't wanna use binary.
-        void save(const std::string &path);
+        void saveModel(const std::string &path);
 
         // Set p1 to p6 in Args.
         void setMutateArgs(std::vector<float> &p);
@@ -79,7 +79,7 @@ namespace LycorisNet {
             return "Lycoris Core 2.0-Developing (CPU Mode).\nCopyright (C) 2019 RootHarold. All rights reserved.";
         }
 
-        friend Lycoris *load(const std::string &path, uint32_t capacity);
+        friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
         // The dimension of input.
@@ -123,7 +123,7 @@ namespace LycorisNet {
     };
 
     // Import the individual.
-    Lycoris *load(const std::string &path, uint32_t capacity);
+    Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
 }
 

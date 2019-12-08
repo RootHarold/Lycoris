@@ -48,7 +48,7 @@ namespace LycorisNet {
 
         friend class Args;
 
-        friend Lycoris *load(const std::string &path, uint32_t capacity);
+        friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
         // The engine to emerge random numbers.

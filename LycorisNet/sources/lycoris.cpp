@@ -289,7 +289,7 @@ namespace LycorisNet {
         args->memOverFlag = false;
     }
 
-    void Lycoris::save(const std::string &path) {
+    void Lycoris::saveModel(const std::string &path) {
         checkFirstRun();
 
         std::ofstream outfile;
@@ -559,7 +559,7 @@ namespace LycorisNet {
         }
     }
 
-    Lycoris *load(const std::string &path, uint32_t capacity) {
+    Lycoris *loadModel(const std::string &path, uint32_t capacity) {
         std::ifstream infile(path);
         std::string str;
         std::getline(infile, str);

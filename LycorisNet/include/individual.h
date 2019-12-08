@@ -38,7 +38,7 @@ namespace LycorisNet {
 
         friend class Lycoris;
 
-        friend Lycoris *load(const std::string &path, uint32_t capacity);
+        friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
         uint32_t inputNum;

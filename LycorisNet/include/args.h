@@ -34,7 +34,7 @@ namespace LycorisNet {
 
         friend class Individual;
 
-        friend Lycoris *load(const std::string &path, uint32_t capacity);
+        friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
         // An object of LycorisUtils is integrated into this.

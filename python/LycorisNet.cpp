@@ -18,7 +18,7 @@ PYBIND11_MODULE(LycorisNet, m) {
             .def("resize", &LycorisNet::Lycoris::resize)
             .def("openMemLimit", &LycorisNet::Lycoris::openMemLimit)
             .def("closeMemLimit", &LycorisNet::Lycoris::closeMemLimit)
-            .def("load", &LycorisNet::Lycoris::load)
+            .def("load", &LycorisNet::load)
             .def("save", &LycorisNet::Lycoris::save)
             .def("setMutateArgs", &LycorisNet::Lycoris::setMutateArgs)
             .def("setMutateOdds", &LycorisNet::Lycoris::setMutateOdds)
