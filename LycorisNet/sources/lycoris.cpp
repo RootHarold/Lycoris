@@ -82,8 +82,8 @@ namespace LycorisNet {
     }
 
     void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        if (!args->fitFlag) {
-            std::cout << "Cannot be executed after fit()." << std::endl;
+        if (!args->fitFlag || !args->enrichFlag) {
+            std::cout << "Cannot be executed after fit() or enrich()." << std::endl;
             exit(10);
         }
 
@@ -100,8 +100,8 @@ namespace LycorisNet {
     }
 
     void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        if (!args->fitFlag) {
-            std::cout << "Cannot be executed after fit()." << std::endl;
+        if (!args->fitFlag || !args->enrichFlag) {
+            std::cout << "Cannot be executed after fit() or enrich()." << std::endl;
             exit(10);
         }
 
@@ -160,6 +160,10 @@ namespace LycorisNet {
     }
 
     void Lycoris::enrich() {
+        if (args->enrichFlag) {
+            args->enrichFlag = false;
+        }
+
         checkFirstRun();
 
         uint32_t totalLength = individualList->size();

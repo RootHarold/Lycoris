@@ -35,6 +35,7 @@ namespace LycorisNet {
         batchFlag = true;
         preheatFlag = true;
         fitFlag = true;
+        enrichFlag = true;
     }
 
     Args::~Args() {

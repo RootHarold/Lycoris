@@ -93,6 +93,7 @@ namespace LycorisNet {
         uint32_t depth;
         bool preheatFlag;
         bool fitFlag;
+        bool enrichFlag;
     };
 
 }
