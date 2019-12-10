@@ -28,6 +28,7 @@ PYBIND11_MODULE(LycorisNet, m) {
             .def("getInputNum", &LycorisNet::Lycoris::getInputNum)
             .def("getOutputNum", &LycorisNet::Lycoris::getOutputNum)
             .def("getCapacity", &LycorisNet::Lycoris::getCapacity)
+            .def("getFitness", &LycorisNet::Lycoris::getFitness)
             .def("getMode", &LycorisNet::Lycoris::getMode)
             .def("version", &LycorisNet::Lycoris::version);
 
