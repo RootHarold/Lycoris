@@ -386,6 +386,10 @@ namespace LycorisNet {
         return capacity;
     }
 
+    float Lycoris::getFitness() {
+        return best->fitness;
+    }
+
     std::string Lycoris::getMode() {
         return args->mode;
     }

@@ -72,6 +72,8 @@ namespace LycorisNet {
 
         uint32_t getCapacity();
 
+        float getFitness();
+
         std::string getMode();
 
         // Return the version information.
