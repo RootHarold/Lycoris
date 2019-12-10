@@ -92,6 +92,7 @@ namespace LycorisNet {
         float *midData;
         uint32_t depth;
         bool preheatFlag;
+        bool fitFlag;
     };
 
 }
