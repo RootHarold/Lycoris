@@ -82,6 +82,11 @@ namespace LycorisNet {
     }
 
     void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+        if (!args->fitFlag) {
+            std::cout << "Cannot be executed after fit()." << std::endl;
+            exit(10);
+        }
+
         if (input.size() != desire.size()) {
             std::cout << "The input data and the desire data do not match!" << std::endl;
             exit(7);
@@ -135,6 +140,11 @@ namespace LycorisNet {
     }
 
     void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+        if (!args->fitFlag) {
+            std::cout << "Cannot be executed after fit()." << std::endl;
+            exit(10);
+        }
+
         if (input.size() != desire.size()) {
             std::cout << "The input data and the desire data do not match!" << std::endl;
             exit(7);
