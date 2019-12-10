@@ -387,6 +387,11 @@ namespace LycorisNet {
     }
 
     float Lycoris::getFitness() {
+        if (args->firstRun) {
+            std::cout << "The function cannot be executed before initialization." << std::endl;
+            exit(9);
+        }
+
         return best->fitness;
     }
 
