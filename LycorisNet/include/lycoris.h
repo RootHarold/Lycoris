@@ -30,9 +30,9 @@ namespace LycorisNet {
         // Set the input array and the desire array. And then run forward.
         void evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
-        void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
-
         void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
+
+        void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
         void enrich();
 

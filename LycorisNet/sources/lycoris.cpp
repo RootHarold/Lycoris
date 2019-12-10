@@ -99,6 +99,26 @@ namespace LycorisNet {
         runLycoris();
     }
 
+    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+        if (!args->fitFlag) {
+            std::cout << "Cannot be executed after fit()." << std::endl;
+            exit(10);
+        }
+
+        if (input.size() != desire.size()) {
+            std::cout << "The input data and the desire data do not match!" << std::endl;
+            exit(7);
+        }
+
+        args->inputArray = input;
+        args->desireArray = desire;
+        args->batchSize = input.size();
+
+        checkFirstRun();
+
+        backPropagation();
+    }
+
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
         if (input.size() != desire.size()) {
             std::cout << "The input data and the desire data do not match!" << std::endl;
@@ -137,26 +157,6 @@ namespace LycorisNet {
         checkFirstRun();
 
         best->BP_Multi_Thread();
-    }
-
-    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        if (!args->fitFlag) {
-            std::cout << "Cannot be executed after fit()." << std::endl;
-            exit(10);
-        }
-
-        if (input.size() != desire.size()) {
-            std::cout << "The input data and the desire data do not match!" << std::endl;
-            exit(7);
-        }
-
-        args->inputArray = input;
-        args->desireArray = desire;
-        args->batchSize = input.size();
-
-        checkFirstRun();
-
-        backPropagation();
     }
 
     void Lycoris::enrich() {
