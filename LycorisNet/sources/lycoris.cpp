@@ -121,7 +121,7 @@ namespace LycorisNet {
 
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
         if (args->enrichFlag) {
-            std::cout << "Function enrich() should be executed first." << std::endl;
+            std::cout << "The function enrich() should be executed first." << std::endl;
             exit(11);
         }
 
