@@ -120,6 +120,11 @@ namespace LycorisNet {
     }
 
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+        if (args->enrichFlag) {
+            std::cout << "Function enrich() should be executed first." << std::endl;
+            exit(11);
+        }
+
         if (input.size() != desire.size()) {
             std::cout << "The input data and the desire data do not match!" << std::endl;
             exit(7);
