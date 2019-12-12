@@ -54,7 +54,9 @@ namespace LycorisNet {
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
+        // The number of the forward node.
         uint32_t in;
+        // The number of the backward node.
         uint32_t out;
     };
 
@@ -78,9 +80,13 @@ namespace LycorisNet {
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
+        // Connection weight.
         float weight;
+        // Gradient.
         float delta;
+        // The backup of gradient.
         float delta_backup;
+        // The number of the connection.
         uint32_t innovationNum;
     };
 
