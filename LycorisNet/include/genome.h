@@ -23,6 +23,11 @@ namespace LycorisNet {
      * in forward computing.
      */
 
+    /*
+     * The class Gen contains the number of the forward node and the
+     * number of the backward node.
+     */
+
     class Gen {
     public:
         Gen();
