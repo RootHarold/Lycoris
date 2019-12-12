@@ -12,16 +12,16 @@
 #include <cstdint>
 #include <string>
 
+/*
+ * The weight connection between nodes in the neural network is
+ * composed of the class of Gen and the class of Ome. A connection
+ * is divided into two objects to facilitate the use of std::map
+ * in forward computing.
+ */
+
 namespace LycorisNet {
 
     class Lycoris;
-
-    /*
-     * The weight connection between nodes in the neural network is
-     * composed of the class of Gen and the class of Ome. A connection
-     * is divided into two objects to facilitate the use of std::map
-     * in forward computing.
-     */
 
     /*
      * The class Gen contains the number of the forward node and the
