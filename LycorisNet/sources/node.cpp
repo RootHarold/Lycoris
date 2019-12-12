@@ -23,6 +23,11 @@ namespace LycorisNet {
         delete genomeMap;
     }
 
+    /*
+     * The implement of deep cloning. The return value is a
+     * pointer to the copied Node object.
+     */
+
     Node *Node::clone() {
         auto duplicate = new Node(nodeNum, nodeType);
         duplicate->bias = bias;
