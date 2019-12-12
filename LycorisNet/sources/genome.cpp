@@ -8,6 +8,10 @@
 
 #include "genome.h"
 
+/*
+ * The implementation of constructors in class Gen and class Ome.
+ */
+
 namespace LycorisNet {
 
     Gen::Gen() {
