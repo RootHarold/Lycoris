@@ -17,10 +17,10 @@ namespace LycorisNet {
     class Lycoris;
 
     /*
-     * The class "Gen" and the class "Ome" form connections between nodes.
-     * The former contains the numbers of input and output.
-     * The latter consists of weight and the cumulative number of
-     * connections ("innovationNum").
+     * The weight connection between nodes in the neural network is
+     * composed of the class of Gen and the class of Ome. A connection
+     * is divided into two objects to facilitate the use of std::map
+     * in forward computing.
      */
 
     class Gen {
