@@ -49,6 +49,13 @@ namespace LycorisNet {
         float delta;
         // The backup of gradient.
         float delta_backup;
+
+        /*
+         * A std::map type object that stores all connections to
+         * the current node. This object is used in the forward
+         * calculation and back propagation of the neural network.
+         */
+
         std::map<Gen, Ome> *genomeMap;
 
         // Deep clone of Node.
