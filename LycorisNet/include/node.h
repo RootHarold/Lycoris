@@ -37,11 +37,17 @@ namespace LycorisNet {
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
+        // The number of the node.
         uint32_t nodeNum;
+        // The type of the node.
         uint32_t nodeType;
+        // The value used in forward calculation.
         float value;
+        // Just bias.
         float bias;
+        // Gradient.
         float delta;
+        // The backup of gradient.
         float delta_backup;
         std::map<Gen, Ome> *genomeMap;
 
