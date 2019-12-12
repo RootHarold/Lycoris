@@ -28,8 +28,8 @@ namespace LycorisNet {
     Individual::~Individual() {
         delete nodeSlice;
 
-        for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
-            delete iter->second;
+        for (auto & iter : *nodeMap) {
+            delete iter.second;
         }
         delete nodeMap;
     }
@@ -65,8 +65,8 @@ namespace LycorisNet {
         duplicate->fitness = fitness;
 
         duplicate->nodeMap = new std::map<uint32_t, Node *>();
-        for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
-            duplicate->nodeMap->insert(std::make_pair(iter->first, iter->second->clone()));
+        for (auto & iter : *nodeMap) {
+            duplicate->nodeMap->insert(std::make_pair(iter.first, iter.second->clone()));
         }
 
         duplicate->nodeSlice = new std::vector<uint32_t>();
@@ -78,8 +78,8 @@ namespace LycorisNet {
     uint32_t Individual::getSize() {
         uint32_t size = 0;
         size += nodeSlice->size();
-        for (auto iter = nodeMap->begin(); iter != nodeMap->end(); ++iter) {
-            size += iter->second->genomeMap->size();
+        for (auto & iter : *nodeMap) {
+            size += iter.second->genomeMap->size();
         }
         return size;
     }

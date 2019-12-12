@@ -28,8 +28,8 @@ namespace LycorisNet {
         duplicate->bias = bias;
         duplicate->delta = delta;
 
-        for (auto iter = genomeMap->begin(); iter != genomeMap->end(); ++iter) {
-            duplicate->genomeMap->insert(std::make_pair(iter->first, iter->second));
+        for (auto & iter : *genomeMap) {
+            duplicate->genomeMap->insert(std::make_pair(iter.first, iter.second));
         }
 
         return duplicate;
