@@ -13,10 +13,10 @@
 #include <string>
 
 /*
- * The weight connection between nodes in the neural network is
- * composed of the class of Gen and the class of Ome. A connection
- * is divided into two objects to facilitate the use of std::map
- * in forward computing.
+ * The connection between nodes in the neural network is composed
+ * of the class Gen and the class Ome. A connection is divided
+ * into two objects to facilitate the use of std::map in forward
+ * computing.
  */
 
 namespace LycorisNet {
@@ -57,6 +57,11 @@ namespace LycorisNet {
         uint32_t in;
         uint32_t out;
     };
+
+    /*
+     * The class Ome contains connection weights, connection numbers,
+     * gradients, and the backups of gradients (used in parallel computing).WW
+     */
 
     class Ome {
     public:
