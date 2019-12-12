@@ -15,10 +15,11 @@
 namespace LycorisNet {
 
     /*
-     * Every node contains its number, type and the value calculated
-     * during "forward" function. When it comes to the "nodeType", "0"
-     * means "input" while "1" means "hidden" and "2" means "output".
-     * Each node is the basic unit of the gene.
+     * Each node contains its number, type, the value used in
+     * forward calculation, bias, gradient and the backup of
+     * gradient. When it comes to "nodeType", "0" means "input"
+     * while "1" means "hidden" and "2" means "output". Each
+     * node is the basic unit of the neural network.
      */
 
     class Node {
