@@ -71,12 +71,13 @@ namespace LycorisNet {
         // The learning rate.
         float lr;
 
-        // The mode of Lycoris. (Classify & Predict)
+        // The mode of Lycoris. (Classify or Predict)
         std::string mode;
-        // Store the input array and the desire array.
+        // Store the input array.
         std::vector<std::vector<float> > inputArray;
-        // Store the batch size.
+        // Store the desire array.
         std::vector<std::vector<float> > desireArray;
+        // Store the batch size.
         uint32_t batchSize;
 
         // When memory exceeds the limit, this changes to true.
