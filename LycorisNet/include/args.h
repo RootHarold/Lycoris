@@ -20,8 +20,10 @@ namespace LycorisNet {
     class LycorisUtils;
 
     /*
-     * Store most of the parameters.
+     * The class Args stores the super parameters needed in
+     * various calculation processes of neural networks.
      */
+
     class Args {
     public:
         Args();

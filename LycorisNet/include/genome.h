@@ -62,7 +62,7 @@ namespace LycorisNet {
 
     /*
      * The class Ome contains connection weights, connection numbers,
-     * gradients, and the backups of gradients (used in parallel computing).WW
+     * gradients, and the backups of gradients (used in parallel computing).
      */
 
     class Ome {
