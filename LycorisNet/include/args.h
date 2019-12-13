@@ -86,17 +86,21 @@ namespace LycorisNet {
         bool memLimitFlag;
         // The size of maximum memory.
         uint32_t limitSize;
-        // To fixed a potential bug.
+        // After the first execution, this changes to false.
         bool firstRun;
         // The array used to store data of batch size.
         float **batchData;
         // The flag of initializing batchData.
         bool batchFlag;
-        // Used in BP_P().
+        // Used in BP_Multi_Thread().
         float *midData;
+        // The depth of the neural network.
         uint32_t depth;
+        // After the first execution of preheat(), this changes to false.
         bool preheatFlag;
+        // After the first execution of fit(), this changes to false.
         bool fitFlag;
+        // After the first execution of enrich(), this changes to false.
         bool enrichFlag;
     };
 
