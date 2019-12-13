@@ -39,7 +39,7 @@ namespace LycorisNet {
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
-        // An object of LycorisUtils is integrated into this.
+        // An object of the class LycorisUtils which is integrated into this.
         LycorisUtils *utils;
 
         // Add the new node between a connection.
@@ -63,8 +63,9 @@ namespace LycorisNet {
         uint32_t cpuNum;
         // The initial odds of mutating.
         float mutateOdds;
-        // For SetWeightRandom(...).
+        // The lower bound of weight in initialization.
         float weightA;
+        // The upper bound of weight in initialization.
         float weightB;
 
         // The learning rate.
