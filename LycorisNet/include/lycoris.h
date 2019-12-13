@@ -78,7 +78,7 @@ namespace LycorisNet {
 
         // Return the version information.
         inline static std::string version() {
-            return "Lycoris Core 2.0-Developing (CPU Mode).\nCopyright (C) 2019 RootHarold. All rights reserved.";
+            return "Lycoris Core 2.0-Developing (CPU Mode). Copyright (C) 2019 RootHarold. All rights reserved.";
         }
 
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
