@@ -24,11 +24,9 @@ namespace LycorisNet {
         p4B = p4;
 
         mutateOdds = 15;
-
         cpuNum = std::thread::hardware_concurrency();
-
         lr = 0.01;
-        mode = "";
+
         memOverFlag = false;
         memLimitFlag = false;
         firstRun = true;
