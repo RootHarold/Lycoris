@@ -11,6 +11,10 @@
 
 namespace LycorisNet {
 
+    /*
+     * Preset some hyper-parameters.
+     */
+
     Args::Args() {
         utils = new LycorisUtils();
 
