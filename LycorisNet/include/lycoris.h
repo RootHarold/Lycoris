@@ -60,7 +60,7 @@ namespace LycorisNet {
          *
          * p3: Probability of adding a new connection between two nodes.
          *
-         * p4: Probability of delete a connection.
+         * p4: Probability of deleting a connection.
          */
 
         void setMutateArgs(std::vector<float> &p);
