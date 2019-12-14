@@ -36,8 +36,19 @@ namespace LycorisNet {
 
         void enrich();
 
-        // Forward Computing of the best individual;
+        /*
+         * Forward Computing of the best individual.
+         *
+         * input: Input data.
+         *
+         * Returns the output data.
+         */
+
         std::vector<float> compute(std::vector<float> &input);
+
+        /*
+         * Resize the capacity of the neural network cluster.
+         */
 
         void resize(uint32_t capacity);
 
