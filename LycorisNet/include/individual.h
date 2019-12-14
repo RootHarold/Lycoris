@@ -17,14 +17,11 @@
 
 namespace LycorisNet {
 
-    /*
-     * The "innovationNum" is the cumulative number of connections
-     * and the "nodeSum" is that of nodes. High fitness means the
-     * individual is well adapted to the environment. The "nodeMap"
-     * and the "nodeSlice" store nodes.
-     */
-
     class Args;
+
+    /*
+     * Each object of the class Individual represents a neural network.
+     */
 
     class Individual {
     public:
@@ -41,13 +38,21 @@ namespace LycorisNet {
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
+        // The input dimension of the neural network.
         uint32_t inputNum;
+        // The output dimension of the neural network.
         uint32_t outputNum;
+        // The result of cross_entropy() or euclidean_distance().
         float fitness;
+        // The cumulative number of connections.
         uint32_t innovationNum;
+        // The cumulative number of nodes.
         uint32_t nodeSum;
+        // Store nodes.
         std::vector<uint32_t> *nodeSlice;
+        // Store nodes.
         std::map<uint32_t, Node *> *nodeMap;
+        // All the objects of the class Individual share an object of the class Args.
         Args *args;
 
         // Initialize a individual.
