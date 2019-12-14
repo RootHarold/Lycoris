@@ -47,8 +47,12 @@ namespace LycorisNet {
         // Turn off memory-limit.
         void closeMemLimit();
 
-        // Export the individual. The reason why using string to store
-        // data is that I just don't wanna use binary.
+        /*
+         * Export the current trained model.
+         *
+         * path: File path of the current trained model.
+         */
+
         void saveModel(const std::string &path);
 
         /*
