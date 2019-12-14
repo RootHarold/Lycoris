@@ -28,12 +28,13 @@ namespace LycorisNet {
     Individual::~Individual() {
         delete nodeSlice;
 
-        for (auto & iter : *nodeMap) {
+        for (auto &iter : *nodeMap) {
             delete iter.second;
         }
         delete nodeMap;
     }
 
+    // Initialize a individual.
     void Individual::initialize() {
         nodeMap = new std::map<uint32_t, Node *>();
         nodeSlice = new std::vector<uint32_t>(inputNum + outputNum);
@@ -55,6 +56,7 @@ namespace LycorisNet {
         }
     }
 
+    // Deep clone of individual.
     Individual *Individual::clone() {
         auto duplicate = new Individual();
         duplicate->inputNum = inputNum;
@@ -65,7 +67,7 @@ namespace LycorisNet {
         duplicate->fitness = fitness;
 
         duplicate->nodeMap = new std::map<uint32_t, Node *>();
-        for (auto & iter : *nodeMap) {
+        for (auto &iter : *nodeMap) {
             duplicate->nodeMap->insert(std::make_pair(iter.first, iter.second->clone()));
         }
 
@@ -75,15 +77,17 @@ namespace LycorisNet {
         return duplicate;
     }
 
+    // Return the size of the individual.
     uint32_t Individual::getSize() {
         uint32_t size = 0;
         size += nodeSlice->size();
-        for (auto & iter : *nodeMap) {
+        for (auto &iter : *nodeMap) {
             size += iter.second->genomeMap->size();
         }
         return size;
     }
 
+    // Set input array => Forward calculation of the individual => Get output array.
     void Individual::forward(std::vector<float> &input, float *output) {
         for (uint32_t i = 0; i < inputNum; ++i) {
             (*nodeMap)[i]->value = input[i];
@@ -112,6 +116,7 @@ namespace LycorisNet {
         }
     }
 
+    // Single threaded version of back propagation.
     void Individual::BP_Single_Thread() {
         this->fitness = 0;
         float output[outputNum];
@@ -222,6 +227,7 @@ namespace LycorisNet {
         }
     }
 
+    // Multi threaded version of back propagation.
     void Individual::BP_Multi_Thread() {
         auto individualSize = getSize() + 1;
         if (args->batchFlag) {
@@ -298,6 +304,7 @@ namespace LycorisNet {
         delete[] end;
     }
 
+    // One of the functor of BP_Multi_Thread().
     void Individual::BP_Multi_Thread_Core(uint32_t start, uint32_t end) {
         auto ci = this->clone();
 
@@ -377,6 +384,7 @@ namespace LycorisNet {
         delete ci;
     }
 
+    // One of the functor of BP_Multi_Thread().
     void Individual::BP_Multi_Thread_Forward(uint32_t start, uint32_t end, float *midData) {
         for (uint32_t i = start; i < end; ++i) {
             float temp_data = 0.0f;
