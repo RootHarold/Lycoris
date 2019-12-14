@@ -32,15 +32,19 @@ namespace LycorisNet {
         friend class Lycoris;
 
     private:
-        // Cross entropy or Euclidean distance
+        // Cross entropy or Euclidean distance.
         float fitness;
-        // The number of neural network
+        // The number of neural network.
         uint32_t individualNum;
     };
 
     class Individual;
 
-    // Including some tools.
+    /*
+     * The class ycorisutils integrates some utility functions used
+     * in the calculation process.
+     */
+
     class LycorisUtils {
     public:
         LycorisUtils();
@@ -56,7 +60,7 @@ namespace LycorisNet {
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
     private:
-        // The engine to emerge random numbers.
+        // To emerge random numbers.
         std::random_device rd;
 
         // ReLU (with huge leak = 0.2).
@@ -78,7 +82,7 @@ namespace LycorisNet {
             }
         }
 
-        // The euclidean distance.
+        // Euclidean distance.
         inline static float euclidean_distance(float *target, std::vector<float> &desire, uint32_t length) {
             float ret = 0;
 
@@ -100,18 +104,19 @@ namespace LycorisNet {
             return ret;
         }
 
-        // Generate a random number of min-max (float).
+        // Generate a random number in the interval [min, max) (float).
         inline float LycorisRandomFloat(float min, float max) {
             auto temp =
                     (rd() - std::random_device::min()) / double(std::random_device::max() - std::random_device::min());
             return temp * (max - min) + min;
         };
 
-        // Generate a random number of 0-N (uint32_t).
+        // Generate a random number in the interval [0, N) (uint32_t).
         inline uint32_t LycorisRandomUint32_t(uint32_t N) {
             return uint32_t(rd() % N);
         }
 
+        // Return a list of the words in the string, using whitespace as the delimiter string.
         inline static std::vector<std::string> split(const std::string &subject) {
             static const std::regex re{"\\s+"};
 
@@ -123,12 +128,12 @@ namespace LycorisNet {
             return container;
         }
 
-        // Used with the "SortFitness" when sorting individuals.
+        // A comparison functor used in sorting individuals.
         inline static bool compareFitness(const SortFitness &a, const SortFitness &b) {
             return a.fitness < b.fitness;
         }
 
-        // Mutating the individual.
+        // Mutating the individuals.
         Individual *mutateIndividual(Individual &in);
 
         static void addHiddenNodes(Individual &in, uint32_t num);
