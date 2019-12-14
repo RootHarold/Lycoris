@@ -60,7 +60,10 @@ namespace LycorisNet {
         // Set the numbers of CPU used in project.
         void setCpuCores(uint32_t num);
 
-        // Set the learning rate.
+        /*
+         * Set the learning rate.
+         */
+
         void setLR(float lr);
 
         // Get the size of the best individual.
