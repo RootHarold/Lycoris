@@ -136,8 +136,10 @@ namespace LycorisNet {
         // Mutating the individuals.
         Individual *mutateIndividual(Individual &in);
 
+        // Adding hidden nodes of neural network in preheating process.
         static void addHiddenNodes(Individual &in, uint32_t num);
 
+        // Adding the connections of neural network in preheating process.
         void addConnections(Individual &in, uint32_t num);
     };
 
