@@ -41,10 +41,16 @@ namespace LycorisNet {
 
         void resize(uint32_t capacity);
 
-        // Turn on memory-limit.
+        /*
+         * Turn on memory-limit.
+         */
+
         void openMemLimit(uint32_t size);
 
-        // Turn off memory-limit.
+        /*
+         * Turn off memory-limit.
+         */
+
         void closeMemLimit();
 
         /*
