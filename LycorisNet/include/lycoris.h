@@ -129,13 +129,13 @@ namespace LycorisNet {
          * Returns the input dimension.
          */
 
-        uint32_t getInputNum();
+        uint32_t getInputDim();
 
         /*
          * Returns the output dimension.
          */
 
-        uint32_t getOutputNum();
+        uint32_t getOutputDim();
 
         /*
          * Returns capacity of Lycoris.

@@ -397,11 +397,11 @@ namespace LycorisNet {
         return best->getSize();
     }
 
-    uint32_t Lycoris::getInputNum() {
+    uint32_t Lycoris::getInputDim() {
         return inputNum;
     }
 
-    uint32_t Lycoris::getOutputNum() {
+    uint32_t Lycoris::getOutputDim() {
         return outputNum;
     }
 
