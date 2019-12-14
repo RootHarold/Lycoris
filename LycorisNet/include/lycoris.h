@@ -21,13 +21,25 @@ namespace LycorisNet {
 
     class Lycoris {
     public:
+
+        /*
+         * Constructor.
+         *
+         * capacity: capacity of Lycoris.
+         *
+         * inputDim: input dimension.
+         *
+         * outputDim: output dimension.
+         *
+         * mode: mode of Lycoris (classify or predict).
+         */
+
         Lycoris(uint32_t capacity, uint32_t inputDim, uint32_t outputDim, const std::string &mode);
 
         ~Lycoris();
 
         void preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth);
 
-        // Set the input array and the desire array. And then run forward.
         void evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
         void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
