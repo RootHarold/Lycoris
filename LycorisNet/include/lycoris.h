@@ -16,7 +16,7 @@
 namespace LycorisNet {
 
     /*
-     * The class Lycoris is the highest level module of LycorisNet.
+     * The class Lycoris is the highest level abstraction of LycorisNet.
      */
 
     class Lycoris {
