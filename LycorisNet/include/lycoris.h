@@ -72,13 +72,33 @@ namespace LycorisNet {
 
         uint32_t getSize();
 
+        /*
+         * Returns the input dimension.
+         */
+
         uint32_t getInputNum();
+
+        /*
+         * Returns the output dimension.
+         */
 
         uint32_t getOutputNum();
 
+        /*
+         * Returns capacity of Lycoris.
+         */
+
         uint32_t getCapacity();
 
+        /*
+         * Returns the loss.
+         */
+
         float getFitness();
+
+        /*
+         * Returns mode of Lycoris (classify or predict).
+         */
 
         std::string getMode();
 
