@@ -76,7 +76,10 @@ namespace LycorisNet {
 
         std::string getMode();
 
-        // Return the version information.
+        /*
+         * Returns version information and copyright information.
+         */
+
         inline static std::string version() {
             return "Lycoris Core 2.0-Developing (CPU Mode). Copyright (C) 2019 RootHarold. All rights reserved.";
         }
