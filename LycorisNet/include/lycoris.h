@@ -57,7 +57,10 @@ namespace LycorisNet {
         // Set the odds of mutating.
         void setMutateOdds(float odds);
 
-        // Set the numbers of CPU used in project.
+        /*
+         * Set the number of worker threads to train the model.
+         */
+
         void setCpuCores(uint32_t num);
 
         /*
