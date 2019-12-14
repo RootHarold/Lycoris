@@ -124,7 +124,16 @@ namespace LycorisNet {
         void checkFirstRun();
     };
 
-    // Import the individual.
+    /*
+     * Import the pre-trained model.
+     *
+     * path: File path of the pre-trained model.
+     *
+     * capacity: Capacity of the neural network cluster.
+     *
+     * Returns a pointer to the object of class Lycoris.
+     */
+
     Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
 }
