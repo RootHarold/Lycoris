@@ -66,7 +66,10 @@ namespace LycorisNet {
 
         void setLR(float lr);
 
-        // Get the size of the best individual.
+        /*
+         * Returns the size of the best individual.
+         */
+
         uint32_t getSize();
 
         uint32_t getInputNum();
