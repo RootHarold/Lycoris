@@ -60,6 +60,10 @@ namespace LycorisNet {
 
         void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
+        /*
+         * Keep only the best one in the neural network cluster.
+         */
+
         void enrich();
 
         /*
