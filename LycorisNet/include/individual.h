@@ -67,13 +67,16 @@ namespace LycorisNet {
         // Set input array => Forward calculation of the individual => Get output array.
         void forward(std::vector<float> &input, float *output);
 
-        // Back Propagation.
+        // Single threaded version of back propagation.
         void BP_Single_Thread();
 
+        // Multi threaded version of back propagation.
         void BP_Multi_Thread();
 
+        // One of the functor of BP_Multi_Thread().
         void BP_Multi_Thread_Core(uint32_t start, uint32_t end);
 
+        // One of the functor of BP_Multi_Thread().
         void BP_Multi_Thread_Forward(uint32_t start, uint32_t end, float *midData);
     };
 
