@@ -15,7 +15,10 @@
 
 namespace LycorisNet {
 
-    // Used when sorting individuals.
+    /*
+     * It is used to assist in sorting individual (neural networks).
+     */
+
     class SortFitness {
     public:
         SortFitness();
@@ -29,7 +32,9 @@ namespace LycorisNet {
         friend class Lycoris;
 
     private:
+        // Cross entropy or Euclidean distance
         float fitness;
+        // The number of neural network
         uint32_t individualNum;
     };
 
