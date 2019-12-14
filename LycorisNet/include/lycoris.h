@@ -25,13 +25,13 @@ namespace LycorisNet {
         /*
          * Constructor.
          *
-         * capacity: capacity of Lycoris.
+         * capacity: Capacity of Lycoris.
          *
-         * inputDim: input dimension.
+         * inputDim: Input dimension.
          *
-         * outputDim: output dimension.
+         * outputDim: Output dimension.
          *
-         * mode: mode of Lycoris (classify or predict).
+         * mode: Mode of Lycoris (classify or predict).
          */
 
         Lycoris(uint32_t capacity, uint32_t inputDim, uint32_t outputDim, const std::string &mode);
@@ -41,6 +41,16 @@ namespace LycorisNet {
          */
 
         ~Lycoris();
+
+        /*
+         * Preheating process of the neural network cluster.
+         *
+         * num_of_nodes: The number of hidden nodes added for each neural network.
+         *
+         * num_of_connections: The number of connections added for each neural network.
+         *
+         * depth: Total layers of each neural network.
+         */
 
         void preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth);
 
