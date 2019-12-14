@@ -51,7 +51,18 @@ namespace LycorisNet {
         // data is that I just don't wanna use binary.
         void saveModel(const std::string &path);
 
-        // Set p1 to p6 in Args.
+        /*
+         * Set p1 to p4 in the class Args.
+         *
+         * p1: Probability of adding the new node between a connection.
+         *
+         * p2: Probability of deleting a node.
+         *
+         * p3: Probability of adding a new connection between two nodes.
+         *
+         * p4: Probability of delete a connection.
+         */
+
         void setMutateArgs(std::vector<float> &p);
 
         /*
