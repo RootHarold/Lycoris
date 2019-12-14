@@ -20,6 +20,7 @@ namespace LycorisNet {
 
     }
 
+    // Mutating the individuals.
     Individual *LycorisUtils::mutateIndividual(LycorisNet::Individual &in) {
         // Clone the individual.
         auto offspring = in.clone();
@@ -123,6 +124,7 @@ namespace LycorisNet {
         return offspring;
     }
 
+    // Adding hidden nodes of neural network in preheating process.
     void LycorisUtils::addHiddenNodes(LycorisNet::Individual &in, uint32_t num) {
         for (uint32_t i = 0; i < num; ++i) {
             auto n = new Node(in.nodeSum, 1);
@@ -132,6 +134,7 @@ namespace LycorisNet {
         }
     }
 
+    // Adding the connections of neural network in preheating process.
     void LycorisUtils::addConnections(LycorisNet::Individual &in, uint32_t num) {
         auto length = uint32_t(in.nodeSlice->size());
         std::vector<std::vector<uint32_t> > arr;
