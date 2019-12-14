@@ -36,6 +36,10 @@ namespace LycorisNet {
 
         Lycoris(uint32_t capacity, uint32_t inputDim, uint32_t outputDim, const std::string &mode);
 
+        /*
+         * Destructor.
+         */
+
         ~Lycoris();
 
         void preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth);
