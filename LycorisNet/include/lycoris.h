@@ -54,7 +54,13 @@ namespace LycorisNet {
         // Set p1 to p6 in Args.
         void setMutateArgs(std::vector<float> &p);
 
-        // Set the odds of mutating.
+        /*
+         * Set the odds of mutating.
+         *
+         * The param "odds" means one individual mutates odds times
+         * to form odds + 1 individuals.
+         */
+
         void setMutateOdds(float odds);
 
         /*
