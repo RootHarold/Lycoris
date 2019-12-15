@@ -223,7 +223,7 @@ namespace LycorisNet {
         std::vector<Individual *> *individualList;
         std::vector<Individual *> tempList;
 
-        // Store the length of individualList in speciesList.
+        // Store the length of individualList.
         uint32_t oldLength;
 
         // Mutating.
