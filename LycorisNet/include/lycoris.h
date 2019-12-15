@@ -217,34 +217,45 @@ namespace LycorisNet {
         // The best individual.
         Individual *best;
 
-        // An object of Args is integrated into this.
+        // All neural networks share an object of the class Args.
         Args *args;
 
         std::vector<Individual *> *individualList;
         std::vector<Individual *> tempList;
+
         // Store the length of individualList in speciesList.
         uint32_t oldLength;
 
         // Mutating.
         void mutate();
 
-        // The parallel kernel of mutate().
+        // The functor of mutate().
         void mutateCore(uint32_t start, uint32_t end);
 
-        // All individuals are calculated forward.
+        /*
+         * BP_Single_Thread() is invoked in every individual of the
+         * neural network cluster.
+         */
+
         void backPropagation();
 
-        // The parallel kernel of forward().
+        // The functor of forward().
         void backPropagationCore(uint32_t start, uint32_t end);
 
-        // Choose elites and manipulate gapList.
+        /*
+         * All the individuals in the neural network cluster are sorted
+         * and the better ones are selected.
+         */
+
         void chooseElite();
 
-        // Each time this function is called, the network runs forward one time.
+        // Main part of evolve().
         void runLycoris();
 
+        // The functor of preheat().
         void preheatCore(uint32_t start, uint32_t end, uint32_t num_of_nodes, uint32_t num_of_connections);
 
+        // Check if the individualList is initialized.
         void checkFirstRun();
     };
 
