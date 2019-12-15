@@ -54,6 +54,14 @@ namespace LycorisNet {
 
         void preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth);
 
+        /*
+         * Evolve the neural network cluster.
+         *
+         * input: Input data.
+         *
+         * desire: Expected output data.
+         */
+
         void evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
         void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
