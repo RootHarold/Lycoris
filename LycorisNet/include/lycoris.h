@@ -74,6 +74,14 @@ namespace LycorisNet {
 
         void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
+        /*
+         * Fit the best individual in the neural network cluster.
+         *
+         * input: Input data.
+         *
+         * desire: Expected output data.
+         */
+
         void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
         /*
