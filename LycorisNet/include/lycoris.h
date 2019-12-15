@@ -220,7 +220,10 @@ namespace LycorisNet {
         // All neural networks share an object of the class Args.
         Args *args;
 
+        // Store the individuals in the neural network cluster.
         std::vector<Individual *> *individualList;
+
+        // Assist mutation operation.
         std::vector<Individual *> tempList;
 
         // Store the length of individualList.
