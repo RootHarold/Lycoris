@@ -64,6 +64,14 @@ namespace LycorisNet {
 
         void evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
+        /*
+         * Fit all neural networks in the neural network cluster.
+         *
+         * input: Input data.
+         *
+         * desire: Expected output data.
+         */
+
         void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
         void fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
