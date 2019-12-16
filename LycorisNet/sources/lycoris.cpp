@@ -40,6 +40,7 @@ namespace LycorisNet {
         delete individualList;
     }
 
+    // Preheating process of the neural network cluster.
     void Lycoris::preheat(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth) {
         if (args->preheatFlag) {
             args->preheatFlag = false;
@@ -81,6 +82,7 @@ namespace LycorisNet {
         delete[] end;
     }
 
+    // Evolve the neural network cluster.
     void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
         if (!args->fitFlag || !args->enrichFlag) {
             std::cout << "Cannot be executed after fit() or enrich()." << std::endl;
@@ -99,6 +101,7 @@ namespace LycorisNet {
         runLycoris();
     }
 
+    // Fit all neural networks in the neural network cluster.
     void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
         if (!args->fitFlag || !args->enrichFlag) {
             std::cout << "Cannot be executed after fit() or enrich()." << std::endl;
@@ -119,6 +122,7 @@ namespace LycorisNet {
         backPropagation();
     }
 
+    // Fit the best individual in the neural network cluster.
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
         if (args->enrichFlag) {
             std::cout << "The function enrich() should be executed first." << std::endl;
@@ -164,6 +168,7 @@ namespace LycorisNet {
         best->BP_Multi_Thread();
     }
 
+    // Keep only the best one in the neural network cluster.
     void Lycoris::enrich() {
         if (args->enrichFlag) {
             args->enrichFlag = false;
@@ -211,6 +216,7 @@ namespace LycorisNet {
         individualList = newIndividualList;
     }
 
+    // Forward Computing of the best individual.
     std::vector<float> Lycoris::compute(std::vector<float> &input) {
         if (input.size() != inputNum) {
             std::cout << "The input data is not proper!" << std::endl;
@@ -230,6 +236,7 @@ namespace LycorisNet {
         return ret;
     }
 
+    // Resize the capacity of the neural network cluster.
     void Lycoris::resize(uint32_t num) {
         checkFirstRun();
 
@@ -310,16 +317,19 @@ namespace LycorisNet {
         this->capacity = num;
     }
 
+    // Turn on memory-limit.
     void Lycoris::openMemLimit(uint32_t size) {
         args->limitSize = size * 9 / 10;
         args->memLimitFlag = true;
     }
 
+    // Turn off memory-limit.
     void Lycoris::closeMemLimit() {
         args->memLimitFlag = false;
         args->memOverFlag = false;
     }
 
+    // Export the current trained model.
     void Lycoris::saveModel(const std::string &path) {
         checkFirstRun();
 
@@ -359,6 +369,7 @@ namespace LycorisNet {
         outfile.close();
     }
 
+    // Set p1 to p4 in the class Args.
     void Lycoris::setMutateArgs(std::vector<float> &p) {
         if (p.size() != 4 || fabsf(p[0] + p[1] + p[2] + p[3] - 1.0f) > 0.001) {
             std::cout << "The input is invalid!" << std::endl;
@@ -375,6 +386,7 @@ namespace LycorisNet {
         args->p4B = p[3];
     }
 
+    // Set the odds of mutating.
     void Lycoris::setMutateOdds(float odds) {
         if (odds < 0) {
             std::cout << "The parameter cannot be set to smaller than zero." << std::endl;
@@ -383,32 +395,39 @@ namespace LycorisNet {
         args->mutateOdds = odds;
     }
 
+    // Set the number of worker threads to train the model.
     void Lycoris::setCpuCores(uint32_t num) {
         args->cpuNum = num;
     }
 
+    // Set the learning rate.
     void Lycoris::setLR(float lr) {
         args->lr = lr;
     }
 
+    // Returns the size of the best individual.
     uint32_t Lycoris::getSize() {
         checkFirstRun();
 
         return best->getSize();
     }
 
+    // Returns the input dimension.
     uint32_t Lycoris::getInputDim() {
         return inputNum;
     }
 
+    // Returns the output dimension.
     uint32_t Lycoris::getOutputDim() {
         return outputNum;
     }
 
+    // Returns capacity of Lycoris.
     uint32_t Lycoris::getCapacity() {
         return capacity;
     }
 
+    // Returns the loss.
     float Lycoris::getFitness() {
         if (args->firstRun) {
             std::cout << "The function cannot be executed before initialization." << std::endl;
@@ -418,10 +437,12 @@ namespace LycorisNet {
         return best->fitness;
     }
 
+    // Returns mode of Lycoris (classify or predict).
     std::string Lycoris::getMode() {
         return args->mode;
     }
 
+    // Mutating.
     void Lycoris::mutate() {
         auto start = new uint32_t[args->cpuNum];
         auto end = new uint32_t[args->cpuNum];
@@ -453,6 +474,7 @@ namespace LycorisNet {
         delete[] end;
     }
 
+    // The functor of mutate().
     void Lycoris::mutateCore(uint32_t start, uint32_t end) {
         for (uint32_t i = start; i < end; ++i) {
             tempList[i] = args->utils->mutateIndividual(
@@ -460,6 +482,7 @@ namespace LycorisNet {
         }
     }
 
+    // BP_Single_Thread() is invoked in every individual of the neural network cluster.
     void Lycoris::backPropagation() {
         auto start = new uint32_t[args->cpuNum];
         auto end = new uint32_t[args->cpuNum];
@@ -485,6 +508,7 @@ namespace LycorisNet {
         delete[] end;
     }
 
+    // The functor of forward().
     void Lycoris::backPropagationCore(uint32_t start, uint32_t end) {
         // TODO: To fix the NaN & Inf problems. Remove that part from chooseElite().
         for (uint32_t i = start; i < end; ++i) {
@@ -492,6 +516,7 @@ namespace LycorisNet {
         }
     }
 
+    // All the individuals in the neural network cluster are sorted and the better ones are selected.
     void Lycoris::chooseElite() {
         uint32_t totalLength = individualList->size();
         if (totalLength == 0) {
@@ -550,6 +575,7 @@ namespace LycorisNet {
         individualList = newIndividualList;
     }
 
+    // Main part of evolve().
     void Lycoris::runLycoris() {
         checkFirstRun();
 
@@ -575,6 +601,7 @@ namespace LycorisNet {
         }
     }
 
+    // The functor of preheat().
     void Lycoris::preheatCore(uint32_t start, uint32_t end, uint32_t num_of_nodes, uint32_t num_of_connections) {
         for (uint32_t i = start; i < end; ++i) {
             LycorisNet::LycorisUtils::addHiddenNodes(*((*individualList)[i]), num_of_nodes);
@@ -582,6 +609,7 @@ namespace LycorisNet {
         }
     }
 
+    // Check if the individualList is initialized.
     void Lycoris::checkFirstRun() {
         if (args->firstRun) {
             args->firstRun = false;
@@ -599,6 +627,7 @@ namespace LycorisNet {
         }
     }
 
+    // Import the pre-trained model.
     Lycoris *loadModel(const std::string &path, uint32_t capacity) {
         std::ifstream infile(path);
         std::string str;
