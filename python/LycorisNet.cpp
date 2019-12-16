@@ -10,27 +10,34 @@ PYBIND11_MODULE(LycorisNet, m) {
     py::class_<LycorisNet::Lycoris>(m, "Lycoris")
             .def(py::init<uint32_t, uint32_t, uint32_t, const std::string &>(), py::arg("capacity"),
                  py::arg("inputDim"), py::arg("outputDim"), py::arg("mode"))
-            .def("preheat", &LycorisNet::Lycoris::preheat, py::arg("nodes"), py::arg("connections"), py::arg("depths"))
-            .def("evolve", &LycorisNet::Lycoris::evolve, py::arg("input"), py::arg("desire"))
-            .def("fit", &LycorisNet::Lycoris::fit, py::arg("input"), py::arg("desire"))
-            .def("fitAll", &LycorisNet::Lycoris::fitAll, py::arg("input"), py::arg("desire"))
-            .def("enrich", &LycorisNet::Lycoris::enrich)
-            .def("compute", &LycorisNet::Lycoris::compute, py::arg("input"))
-            .def("resize", &LycorisNet::Lycoris::resize, py::arg("capacity"))
-            .def("openMemLimit", &LycorisNet::Lycoris::openMemLimit, py::arg("size"))
-            .def("closeMemLimit", &LycorisNet::Lycoris::closeMemLimit)
-            .def("saveModel", &LycorisNet::Lycoris::saveModel, py::arg("path"))
-            .def("setMutateArgs", &LycorisNet::Lycoris::setMutateArgs, py::arg("p"))
-            .def("setMutateOdds", &LycorisNet::Lycoris::setMutateOdds, py::arg("odds"))
-            .def("setCpuCores", &LycorisNet::Lycoris::setCpuCores, py::arg("num"))
-            .def("setLR", &LycorisNet::Lycoris::setLR, py::arg("lr"))
-            .def("getSize", &LycorisNet::Lycoris::getSize)
-            .def("getInputDim", &LycorisNet::Lycoris::getInputDim)
-            .def("getOutputDim", &LycorisNet::Lycoris::getOutputDim)
-            .def("getCapacity", &LycorisNet::Lycoris::getCapacity)
-            .def("getFitness", &LycorisNet::Lycoris::getFitness)
-            .def("getMode", &LycorisNet::Lycoris::getMode)
-            .def("version", &LycorisNet::Lycoris::version);
+            .def("preheat", &LycorisNet::Lycoris::preheat, py::arg("nodes"), py::arg("connections"), py::arg("depths"),
+                 "Preheating process of the neural network cluster.")
+            .def("evolve", &LycorisNet::Lycoris::evolve, py::arg("input"), py::arg("desire"),
+                 "Evolve the neural network cluster.")
+            .def("fitAll", &LycorisNet::Lycoris::fitAll, py::arg("input"), py::arg("desire"),
+                 "Fit all neural networks in the neural network cluster.")
+            .def("fit", &LycorisNet::Lycoris::fit, py::arg("input"), py::arg("desire"),
+                 "Fit the best individual in the neural network cluster.")
+            .def("enrich", &LycorisNet::Lycoris::enrich, "Keep only the best one in the neural network cluster.")
+            .def("compute", &LycorisNet::Lycoris::compute, py::arg("input"),
+                 "Forward Computing of the best individual.")
+            .def("resize", &LycorisNet::Lycoris::resize, py::arg("capacity"),
+                 "Resize the capacity of the neural network cluster.")
+            .def("openMemLimit", &LycorisNet::Lycoris::openMemLimit, py::arg("size"), "Turn on memory-limit.")
+            .def("closeMemLimit", &LycorisNet::Lycoris::closeMemLimit, "Turn off memory-limit.")
+            .def("saveModel", &LycorisNet::Lycoris::saveModel, py::arg("path"), "Export the current trained model.")
+            .def("setMutateArgs", &LycorisNet::Lycoris::setMutateArgs, py::arg("p"), "Set p1 to p4 in the class Args.")
+            .def("setMutateOdds", &LycorisNet::Lycoris::setMutateOdds, py::arg("odds"), "Set the odds of mutating.")
+            .def("setCpuCores", &LycorisNet::Lycoris::setCpuCores, py::arg("num"),
+                 "Set the number of worker threads to train the model.")
+            .def("setLR", &LycorisNet::Lycoris::setLR, py::arg("lr"), "Set the learning rate.")
+            .def("getSize", &LycorisNet::Lycoris::getSize, "Returns the size of the best individual.")
+            .def("getInputDim", &LycorisNet::Lycoris::getInputDim, "Returns the input dimension.")
+            .def("getOutputDim", &LycorisNet::Lycoris::getOutputDim, "Returns the output dimension.")
+            .def("getCapacity", &LycorisNet::Lycoris::getCapacity, "Returns capacity of Lycoris.")
+            .def("getFitness", &LycorisNet::Lycoris::getFitness, "Returns the loss.")
+            .def("getMode", &LycorisNet::Lycoris::getMode, "Returns mode of Lycoris (classify or predict).")
+            .def("version", &LycorisNet::Lycoris::version, "Returns version information and copyright information.");
 
     m.def("loadModel", &LycorisNet::loadModel, py::arg("path"), py::arg("capacity"),
           "Import the pre-trained model.");
