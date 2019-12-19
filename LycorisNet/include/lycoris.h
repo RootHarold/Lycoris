@@ -202,7 +202,7 @@ namespace LycorisNet {
          */
 
         inline static std::string version() {
-            return "LycorisNet Core 2.0.0 (CPU Mode). Copyright (C) 2019 RootHarold. All rights reserved.";
+            return "LycorisNet Core 2.1.0 (CPU Mode) By RootHarold.";
         }
 
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
