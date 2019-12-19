@@ -693,6 +693,7 @@ namespace LycorisNet {
 
         auto radiata = new Lycoris(capacity, source->inputNum, source->outputNum, mode);
         radiata->args->firstRun = false;
+        radiata->args->preheatFlag = false;
         source->args = radiata->args;
 
         auto initialCapacity = uint32_t(float(capacity) / (1 + radiata->args->mutateOdds));
