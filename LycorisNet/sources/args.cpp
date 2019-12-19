@@ -38,6 +38,7 @@ namespace LycorisNet {
         preheatFlag = true;
         fitFlag = true;
         enrichFlag = true;
+        evolveFlag = true;
     }
 
     Args::~Args() {

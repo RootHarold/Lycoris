@@ -102,6 +102,8 @@ namespace LycorisNet {
         bool fitFlag;
         // After the first execution of enrich(), this changes to false.
         bool enrichFlag;
+        // After the first execution of evolve(), this changes to false.
+        bool evolveFlag;
     };
 
 }
