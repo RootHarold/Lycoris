@@ -49,6 +49,11 @@ namespace LycorisNet {
             exit(8);
         }
 
+        if (!args->evolveFlag) {
+            std::cout << "The function preheat() cannot be executed after evolve()." << std::endl;
+            exit(12);
+        }
+
         if (depth < 2 || depth > num_of_nodes + 2) {
             std::cout << R"(The parameter "depth" is invalid.)" << std::endl;
             exit(4);
@@ -87,6 +92,10 @@ namespace LycorisNet {
         if (!args->fitFlag || !args->enrichFlag) {
             std::cout << "Cannot be executed after fit() or enrich()." << std::endl;
             exit(10);
+        }
+
+        if (args->evolveFlag) {
+            args->evolveFlag = false;
         }
 
         if (input.size() != desire.size()) {
