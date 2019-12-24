@@ -1,4 +1,4 @@
-![avatar](logo/logo.svg)
+![logo](logo/logo.svg)
 
 **Lycoris** is a lightweight neural architecture search framework based on *Evolving Neural Networks through Augmenting Topologies*.
 
