@@ -12,7 +12,7 @@ The APIs provided by **Lycoris** (`from LycorisNet import Lycoris`):
 Function | Description |  Inputs | Returns
 -|-|-|-
 **Lycoris**(capacity, inputDim, outputDim, mode) | Constructor.<br/> The class Lycoris is the highest level abstraction of LycorisNet. | **capacity**: Capacity of Lycoris.<br/> **inputDim**: Input dimension.<br/> **outputDim**: Output dimension.<br/> **mode**: Mode of Lycoris (classify or predict). | An object of the class Lycoris.
-**preheat**(nodes, connections, depths) | Preheating process of the neural network cluster. | **num_of_nodes**: The number of hidden nodes added for each neural network.<br/> **num_of_connections**: The number of connections added for each neural network.<br/> **depth**: Total layers of each neural network. |
+**preheat**(nodes, connections, depths) | Preheating process of the neural network cluster. | **nodes**: The number of hidden nodes added for each neural network.<br/> **connections**: The number of connections added for each neural network.<br/> **depths**: Total layers of each neural network. |
 **evolve**(input, desire) | Evolve the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
 **fitAll**(input, desire) | Fit all neural networks in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
 **fit**(input, desire) | Fit the best individual in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
