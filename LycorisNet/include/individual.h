@@ -79,6 +79,8 @@ namespace LycorisNet {
 
         // One of the functor of BP_Multi_Thread().
         void BP_Multi_Thread_Forward(uint32_t start, uint32_t end, float *midData);
+
+        std::vector<float> getHiddenLayer(uint32_t pos);
     };
 
 }

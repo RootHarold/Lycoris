@@ -9,6 +9,7 @@
 #include "individual.h"
 #include "utils.h"
 #include <iostream>
+#include <numeric>
 
 namespace LycorisNet {
 
@@ -398,6 +399,17 @@ namespace LycorisNet {
             temp_data /= args->batchSize;
             midData[i] = temp_data;
         }
+    }
+
+    std::vector<float> Individual::getHiddenLayer(uint32_t pos) {
+        std::vector<float> ret;
+
+        auto pre = std::accumulate(layers.begin(), layers.begin() + pos, uint32_t(0));
+        for (uint32_t i = pre; i < pre + layers[pos]; ++i) {
+            ret.push_back((*nodeMap)[(*nodeSlice)[i]]->value);
+        }
+
+        return ret;
     }
 
 }
