@@ -197,6 +197,8 @@ namespace LycorisNet {
 
         std::string getMode();
 
+        std::vector<uint32_t> getLayers();
+
         /*
          * Returns version information and copyright information.
          */

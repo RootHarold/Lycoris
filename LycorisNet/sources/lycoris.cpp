@@ -451,6 +451,10 @@ namespace LycorisNet {
         return args->mode;
     }
 
+    std::vector<uint32_t> Lycoris::getLayers() {
+        return best->layers;
+    }
+
     // Mutating.
     void Lycoris::mutate() {
         auto start = new uint32_t[args->cpuNum];
