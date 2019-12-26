@@ -456,6 +456,7 @@ namespace LycorisNet {
         return args->mode;
     }
 
+    // Returns the number of nodes in each layer of the neural network.
     std::vector<uint32_t> Lycoris::getLayers() {
         if (args->preheatFlag) {
             std::cout << "The preheat() is not executed." << std::endl;
@@ -470,6 +471,10 @@ namespace LycorisNet {
         return best->layers;
     }
 
+    /*
+     * Get a vector of nodes in a specific layer of the best
+     * individual. The parameter pos starts at index 0.
+     */
     std::vector<float> Lycoris::getHiddenLayer(uint32_t pos) {
         if (args->preheatFlag) {
             std::cout << "The preheat() is not executed." << std::endl;

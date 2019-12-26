@@ -83,7 +83,7 @@ namespace LycorisNet {
 
         /*
          * Get a vector of nodes in a specific layer of this neural network.
-         * The parameter pos start at index 0.
+         * The parameter pos starts at index 0.
          */
         std::vector<float> getHiddenLayer(uint32_t pos);
     };

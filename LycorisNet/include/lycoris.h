@@ -197,8 +197,16 @@ namespace LycorisNet {
 
         std::string getMode();
 
+        /*
+         * Returns the number of nodes in each layer of the neural network.
+         */
         std::vector<uint32_t> getLayers();
 
+        /*
+         * Get a vector of nodes in a specific layer of the best individual.
+         *
+         * pos: The number of the layer needed and it starts at index 0.
+         */
         std::vector<float> getHiddenLayer(uint32_t pos);
 
         /*
