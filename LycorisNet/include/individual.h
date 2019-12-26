@@ -54,6 +54,7 @@ namespace LycorisNet {
         std::map<uint32_t, Node *> *nodeMap;
         // All the objects of the class Individual share an object of the class Args.
         Args *args;
+        std::vector<uint32_t> layers;
 
         // Initialize a individual.
         void initialize();
