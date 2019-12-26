@@ -373,6 +373,11 @@ namespace LycorisNet {
             }
         }
 
+        outfile << std::to_string(best->layers.size()) << " ";
+        for (unsigned int &iter : best->layers) {
+            outfile << std::to_string(iter) << " ";
+        }
+
         outfile << args->mode;
 
         outfile.close();
@@ -729,6 +734,13 @@ namespace LycorisNet {
             }
 
             (*(source->nodeMap))[key] = n;
+        }
+
+        auto layerSize = uint32_t(std::stoul(data[pointer]));
+        pointer++;
+        for (uint32_t i = 0; i < layerSize; ++i) {
+            source->layers.push_back(uint32_t(std::stoul(data[pointer])));
+            pointer++;
         }
 
         auto mode = data[pointer];
