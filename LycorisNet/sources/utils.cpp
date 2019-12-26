@@ -141,6 +141,7 @@ namespace LycorisNet {
         uint32_t pointer = 0;
 
         std::vector<uint32_t> input_arr(in.inputNum);
+        in.layers.push_back(in.inputNum);
         for (uint32_t i = 0; i < in.inputNum; ++i) {
             input_arr[i] = (*(in.nodeSlice))[pointer];
             ++pointer;
@@ -159,6 +160,7 @@ namespace LycorisNet {
         for (uint32_t i = 1; i < in.args->depth - 1; ++i) {
             auto temp_length = split_arr[i] - split_arr[i - 1] + 1;
             std::vector<uint32_t> temp_arr(temp_length);
+            in.layers.push_back(temp_length);
 
             for (uint32_t j = 0; j < temp_length; ++j) {
                 temp_arr[j] = (*(in.nodeSlice))[pointer];
@@ -169,6 +171,7 @@ namespace LycorisNet {
         }
 
         std::vector<uint32_t> output_arr(in.outputNum);
+        in.layers.push_back(in.outputNum);
         for (uint32_t i = 0; i < in.outputNum; ++i) {
             output_arr[i] = (*(in.nodeSlice))[pointer];
             ++pointer;
