@@ -54,6 +54,7 @@ namespace LycorisNet {
         std::map<uint32_t, Node *> *nodeMap;
         // All the objects of the class Individual share an object of the class Args.
         Args *args;
+        // Stores the number of nodes in each layer of the neural network.
         std::vector<uint32_t> layers;
 
         // Initialize a individual.
@@ -80,6 +81,10 @@ namespace LycorisNet {
         // One of the functor of BP_Multi_Thread().
         void BP_Multi_Thread_Forward(uint32_t start, uint32_t end, float *midData);
 
+        /*
+         * Get a vector of nodes in a specific layer of this neural network.
+         * The parameter pos start at index 0.
+         */
         std::vector<float> getHiddenLayer(uint32_t pos);
     };
 
