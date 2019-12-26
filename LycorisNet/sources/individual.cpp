@@ -66,6 +66,8 @@ namespace LycorisNet {
         duplicate->nodeSum = nodeSum;
         duplicate->fitness = fitness;
 
+        duplicate->layers.assign(layers.begin(), layers.end());
+
         duplicate->nodeMap = new std::map<uint32_t, Node *>();
         for (auto &iter : *nodeMap) {
             duplicate->nodeMap->insert(std::make_pair(iter.first, iter.second->clone()));
