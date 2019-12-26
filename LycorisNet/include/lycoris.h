@@ -199,6 +199,8 @@ namespace LycorisNet {
 
         std::vector<uint32_t> getLayers();
 
+        std::vector<float> getHiddenLayer(uint32_t pos);
+
         /*
          * Returns version information and copyright information.
          */

@@ -455,6 +455,10 @@ namespace LycorisNet {
         return best->layers;
     }
 
+    std::vector<float> Lycoris::getHiddenLayer(uint32_t pos) {
+        return best->getHiddenLayer(pos);
+    }
+
     // Mutating.
     void Lycoris::mutate() {
         auto start = new uint32_t[args->cpuNum];
