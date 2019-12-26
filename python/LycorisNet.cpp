@@ -37,6 +37,10 @@ PYBIND11_MODULE(LycorisNet, m) {
             .def("getCapacity", &LycorisNet::Lycoris::getCapacity, "Returns capacity of Lycoris.")
             .def("getFitness", &LycorisNet::Lycoris::getFitness, "Returns the loss.")
             .def("getMode", &LycorisNet::Lycoris::getMode, "Returns mode of Lycoris (classify or predict).")
+            .def("getLayers", &LycorisNet::Lycoris::getLayers,
+                 "Returns the number of nodes in each layer of the neural network.")
+            .def("getHiddenLayer", &LycorisNet::Lycoris::getHiddenLayer,
+                 "Get a vector of nodes in a specific layer of the best individual.")
             .def("version", &LycorisNet::Lycoris::version, "Returns version information and copyright information.");
 
     m.def("loadModel", &LycorisNet::loadModel, py::arg("path"), py::arg("capacity"),
