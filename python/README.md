@@ -6,6 +6,8 @@ cmake .
 make
 ```
 
+It can also be installed via `pip install LycorisNet` (**depending on the pybind11 header files**).
+
 # Documents
 The APIs provided by **Lycoris** (`from LycorisNet import Lycoris`):
 

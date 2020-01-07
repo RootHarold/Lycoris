@@ -31,8 +31,10 @@ make
 
 The Python bindings of the code are based on [Pybind11](https://github.com/pybind/pybind11).
 
+It can also be installed via `pip install LycorisNet` (**depending on the pybind11 header files**).
+
 # Documents
-The following is the documentation for the C ++ version while that of the Python version can be viewed [here](https://github.com/RootHarold/Lycoris/tree/master/python).
+The following is the documentation for the C ++ version while that of the Python version can be viewed [here](https://github.com/RootHarold/Lycoris/tree/master/python#Documents).
 
 The APIs provided by **Lycoris** (`namespace LycorisNet`):
 
