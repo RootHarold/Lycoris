@@ -189,7 +189,7 @@ namespace LycorisNet {
          * Returns the loss.
          */
 
-        float getFitness();
+        float getLoss();
 
         /*
          * Returns mode of Lycoris (classify or predict).

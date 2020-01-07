@@ -442,13 +442,13 @@ namespace LycorisNet {
     }
 
     // Returns the loss.
-    float Lycoris::getFitness() {
+    float Lycoris::getLoss() {
         if (args->firstRun) {
             std::cout << "The function cannot be executed before initialization." << std::endl;
             exit(9);
         }
 
-        return best->fitness;
+        return 0 - best->fitness;
     }
 
     // Returns mode of Lycoris (classify or predict).
