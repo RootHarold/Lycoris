@@ -35,7 +35,7 @@ PYBIND11_MODULE(LycorisNet, m) {
             .def("getInputDim", &LycorisNet::Lycoris::getInputDim, "Returns the input dimension.")
             .def("getOutputDim", &LycorisNet::Lycoris::getOutputDim, "Returns the output dimension.")
             .def("getCapacity", &LycorisNet::Lycoris::getCapacity, "Returns capacity of Lycoris.")
-            .def("getFitness", &LycorisNet::Lycoris::getFitness, "Returns the loss.")
+            .def("getLoss", &LycorisNet::Lycoris::getLoss, "Returns the loss.")
             .def("getMode", &LycorisNet::Lycoris::getMode, "Returns mode of Lycoris (classify or predict).")
             .def("getLayers", &LycorisNet::Lycoris::getLayers,
                  "Returns the number of nodes in each layer of the neural network.")
