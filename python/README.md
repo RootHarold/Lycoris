@@ -34,7 +34,7 @@ Function | Description |  Inputs | Returns
 **getMode**() |  |  | Returns mode of Lycoris (classify or predict).
 **getLayers**() |  |  | Returns the number of nodes in each layer of the neural network.
 **getHiddenLayer**(pos) | The parameter pos starts at index 0. | **pos**: The number of the layer needed. | Returns a vector of nodes in a specific layer of the best individual.
-**version**() |  |  | Returns version information and copyright information.
+`@staticmethod`<br/>**version**() |  |  | Returns version information and copyright information.
 
 The funtion used to import the pre-trained model (`from LycorisNet import loadModel`):
 
