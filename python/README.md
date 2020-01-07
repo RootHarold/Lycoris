@@ -30,7 +30,7 @@ Function | Description |  Inputs | Returns
 **getInputDim**() |  |  | Returns the input dimension.
 **getOutputDim**() |  |  | Returns the output dimension.
 **getCapacity**() |  |  | Returns capacity of Lycoris.
-**getFitness**() |  |  | Returns the loss.
+**getLoss**() |  |  | Returns the loss.
 **getMode**() |  |  | Returns mode of Lycoris (classify or predict).
 **getLayers**() |  |  | Returns the number of nodes in each layer of the neural network.
 **getHiddenLayer**(pos) | The parameter pos starts at index 0. | **pos**: The number of the layer needed. | Returns a vector of nodes in a specific layer of the best individual.

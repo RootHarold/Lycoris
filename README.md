@@ -58,7 +58,7 @@ uint32_t **getSize**(); |  |  | Returns the size of the best individual.
 uint32_t **getInputDim**(); |  |  | Returns the input dimension.
 uint32_t **getOutputDim**(); |  |  | Returns the output dimension.
 uint32_t **getCapacity**(); |  |  | Returns capacity of Lycoris.
-float **getFitness**(); |  |  | Returns the loss.
+float **getLoss**(); |  |  | Returns the loss.
 std::string **getMode**(); |  |  | Returns mode of Lycoris (classify or predict).
 std::vector<uint32_t> **getLayers**(); |  |  | Returns the number of nodes in each layer of the neural network.
 std::vector<float> **getHiddenLayer**(uint32_t pos); | The parameter pos starts at index 0. | **pos**: The number of the layer needed. | Returns a vector of nodes in a specific layer of the best individual.
