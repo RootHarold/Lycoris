@@ -23,15 +23,30 @@ sudo make install
 
 * Python bindings:
 
+The Python bindings of the code are based on [Pybind11](https://github.com/pybind/pybind11).
+
+```
+git clone "https://github.com/pybind/pybind11.git"
+cd pybind11
+mkdir build
+cd build
+cmake ..
+make install
+```
+
+(If **pybind11** and its **header files** are already installed, you can ignore the above steps.)
+
+```
+pip install LycorisNet
+```
+
+It can also be obtained via manual compilation:
+
 ```
 cd Lycoris/python
 cmake .
 make
 ```
-
-The Python bindings of the code are based on [Pybind11](https://github.com/pybind/pybind11).
-
-It can also be installed via `pip install LycorisNet` (**depending on the pybind11 header files**).
 
 # Documents
 The following is the documentation for the C ++ version while that of the Python version can be viewed [here](https://github.com/RootHarold/Lycoris/tree/master/python#Documents).
