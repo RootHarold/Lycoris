@@ -58,17 +58,17 @@ Function | Description |  Inputs | Returns
 **Lycoris**(uint32_t capacity, uint32_t inputDim, uint32_t outputDim, const std::string &mode); | Constructor.<br/> The class Lycoris is the highest level abstraction of LycorisNet. | **capacity**: Capacity of Lycoris.<br/> **inputDim**: Input dimension.<br/> **outputDim**: Output dimension.<br/> **mode**: Mode of Lycoris (classify or predict). | An object of the class Lycoris.
 **~Lycoris**(); | Destructor. |  | 
 void **preheat**(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth); | Preheating process of the neural network cluster. | **num_of_nodes**: The number of hidden nodes added for each neural network.<br/> **num_of_connections**: The number of connections added for each neural network.<br/> **depth**: Total layers of each neural network. |
-void **evolve**(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire); | Evolve the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
-void **fitAll**(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire); | Fit all neural networks in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
-void **fit**(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire); | Fit the best individual in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
+void **evolve**(std::vector&#60;std::vector&#60;float&#62; &#62; &input, std::vector&#60;std::vector&#60;float&#62; &#62; &desire); | Evolve the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
+void **fitAll**(std::vector&#60;std::vector&#60;float&#62; &#62; &input, std::vector&#60;std::vector&#60;float&#62; &#62; &desire); | Fit all neural networks in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
+void **fit**(std::vector&#60;std::vector&#60;float&#62; &#62; &input, std::vector&#60;std::vector&#60;float&#62; &#62; &desire); | Fit the best individual in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
 void **enrich**(); | Keep only the best one in the neural network cluster. |  |
-std::vector<float> **compute**(std::vector<float> &input); | Forward Computing of the best individual. | **input**: Input data. | Returns the output data.
-std::vector<std::vector<float> > **computeBatch**(std::vector<std::vector<float> > &input); | Parallel forward Computing of the best individual. | **input**: Input data (two dimensions). | Returns the output data (two dimensions).
+std::vector&#60;float> **compute**(std::vector&#60;float&#62; &input); | Forward Computing of the best individual. | **input**: Input data. | Returns the output data.
+std::vector&#60;std::vector&#60;float&#62; &#62; **computeBatch**(std::vector&#60;std::vector&#60;float&#62; &#62; &input); | Parallel forward Computing of the best individual. | **input**: Input data (two dimensions). | Returns the output data (two dimensions).
 void **resize**(uint32_t capacity); | Resize the capacity of the neural network cluster. | **As literally.** |
 void **openMemLimit**(uint32_t size); | Turn on memory-limit. | **As literally.** |
 void **closeMemLimit**(); | Turn off memory-limit. |  |
 void **saveModel**(const std::string &path); | Export the current trained model. | **path**: File path of the current trained model. |
-void **setMutateArgs**(std::vector<float> &p); | Set p1 to p4 in the class Args.<br/> Parameters are passed in as `std::vector`. | **p1**: Probability of adding the new node between a connection.<br/> **p2**: Probability of deleting a node.<br/> **p3**: Probability of adding a new connection between two nodes.<br/> **p4**: Probability of deleting a connection. |
+void **setMutateArgs**(std::vector&#60;float&#62; &p); | Set p1 to p4 in the class Args.<br/> Parameters are passed in as `std::vector`. | **p1**: Probability of adding the new node between a connection.<br/> **p2**: Probability of deleting a node.<br/> **p3**: Probability of adding a new connection between two nodes.<br/> **p4**: Probability of deleting a connection. |
 void **setMutateOdds**(float odds); | Set the odds of mutating. | The param "odds" means one individual mutates odds times to form odds + 1 individuals. |
 void **setCpuCores**(uint32_t num); | Set the number of worker threads to train the model. | **As literally.** |
 void **setLR**(float lr); | Set the learning rate. | **As literally.** |
@@ -78,8 +78,8 @@ uint32_t **getOutputDim**(); |  |  | Returns the output dimension.
 uint32_t **getCapacity**(); |  |  | Returns capacity of Lycoris.
 float **getLoss**(); |  |  | Returns the loss.
 std::string **getMode**(); |  |  | Returns mode of Lycoris (classify or predict).
-std::vector<uint32_t> **getLayers**(); |  |  | Returns the number of nodes in each layer of the neural network.
-std::vector<float> **getHiddenLayer**(uint32_t pos); | The parameter pos starts at index 0. | **pos**: The number of the layer needed. | Returns a vector of nodes in a specific layer of the best individual.
+std::vector&#60;uint32_t&#62; **getLayers**(); |  |  | Returns the number of nodes in each layer of the neural network.
+std::vector&#60;float&#62; **getHiddenLayer**(uint32_t pos); | The parameter pos starts at index 0. | **pos**: The number of the layer needed. | Returns a vector of nodes in a specific layer of the best individual.
 *static* std::string **version**(); |  |  | Returns version information and copyright information.
 
 The funtion used to import the pre-trained model (`namespace LycorisNet`):
