@@ -63,6 +63,7 @@ void **fitAll**(std::vector<std::vector<float> > &input, std::vector<std::vector
 void **fit**(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire); | Fit the best individual in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
 void **enrich**(); | Keep only the best one in the neural network cluster. |  |
 std::vector<float> **compute**(std::vector<float> &input); | Forward Computing of the best individual. | **input**: Input data. | Returns the output data.
+std::vector<std::vector<float> > **computeBatch**(std::vector<std::vector<float> > &input); | Parallel forward Computing of the best individual. | **input**: Input data (two dimensions). | Returns the output data (two dimensions).
 void **resize**(uint32_t capacity); | Resize the capacity of the neural network cluster. | **As literally.** |
 void **openMemLimit**(uint32_t size); | Turn on memory-limit. | **As literally.** |
 void **closeMemLimit**(); | Turn off memory-limit. |  |
@@ -86,6 +87,7 @@ The funtion used to import the pre-trained model (`namespace LycorisNet`):
 Function | Description |  Inputs | Returns
 -|-|-|-
 Lycoris ***loadModel**(const std::string &path, uint32_t capacity); | Import the pre-trained model. | **path**: File path of the pre-trained model.<br/> **capacity**: Capacity of the neural network cluster. | Returns a pointer to the object of class Lycoris.
+Lycoris ***loadViaString**(const std::string &model, uint32_t capacity); | Import the pre-trained model via string. | **model**: The pre-trained model in the form of string.<br/> **capacity**: Capacity of the neural network cluster. | Returns a pointer to the object of class Lycoris.
 
 More detailed documentation will be released in the form of sample code.
 
