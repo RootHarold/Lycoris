@@ -45,4 +45,6 @@ PYBIND11_MODULE(LycorisNet, m) {
 
     m.def("loadModel", &LycorisNet::loadModel, py::arg("path"), py::arg("capacity"),
           "Import the pre-trained model.");
+    m.def("loadViaString", &LycorisNet::loadViaString, py::arg("model"), py::arg("capacity"),
+          "Import the pre-trained model via string.");
 }
