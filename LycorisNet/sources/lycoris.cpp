@@ -241,7 +241,59 @@ namespace LycorisNet {
             LycorisUtils::softmax(output, outputNum);
         }
 
-        std::vector<float> ret(output, output + sizeof(output) / sizeof(float));
+        std::vector<float> ret(output, output + outputNum);
+        return ret;
+    }
+
+    // Parallel forward Computing of the best individual.
+    std::vector<std::vector<float> > Lycoris::computeBatch(std::vector<std::vector<float> > &input) {
+        if (input.empty() || input[0].size() != inputNum) {
+            std::cout << "The input data is not proper!" << std::endl;
+            exit(6);
+        }
+
+        checkFirstRun();
+
+        data_for_computeBatch = &input;
+
+        auto start = new uint32_t[args->cpuNum];
+        auto end = new uint32_t[args->cpuNum];
+        auto batchLength = uint32_t(input.size());
+        auto part = batchLength / args->cpuNum;
+        auto temp = args->cpuNum - 1;
+        for (uint32_t i = 0; i < temp; ++i) {
+            start[i] = i * part;
+            end[i] = (i + 1) * part;
+        }
+        start[temp] = temp * part;
+        end[temp] = batchLength;
+
+        auto output = new float *[batchLength];
+        for (uint32_t i = 0; i < batchLength; ++i) {
+            output[i] = new float[outputNum];
+        }
+        std::vector<std::vector<float> > ret(batchLength);
+
+        std::vector<std::thread> threads;
+        for (uint32_t i = 0; i < args->cpuNum; ++i) {
+            threads.emplace_back(std::thread(&Lycoris::computeBatchCore, this, start[i], end[i], output));
+        }
+        for (auto &thread : threads) {
+            thread.join();
+        }
+
+        for (uint32_t i = 0; i < batchLength; ++i) {
+            std::vector<float> sub_vector(output[i], output[i] + outputNum);
+            ret[i] = sub_vector;
+        }
+
+        delete[] start;
+        delete[] end;
+        for (uint32_t i = 0; i < batchLength; ++i) {
+            delete[] output[i];
+        }
+        delete[] output;
+
         return ret;
     }
 
@@ -560,9 +612,8 @@ namespace LycorisNet {
         delete[] end;
     }
 
-    // The functor of forward().
+    // The functor of backPropagation().
     void Lycoris::backPropagationCore(uint32_t start, uint32_t end) {
-        // TODO: To fix the NaN & Inf problems. Remove that part from chooseElite().
         for (uint32_t i = start; i < end; ++i) {
             (*individualList)[i]->BP_Single_Thread();
         }
@@ -658,6 +709,17 @@ namespace LycorisNet {
         for (uint32_t i = start; i < end; ++i) {
             LycorisNet::LycorisUtils::addHiddenNodes(*((*individualList)[i]), num_of_nodes);
             args->utils->addConnections(*((*individualList)[i]), num_of_connections);
+        }
+    }
+
+    // The functor of computeBatch().
+    void Lycoris::computeBatchCore(uint32_t start, uint32_t end, float **output) {
+        for (uint32_t i = start; i < end; ++i) {
+            best->forward((*data_for_computeBatch)[i], output[i]);
+
+            if (args->mode == "classify") {
+                LycorisUtils::softmax(output[i], outputNum);
+            }
         }
     }
 

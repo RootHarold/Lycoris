@@ -101,6 +101,16 @@ namespace LycorisNet {
         std::vector<float> compute(std::vector<float> &input);
 
         /*
+         * Parallel forward Computing of the best individual.
+         *
+         * input: Input data (two dimensions).
+         *
+         * Returns the output data (two dimensions).
+         */
+
+        std::vector<std::vector<float> > computeBatch(std::vector<std::vector<float> > &input);
+
+        /*
          * Resize the capacity of the neural network cluster.
          */
 
@@ -243,6 +253,9 @@ namespace LycorisNet {
         // Store the length of individualList.
         uint32_t oldLength;
 
+        // Used in computeBatch().
+        std::vector<std::vector<float> > *data_for_computeBatch;
+
         // Mutating.
         void mutate();
 
@@ -256,7 +269,7 @@ namespace LycorisNet {
 
         void backPropagation();
 
-        // The functor of forward().
+        // The functor of backPropagation().
         void backPropagationCore(uint32_t start, uint32_t end);
 
         /*
@@ -271,6 +284,9 @@ namespace LycorisNet {
 
         // The functor of preheat().
         void preheatCore(uint32_t start, uint32_t end, uint32_t num_of_nodes, uint32_t num_of_connections);
+
+        // The functor of computeBatch().
+        void computeBatchCore(uint32_t start, uint32_t end, float **output);
 
         // Check if the individualList is initialized.
         void checkFirstRun();
