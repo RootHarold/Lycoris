@@ -35,6 +35,7 @@ Function | Description |  Inputs | Returns
 **fit**(input, desire) | Fit the best individual in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
 **enrich**() | Keep only the best one in the neural network cluster. |  |
 **compute**(input) | Forward Computing of the best individual. | **input**: Input data. | Returns the output data.
+**computeBatch**(input) | Parallel forward Computing of the best individual. | **input**: Input data (two dimensions). | Returns the output data (two dimensions).
 **resize**(capacity) | Resize the capacity of the neural network cluster. | **As literally.** |
 **openMemLimit**(size) | Turn on memory-limit. | **As literally.** |
 **closeMemLimit**() | Turn off memory-limit. |  |
@@ -58,6 +59,7 @@ The funtion used to import the pre-trained model (`from LycorisNet import loadMo
 Function | Description |  Inputs | Returns
 -|-|-|-
 Lycoris **loadModel**(path, capacity) | Import the pre-trained model. | **path**: File path of the pre-trained model.<br/> **capacity**: Capacity of the neural network cluster. | Returns an object of class Lycoris.
+Lycoris **loadViaString**(model, capacity) | Import the pre-trained model via string. | **model**: The pre-trained model in the form of string.<br/> **capacity**: Capacity of the neural network cluster. | Returns an object of class Lycoris.
 
 Information related to parameters and return values also appears within:
 
