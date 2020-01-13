@@ -21,6 +21,8 @@ PYBIND11_MODULE(LycorisNet, m) {
             .def("enrich", &LycorisNet::Lycoris::enrich, "Keep only the best one in the neural network cluster.")
             .def("compute", &LycorisNet::Lycoris::compute, py::arg("input"),
                  "Forward Computing of the best individual.")
+            .def("computeBatch", &LycorisNet::Lycoris::computeBatch, py::arg("input"),
+                 "Parallel forward Computing of the best individual.")
             .def("resize", &LycorisNet::Lycoris::resize, py::arg("capacity"),
                  "Resize the capacity of the neural network cluster.")
             .def("openMemLimit", &LycorisNet::Lycoris::openMemLimit, py::arg("size"), "Turn on memory-limit.")
