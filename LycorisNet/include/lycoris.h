@@ -214,10 +214,12 @@ namespace LycorisNet {
          */
 
         inline static std::string version() {
-            return "LycorisNet Core 2.3.15 (CPU Mode) By RootHarold.";
+            return "LycorisNet Core 2.4.15 (CPU Mode) By RootHarold.";
         }
 
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
+
+        friend Lycoris *loadViaString(const std::string &model, uint32_t capacity);
 
     private:
         // The dimension of input.
@@ -285,6 +287,18 @@ namespace LycorisNet {
      */
 
     Lycoris *loadModel(const std::string &path, uint32_t capacity);
+
+    /*
+     * Import the pre-trained model via string.
+     *
+     * model: The pre-trained model in the form of string.
+     *
+     * capacity: Capacity of the neural network cluster.
+     *
+     * Returns a pointer to the object of class Lycoris.
+     */
+
+    Lycoris *loadViaString(const std::string &model, uint32_t capacity);
 
 }
 

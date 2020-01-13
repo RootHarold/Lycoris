@@ -36,6 +36,8 @@ namespace LycorisNet {
 
         friend Lycoris *loadModel(const std::string &path, uint32_t capacity);
 
+        friend Lycoris *loadViaString(const std::string &model, uint32_t capacity);
+
     private:
         // The number of the node.
         uint32_t nodeNum;

@@ -769,4 +769,84 @@ namespace LycorisNet {
         return radiata;
     }
 
+    // Import the pre-trained model via string.
+    Lycoris *loadViaString(const std::string &model, uint32_t capacity) {
+        auto data = LycorisUtils::split(model);
+        auto source = new Individual();
+        source->inputNum = uint32_t(std::stoul(data[0]));
+        source->outputNum = uint32_t(std::stoul(data[1]));
+        source->innovationNum = uint32_t(std::stoul(data[2]));
+        source->nodeSum = uint32_t(std::stoul(data[3]));
+        source->fitness = std::stof(data[4]);
+
+        source->nodeSlice = new std::vector<uint32_t>(std::stoul(data[5]));
+        uint32_t pointer = 6;
+        for (uint32_t i = 0; i < std::stoul(data[5]); ++i) {
+            (*(source->nodeSlice))[i] = uint32_t(std::stoul(data[pointer]));
+            pointer++;
+        }
+
+        auto mapLength = uint32_t(std::stoul(data[pointer]));
+        pointer++;
+        source->nodeMap = new std::map<uint32_t, Node *>();
+        for (uint32_t i = 0; i < mapLength; ++i) {
+            auto key = uint32_t(std::stoul(data[pointer]));
+            pointer++;
+            auto temp1 = data[pointer];
+            pointer++;
+            auto temp2 = data[pointer];
+            pointer++;
+            auto n = new Node(uint32_t(std::stoul(temp1)), uint32_t(std::stoul(temp2)));
+            n->value = std::stof(data[pointer]);
+            pointer++;
+            n->bias = std::stof(data[pointer]);
+            pointer++;
+
+            auto genomeLength = uint32_t(std::stoul(data[pointer]));
+            pointer++;
+            for (uint32_t j = 0; j < genomeLength; ++j) {
+                Gen g;
+                g.in = uint32_t(std::stoul(data[pointer]));
+                pointer++;
+                g.out = uint32_t(std::stoul(data[pointer]));
+                pointer++;
+                Ome o;
+                o.weight = std::stof(data[pointer]);
+                pointer++;
+                o.innovationNum = uint32_t(std::stoul(data[pointer]));
+                pointer++;
+                (*(n->genomeMap))[g] = o;
+            }
+
+            (*(source->nodeMap))[key] = n;
+        }
+
+        auto layerSize = uint32_t(std::stoul(data[pointer]));
+        pointer++;
+        for (uint32_t i = 0; i < layerSize; ++i) {
+            source->layers.push_back(uint32_t(std::stoul(data[pointer])));
+            pointer++;
+        }
+
+        auto mode = data[pointer];
+
+        auto radiata = new Lycoris(capacity, source->inputNum, source->outputNum, mode);
+        radiata->args->firstRun = false;
+        radiata->args->preheatFlag = false;
+        source->args = radiata->args;
+
+        auto initialCapacity = uint32_t(float(capacity) / (1 + radiata->args->mutateOdds));
+        if (initialCapacity == 0) {
+            initialCapacity = 1;
+        }
+        radiata->individualList = new std::vector<Individual *>(initialCapacity);
+        for (uint32_t i = 0; i < initialCapacity; ++i) {
+            (*radiata->individualList)[i] = source->clone();
+        }
+        radiata->best = (*radiata->individualList)[0];
+
+        delete source;
+        return radiata;
+    }
+
 }
