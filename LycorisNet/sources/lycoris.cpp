@@ -714,13 +714,15 @@ namespace LycorisNet {
 
     // The functor of computeBatch().
     void Lycoris::computeBatchCore(uint32_t start, uint32_t end, float **output) {
+        auto temp = best->clone();
         for (uint32_t i = start; i < end; ++i) {
-            best->forward((*data_for_computeBatch)[i], output[i]);
+            temp->forward((*data_for_computeBatch)[i], output[i]);
 
             if (args->mode == "classify") {
                 LycorisUtils::softmax(output[i], outputNum);
             }
         }
+        delete temp;
     }
 
     // Check if the individualList is initialized.
