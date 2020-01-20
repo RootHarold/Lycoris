@@ -91,5 +91,9 @@ Lycoris ***loadViaString**(const std::string &model, uint32_t capacity); | Impor
 
 More detailed documentation will be released in the form of sample code.
 
+# Examples
+* [**LycorisAD**](https://github.com/RootHarold/LycorisAD): an elegant outlier detection algorithm framework based on AutoEncoder.
+* *More examples will be released in the future.*
+
 # License
 Lycoris is released under the [LGPL-3.0](https://github.com/RootHarold/Lycoris/blob/master/LICENSE) license. By using, distributing, or contributing to this project, you agree to the terms and conditions of this license.

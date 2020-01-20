@@ -54,7 +54,7 @@ Function | Description |  Inputs | Returns
 **getHiddenLayer**(pos) | The parameter pos starts at index 0. | **pos**: The number of the layer needed. | Returns a vector of nodes in a specific layer of the best individual.
 `@staticmethod`<br/>**version**() |  |  | Returns version information and copyright information.
 
-The funtion used to import the pre-trained model (`from LycorisNet import loadModel`):
+The funtion used to import the pre-trained model (`from LycorisNet import loadModel, loadViaString`):
 
 Function | Description |  Inputs | Returns
 -|-|-|-
@@ -67,6 +67,10 @@ Information related to parameters and return values also appears within:
 >>> help(Lycoris)
 >>> help(loadModel)
 ```
+
+# Examples
+* [**LycorisAD**](https://github.com/RootHarold/LycorisAD): an elegant outlier detection algorithm framework based on AutoEncoder.
+* *More examples will be released in the future.*
 
 # License
 Lycoris is released under the [LGPL-3.0](https://github.com/RootHarold/Lycoris/blob/master/LICENSE) license. By using, distributing, or contributing to this project, you agree to the terms and conditions of this license.
