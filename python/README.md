@@ -1,3 +1,5 @@
+![logo](https://github.com/RootHarold/Lycoris/blob/master/logo/logo.svg)
+
 LycorisNet's Python bindings are implemented based on [Pybind11](https://github.com/pybind/pybind11).
 # Installation
 ```
