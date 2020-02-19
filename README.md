@@ -8,6 +8,7 @@ At this stage, Lycoris enables you to deploy computation to one or more CPUs in 
 
 # Features
 * Lightweight and portable to smart devices.
+* Support online learning.
 * Automatic neural network architecture search.
 * Support for [Python](https://github.com/RootHarold/Lycoris/tree/master/python). In the near future, other programming languages such as Java, C #, Go, and Rust will be supported.
 * Cloud-friendly. Based on C++11, it supports most operating systems and compilers.
