@@ -1,6 +1,6 @@
 ![logo](https://github.com/RootHarold/Lycoris/blob/master/logo/logo.svg)
 
-**Lycoris** is a lightweight neural architecture search framework based on *Evolving Neural Networks through Augmenting Topologies*.
+**Lycoris** is a lightweight and easy-to-use deep learning framework with **neural architecture search**.
 
 Lycoris aims to provide developers with an automated service for end-to-end neural network architecture search, enabling developers to obtain better models with fewer hyperparameter configurations. For more detailed usage of Lycoris, please refer to related [documents](https://github.com/RootHarold/Lycoris#Documents).
 
