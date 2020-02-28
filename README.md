@@ -95,6 +95,7 @@ More detailed documentation will be released in the form of sample code.
 # Examples
 * [**LycorisAD**](https://github.com/RootHarold/LycorisAD): an elegant outlier detection algorithm framework based on AutoEncoder.
 * [**LycorisR**](https://github.com/RootHarold/LycorisR): a lightweight recommendation algorithm framework based on LycorisNet.
+* [**LycorisQ**](https://github.com/RootHarold/LycorisQ): a neat reinforcement learning framework based on LycorisNet.
 * *More examples will be released in the future.*
 
 # License
