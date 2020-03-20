@@ -5,7 +5,7 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(LycorisNet, m) {
-    m.doc() = "A lightweight neural architecture search framework based on evolutionary strategies.";
+    m.doc() = "A lightweight and easy-to-use deep learning framework with neural architecture search.";
 
     py::class_<LycorisNet::Lycoris>(m, "Lycoris")
             .def(py::init<uint32_t, uint32_t, uint32_t, const std::string &>(), py::arg("capacity"),
