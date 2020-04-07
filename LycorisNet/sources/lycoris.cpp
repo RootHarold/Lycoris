@@ -133,9 +133,7 @@ namespace LycorisNet {
 
     // Fit the best individual in the neural network cluster.
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        if (args->enrichFlag) {
-            enrich();
-        }
+        enrich();
 
         if (input.size() != desire.size()) {
             std::cout << "The input data and the desire data do not match!" << std::endl;
@@ -180,52 +178,50 @@ namespace LycorisNet {
 
     // Keep only the best one in the neural network cluster.
     void Lycoris::enrich() {
-        if (args->enrichFlag) {
-            args->enrichFlag = false;
-        }
+        if (capacity > 1) {
+            checkFirstRun();
 
-        checkFirstRun();
-
-        uint32_t totalLength = individualList->size();
-        if (totalLength == 0) {
-            std::cout << "All died." << std::endl;
-            exit(1);
-        }
-
-        std::vector<SortFitness> sortList(totalLength);
-        for (uint32_t i = 0; i < totalLength; ++i) {
-            sortList[i] = SortFitness((*individualList)[i]->fitness, i);
-        }
-        std::sort(sortList.begin(), sortList.end(), LycorisUtils::compareFitness);
-        auto last = sortList[totalLength - 1];
-        best = (*individualList)[last.individualNum];
-
-        auto newIndividualList = new std::vector<Individual *>();
-
-        auto z = totalLength;
-        for (; z > totalLength - 1; --z) {
-            if (z == 0) { // This needs elegant repairs.
-                break;
+            uint32_t totalLength = individualList->size();
+            if (totalLength == 0) {
+                std::cout << "All died." << std::endl;
+                exit(1);
             }
-            auto temp = sortList[z - 1];
-            auto tempIndividual = (*individualList)[temp.individualNum];
-            newIndividualList->push_back(tempIndividual);
-        }
 
-        if (totalLength > 1) {
-            for (uint32_t i = 0; i < totalLength - 1; ++i) {
-                if (i == totalLength) {
+            std::vector<SortFitness> sortList(totalLength);
+            for (uint32_t i = 0; i < totalLength; ++i) {
+                sortList[i] = SortFitness((*individualList)[i]->fitness, i);
+            }
+            std::sort(sortList.begin(), sortList.end(), LycorisUtils::compareFitness);
+            auto last = sortList[totalLength - 1];
+            best = (*individualList)[last.individualNum];
+
+            auto newIndividualList = new std::vector<Individual *>();
+
+            auto z = totalLength;
+            for (; z > totalLength - 1; --z) {
+                if (z == 0) { // This needs elegant repairs.
                     break;
                 }
-                auto temp = sortList[i];
+                auto temp = sortList[z - 1];
                 auto tempIndividual = (*individualList)[temp.individualNum];
-                delete tempIndividual;
+                newIndividualList->push_back(tempIndividual);
             }
-        }
-        delete individualList;
-        individualList = newIndividualList;
 
-        this->capacity = 1;
+            if (totalLength > 1) {
+                for (uint32_t i = 0; i < totalLength - 1; ++i) {
+                    if (i == totalLength) {
+                        break;
+                    }
+                    auto temp = sortList[i];
+                    auto tempIndividual = (*individualList)[temp.individualNum];
+                    delete tempIndividual;
+                }
+            }
+            delete individualList;
+            individualList = newIndividualList;
+
+            this->capacity = 1;
+        }
     }
 
     // Forward Computing of the best individual.
