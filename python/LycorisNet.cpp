@@ -14,10 +14,8 @@ PYBIND11_MODULE(LycorisNet, m) {
                  "Preheating process of the neural network cluster.")
             .def("evolve", &LycorisNet::Lycoris::evolve, py::arg("input"), py::arg("desire"),
                  "Evolve the neural network cluster.")
-            .def("fitAll", &LycorisNet::Lycoris::fitAll, py::arg("input"), py::arg("desire"),
-                 "Fit all neural networks in the neural network cluster.")
             .def("fit", &LycorisNet::Lycoris::fit, py::arg("input"), py::arg("desire"),
-                 "Fit the best individual in the neural network cluster.")
+                 "Fit all neural networks in the neural network cluster.")
             .def("enrich", &LycorisNet::Lycoris::enrich, "Keep only the best one in the neural network cluster.")
             .def("compute", &LycorisNet::Lycoris::compute, py::arg("input"),
                  "Forward Computing of the best individual.")
