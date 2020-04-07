@@ -134,8 +134,7 @@ namespace LycorisNet {
     // Fit the best individual in the neural network cluster.
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
         if (args->enrichFlag) {
-            std::cout << "The function enrich() should be executed first." << std::endl;
-            exit(11);
+            enrich();
         }
 
         if (input.size() != desire.size()) {
