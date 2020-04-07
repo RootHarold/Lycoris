@@ -60,8 +60,7 @@ Function | Description |  Inputs | Returns
 **~Lycoris**(); | Destructor. |  | 
 void **preheat**(uint32_t num_of_nodes, uint32_t num_of_connections, uint32_t depth); | Preheating process of the neural network cluster. | **num_of_nodes**: The number of hidden nodes added for each neural network.<br/> **num_of_connections**: The number of connections added for each neural network.<br/> **depth**: Total layers of each neural network. |
 void **evolve**(std::vector&#60;std::vector&#60;float&#62; &#62; &input, std::vector&#60;std::vector&#60;float&#62; &#62; &desire); | Evolve the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
-void **fitAll**(std::vector&#60;std::vector&#60;float&#62; &#62; &input, std::vector&#60;std::vector&#60;float&#62; &#62; &desire); | Fit all neural networks in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
-void **fit**(std::vector&#60;std::vector&#60;float&#62; &#62; &input, std::vector&#60;std::vector&#60;float&#62; &#62; &desire); | Fit the best individual in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
+void **fit**(std::vector&#60;std::vector&#60;float&#62; &#62; &input, std::vector&#60;std::vector&#60;float&#62; &#62; &desire); | Fit all neural networks in the neural network cluster. | **input**: Input data.<br/> **desire**: Expected output data. |
 void **enrich**(); | Keep only the best one in the neural network cluster. |  |
 std::vector&#60;float> **compute**(std::vector&#60;float&#62; &input); | Forward Computing of the best individual. | **input**: Input data. | Returns the output data.
 std::vector&#60;std::vector&#60;float&#62; &#62; **computeBatch**(std::vector&#60;std::vector&#60;float&#62; &#62; &input); | Parallel forward Computing of the best individual. | **input**: Input data (two dimensions). | Returns the output data (two dimensions).
