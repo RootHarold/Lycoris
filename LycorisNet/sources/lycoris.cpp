@@ -105,6 +105,7 @@ namespace LycorisNet {
 
         args->inputArray = input;
         args->desireArray = desire;
+        args->batchSize = input.size();
 
         runLycoris();
     }
@@ -123,6 +124,7 @@ namespace LycorisNet {
 
         args->inputArray = input;
         args->desireArray = desire;
+        args->batchSize = input.size();
 
         checkFirstRun();
 
@@ -150,8 +152,8 @@ namespace LycorisNet {
         auto individualSize = best->getSize() + 1;
 
         if (!args->batchFlag) {
-            if (batchSize != args->batchSize || individualSize != args->individualSize) {
-                for (uint32_t i = 0; i < args->batchSize; ++i) {
+            if (batchSize != args->batchSize_ || individualSize != args->individualSize_) {
+                for (uint32_t i = 0; i < args->batchSize_; ++i) {
                     delete[] args->batchData[i];
                 }
                 delete[] args->batchData;
@@ -168,7 +170,8 @@ namespace LycorisNet {
             }
         }
         args->batchSize = batchSize;
-        args->individualSize = individualSize;
+        args->batchSize_ = batchSize;
+        args->individualSize_ = individualSize;
 
         checkFirstRun();
 

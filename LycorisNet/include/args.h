@@ -81,8 +81,10 @@ namespace LycorisNet {
         std::vector<std::vector<float> > desireArray;
         // Store the batch size.
         uint32_t batchSize;
+        // Store the batch size.
+        uint32_t batchSize_;
         // Store the size of the best individual.
-        uint32_t individualSize;
+        uint32_t individualSize_;
 
         // When memory exceeds the limit, this changes to true.
         bool memOverFlag;
