@@ -89,7 +89,7 @@ namespace LycorisNet {
 
     // Evolve the neural network cluster.
     void Lycoris::evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        if (!args->fitFlag || !args->enrichFlag) {
+        if (capacity == 1) {
             std::cout << "Cannot be executed after fit() or enrich()." << std::endl;
             exit(10);
         }
@@ -112,7 +112,7 @@ namespace LycorisNet {
 
     // Fit all neural networks in the neural network cluster.
     void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        if (!args->fitFlag || !args->enrichFlag) {
+        if (capacity == 1) {
             std::cout << "Cannot be executed after fit() or enrich()." << std::endl;
             exit(10);
         }
