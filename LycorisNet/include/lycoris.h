@@ -65,16 +65,6 @@ namespace LycorisNet {
         void evolve(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
         /*
-         * Fit all neural networks in the neural network cluster.
-         *
-         * input: Input data.
-         *
-         * desire: Expected output data.
-         */
-
-        void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
-
-        /*
          * Fit the best individual in the neural network cluster.
          *
          * input: Input data.
@@ -255,6 +245,9 @@ namespace LycorisNet {
 
         // Used in computeBatch().
         std::vector<std::vector<float> > *data_for_computeBatch;
+        
+        // Fit all neural networks in the neural network cluster.
+        void fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire);
 
         // Mutating.
         void mutate();

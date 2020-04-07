@@ -105,61 +105,47 @@ namespace LycorisNet {
         runLycoris();
     }
 
-    // Fit all neural networks in the neural network cluster.
-    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        if (input.size() != desire.size()) {
-            std::cout << "The input data and the desire data do not match!" << std::endl;
-            exit(7);
-        }
-
-        args->inputArray = input;
-        args->desireArray = desire;
-        args->batchSize = input.size();
-
-        checkFirstRun();
-
-        backPropagation();
-    }
-
     // Fit the best individual in the neural network cluster.
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
-        enrich();
-
-        if (input.size() != desire.size()) {
-            std::cout << "The input data and the desire data do not match!" << std::endl;
-            exit(7);
-        }
-
-        args->inputArray = input;
-        args->desireArray = desire;
-        auto batchSize = input.size();
-        auto individualSize = best->getSize() + 1;
-
-        if (!args->batchFlag) {
-            if (batchSize != args->batchSize_ || individualSize != args->individualSize_) {
-                for (uint32_t i = 0; i < args->batchSize_; ++i) {
-                    delete[] args->batchData[i];
-                }
-                delete[] args->batchData;
-
-                delete[] args->midData;
-
-                args->batchData = new float *[batchSize];
-
-                for (uint32_t i = 0; i < batchSize; ++i) {
-                    args->batchData[i] = new float[individualSize];
-                }
-
-                args->midData = new float[individualSize];
+        if (capacity > 1) {
+            fitAll(input, desire);
+        } else {
+            if (input.size() != desire.size()) {
+                std::cout << "The input data and the desire data do not match!" << std::endl;
+                exit(7);
             }
+
+            args->inputArray = input;
+            args->desireArray = desire;
+            auto batchSize = input.size();
+            auto individualSize = best->getSize() + 1;
+
+            if (!args->batchFlag) {
+                if (batchSize != args->batchSize_ || individualSize != args->individualSize_) {
+                    for (uint32_t i = 0; i < args->batchSize_; ++i) {
+                        delete[] args->batchData[i];
+                    }
+                    delete[] args->batchData;
+
+                    delete[] args->midData;
+
+                    args->batchData = new float *[batchSize];
+
+                    for (uint32_t i = 0; i < batchSize; ++i) {
+                        args->batchData[i] = new float[individualSize];
+                    }
+
+                    args->midData = new float[individualSize];
+                }
+            }
+            args->batchSize = batchSize;
+            args->batchSize_ = batchSize;
+            args->individualSize_ = individualSize;
+
+            checkFirstRun();
+
+            best->BP_Multi_Thread();
         }
-        args->batchSize = batchSize;
-        args->batchSize_ = batchSize;
-        args->individualSize_ = individualSize;
-
-        checkFirstRun();
-
-        best->BP_Multi_Thread();
     }
 
     // Keep only the best one in the neural network cluster.
@@ -529,6 +515,22 @@ namespace LycorisNet {
         }
 
         return best->getHiddenLayer(pos);
+    }
+
+    // Fit all neural networks in the neural network cluster.
+    void Lycoris::fitAll(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
+        if (input.size() != desire.size()) {
+            std::cout << "The input data and the desire data do not match!" << std::endl;
+            exit(7);
+        }
+
+        args->inputArray = input;
+        args->desireArray = desire;
+        args->batchSize = input.size();
+
+        checkFirstRun();
+
+        backPropagation();
     }
 
     // Mutating.
