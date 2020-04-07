@@ -270,6 +270,11 @@ namespace LycorisNet {
 
     // Resize the capacity of the neural network cluster.
     void Lycoris::resize(uint32_t num) {
+        if (num < 1) {
+            std::cout << "Invalid parameter." << std::endl;
+            exit(13);
+        }
+
         checkFirstRun();
 
         auto temp1 = uint32_t(float(num) / (1 + args->mutateOdds));
