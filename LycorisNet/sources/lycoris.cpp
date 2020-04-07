@@ -105,7 +105,7 @@ namespace LycorisNet {
         runLycoris();
     }
 
-    // Fit the best individual in the neural network cluster.
+    // Fit all neural networks in the neural network cluster.
     void Lycoris::fit(std::vector<std::vector<float> > &input, std::vector<std::vector<float> > &desire) {
         if (capacity > 1) {
             fitAll(input, desire);
