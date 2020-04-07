@@ -104,8 +104,6 @@ namespace LycorisNet {
         uint32_t depth;
         // After the first execution of preheat(), this changes to false.
         bool preheatFlag;
-        // After the first execution of fit(), this changes to false.
-        bool fitFlag;
         // After the first execution of evolve(), this changes to false.
         bool evolveFlag;
     };

@@ -140,10 +140,6 @@ namespace LycorisNet {
             exit(7);
         }
 
-        if (args->fitFlag) {
-            args->fitFlag = false;
-        }
-
         args->inputArray = input;
         args->desireArray = desire;
         auto batchSize = input.size();

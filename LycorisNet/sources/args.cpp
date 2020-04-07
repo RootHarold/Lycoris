@@ -36,7 +36,6 @@ namespace LycorisNet {
         firstRun = true;
         batchFlag = true;
         preheatFlag = true;
-        fitFlag = true;
         evolveFlag = true;
     }
 
