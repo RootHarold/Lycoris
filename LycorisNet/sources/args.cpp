@@ -43,7 +43,7 @@ namespace LycorisNet {
         delete utils;
 
         if (!batchFlag) {
-            for (uint32_t i = 0; i < batchSize; ++i) {
+            for (uint32_t i = 0; i < batchSize_; ++i) {
                 delete[] batchData[i];
             }
             delete[] batchData;
