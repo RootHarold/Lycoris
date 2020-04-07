@@ -222,6 +222,8 @@ namespace LycorisNet {
         }
         delete individualList;
         individualList = newIndividualList;
+
+        this->capacity = 1;
     }
 
     // Forward Computing of the best individual.
