@@ -51,7 +51,7 @@ namespace LycorisNet {
 
         if (!args->evolveFlag) {
             std::cout << "The function preheat() cannot be executed after evolve()." << std::endl;
-            exit(11);
+            exit(10);
         }
 
         if (depth < 2 || depth > num_of_nodes + 2) {
@@ -497,12 +497,12 @@ namespace LycorisNet {
     std::vector<uint32_t> Lycoris::getLayers() {
         if (args->preheatFlag) {
             std::cout << "The preheat() is not executed." << std::endl;
-            exit(12);
+            exit(11);
         }
 
         if (!args->evolveFlag) {
             std::cout << "The evolve() has been executed." << std::endl;
-            exit(13);
+            exit(12);
         }
 
         return best->layers;
@@ -515,17 +515,17 @@ namespace LycorisNet {
     std::vector<float> Lycoris::getHiddenLayer(uint32_t pos) {
         if (args->preheatFlag) {
             std::cout << "The preheat() is not executed." << std::endl;
-            exit(12);
+            exit(11);
         }
 
         if (!args->evolveFlag) {
             std::cout << "The evolve() has been executed." << std::endl;
-            exit(13);
+            exit(12);
         }
 
         if (pos < 0 || pos >= args->depth) {
             std::cout << "Invalid parameter." << std::endl;
-            exit(14);
+            exit(13);
         }
 
         return best->getHiddenLayer(pos);
