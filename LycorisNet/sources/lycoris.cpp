@@ -435,6 +435,8 @@ namespace LycorisNet {
             exit(3);
         }
         args->mutateOdds = odds;
+
+        resize(capacity);
     }
 
     // Set the number of worker threads to train the model.
