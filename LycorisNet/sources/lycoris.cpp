@@ -24,7 +24,7 @@ namespace LycorisNet {
             exit(1);
         }
         args->mode = mode;
-        args->weightB = sqrtf(6 / float(inputNum + outputNum));
+        args->weightB = sqrtf(6.0f / inputNum);
         args->weightA = 0 - args->weightB;
     }
 
