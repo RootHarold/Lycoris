@@ -155,14 +155,14 @@ namespace LycorisNet {
 
                         if (z == args->batchSize - 1) {
                             (*(n->genomeMap))[iter->first].delta = (*(n->genomeMap))[iter->first].delta * 0.9f +
-                                                                   (*(n->genomeMap))[iter->first].delta_backup;
+                                                                   (*(n->genomeMap))[iter->first].delta_backup * 0.1f;
                             (*(n->genomeMap))[iter->first].weight += (*(n->genomeMap))[iter->first].delta;
                         }
                     }
 
                     n->delta_backup = (n->delta_backup * z - args->lr * grad) / float(z + 1);
                     if (z == args->batchSize - 1) {
-                        n->delta = n->delta * 0.9f + n->delta_backup;
+                        n->delta = n->delta * 0.9f + n->delta_backup * 0.1f;
                         n->bias += n->delta;
                     }
                 }
@@ -195,14 +195,14 @@ namespace LycorisNet {
 
                         if (z == args->batchSize - 1) {
                             (*(n->genomeMap))[iter->first].delta = (*(n->genomeMap))[iter->first].delta * 0.9f +
-                                                                   (*(n->genomeMap))[iter->first].delta_backup;
+                                                                   (*(n->genomeMap))[iter->first].delta_backup * 0.1f;
                             (*(n->genomeMap))[iter->first].weight += (*(n->genomeMap))[iter->first].delta;
                         }
                     }
 
                     n->delta_backup = (n->delta_backup * z - args->lr * grad) / float(z + 1);
                     if (z == args->batchSize - 1) {
-                        n->delta = n->delta * 0.9f + n->delta_backup;
+                        n->delta = n->delta * 0.9f + n->delta_backup * 0.1f;
                         n->bias += n->delta;
                     }
                 }
@@ -283,11 +283,11 @@ namespace LycorisNet {
 
             for (auto iter = n->genomeMap->begin(); iter != n->genomeMap->end(); ++iter) {
                 (*(n->genomeMap))[iter->first].delta =
-                        (*(n->genomeMap))[iter->first].delta * 0.9f + args->midData[data_p++];
+                        (*(n->genomeMap))[iter->first].delta * 0.9f + args->midData[data_p++] * 0.1f;
                 (*(n->genomeMap))[iter->first].weight += (*(n->genomeMap))[iter->first].delta;
             }
 
-            n->delta = n->delta * 0.9f + args->midData[data_p++];
+            n->delta = n->delta * 0.9f + args->midData[data_p++] * 0.1f;
             n->bias += n->delta;
         }
 
@@ -324,7 +324,7 @@ namespace LycorisNet {
 
                     auto grad = gradient[index] * (n->value > 0 ? 1.0f : 0.2f);
 
-                    for (auto & iter : *n->genomeMap) {
+                    for (auto &iter : *n->genomeMap) {
                         auto p = gradient.find(iter.first.in);
                         if (p != gradient.end()) {
                             gradient[iter.first.in] += grad * iter.second.weight;
@@ -351,7 +351,7 @@ namespace LycorisNet {
 
                     auto grad = gradient[index] * (n->value > 0 ? 1.0f : 0.2f);
 
-                    for (auto & iter : *n->genomeMap) {
+                    for (auto &iter : *n->genomeMap) {
                         auto p = gradient.find(iter.first.in);
                         if (p != gradient.end()) {
                             gradient[iter.first.in] += grad * iter.second.weight;
